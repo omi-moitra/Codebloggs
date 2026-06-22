@@ -219,7 +219,11 @@ Stores comments associated with blog posts.
 * `/server/controllers` — controller logic
 * `/server/middleware` — middleware
 * `/ai` — AI documentation
-* `/ai/features` — feature specifications
+* `/ai/Module_9` — Module 9 AI spec and feature specifications
+* `/ai/Module_9/features` — Module 9 feature specifications
+* `/ai/Module_10` — Module 10 AI spec and feature specifications
+* `/ai/Module_10/features/backend` — backend feature specifications
+* `/ai/Module_10/features/frontend` — frontend feature specifications
 * `/LeetCode-Challenges` — challenge screenshots
 * `README.md`
 * `Research.md`
