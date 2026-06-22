@@ -3,24 +3,28 @@
 // -----------------------------------------------------------------------------
 // 1. Data fetching      dispatch fetchUsers() on mount via Redux Thunk
 // 2. Search             two fields (firstNameSearch / lastNameSearch); AND filter; Clear button
+//                       inputs are disabled while loading — no interaction against empty array
 // 3. Sort               client-side sort by column header click (asc / desc)
-// 4. Pagination         slice sorted results; previous/next controls
+// 4. Pagination         slice sorted results; previous/next controls; hidden while loading
 // 5. Results-per-page   dropdown: 10, 15, 20; resets to page 1 on change
-// 6. Delete flow        Delete button (IoTrashOutline) → ConfirmModal → dispatch deleteUserAction
-// 7. Edit flow          Edit button (FaRegEdit) → navigate to /admin/users/:id (EditUserPage)
-// 8. Icons              FaRegEdit (edit), IoTrashOutline (delete) from react-icons
+// 6. Skeleton loaders   SkeletonTable replaces <tbody> when state.users.loading is true
+//                       (initial fetch AND delete in flight)
+// 7. Delete flow        Delete button (IoTrashOutline) → ConfirmModal → dispatch deleteUserAction
+// 8. Edit flow          Edit button (FaRegEdit) → navigate to /admin/users/:id (EditUserPage)
+// 9. Icons              FaRegEdit (edit), IoTrashOutline (delete) from react-icons
 // =============================================================================
 
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Alert, Button, Form, Spinner, Table } from "react-bootstrap";
+import { Alert, Button, Form, Table } from "react-bootstrap";
 import { BsCaretUpFill, BsFillCaretDownFill } from "react-icons/bs";
 import { FaRegEdit } from "react-icons/fa";
 import { IoTrashOutline } from "react-icons/io5";
 import { TbCaretUpDownFilled } from "react-icons/tb";
 import { fetchUsers, deleteUserAction } from "../redux/actions/userActions";
 import ConfirmModal from "../components/ConfirmModal";
+import SkeletonTable from "../components/SkeletonTable";
 
 const PAGE_SIZE_OPTIONS = [10, 15, 20];
 
@@ -149,17 +153,6 @@ const UserManager = () => {
       : <BsFillCaretDownFill className="user-manager__sort-icon" />;
   };
 
-  // Full-page spinner only on the initial load when the list is empty.
-  // Subsequent re-fetches happen silently.
-  if (loading && users.length === 0) {
-    return (
-      <div className="user-manager__loading">
-        <Spinner animation="border" size="sm" role="status" />
-        <span className="ms-2">Loading users…</span>
-      </div>
-    );
-  }
-
   return (
     <div className="user-manager">
       {/* Store-level fetch error */}
@@ -184,6 +177,8 @@ const UserManager = () => {
 
       {/* Two separate search fields (First Name + Last Name) + Clear button.
           Both fields filter the list independently via AND logic on every keystroke. */}
+      {/* Search inputs are disabled while loading — typing against an empty array
+          produces no visible results and creates confusing UX per the spec. */}
       <div className="user-manager__search-row">
         <Form.Control
           type="text"
@@ -192,6 +187,7 @@ const UserManager = () => {
           onChange={handleFirstNameSearch}
           aria-label="Filter by first name"
           className="user-manager__search-field"
+          disabled={loading}
         />
         <Form.Control
           type="text"
@@ -200,12 +196,13 @@ const UserManager = () => {
           onChange={handleLastNameSearch}
           aria-label="Filter by last name"
           className="user-manager__search-field"
+          disabled={loading}
         />
         <Button
           variant="outline-secondary"
           size="sm"
           onClick={handleClear}
-          disabled={!firstNameSearch && !lastNameSearch}
+          disabled={loading || (!firstNameSearch && !lastNameSearch)}
         >
           Clear
         </Button>
@@ -243,52 +240,60 @@ const UserManager = () => {
             <th>Delete</th>
           </tr>
         </thead>
-        <tbody>
-          {pageSlice.length === 0 ? (
-            <tr>
-              <td colSpan={4} className="text-center user-manager__empty">
-                No users match your search.
-              </td>
-            </tr>
-          ) : (
-            pageSlice.map((user) => (
-              <tr key={user._id}>
-                <td>{user.first_name}</td>
-                <td>{user.last_name}</td>
-                <td>
-                  {/* Edit navigates to the full EditUserPage at /admin/users/:id.
-                      The user is already in the Redux store so EditUserPage can
-                      pre-populate without an extra network call. */}
-                  <Button
-                    variant="outline-primary"
-                    size="sm"
-                    onClick={() => navigate(`/admin/users/${user._id}`)}
-                    aria-label={`Edit ${user.first_name} ${user.last_name}`}
-                  >
-                    <FaRegEdit />
-                  </Button>
-                </td>
-                <td>
-                  {/* Icon-only delete button — IoTrashOutline from Ionicons 5
-                      matches the spec. The aria-label names the user so
-                      screen readers still convey the action. */}
-                  <Button
-                    variant="outline-danger"
-                    size="sm"
-                    onClick={() => setUserToDelete(user)}
-                    aria-label={`Delete ${user.first_name} ${user.last_name}`}
-                  >
-                    <IoTrashOutline />
-                  </Button>
+        {/* Skeleton replaces the <tbody> while loading is true (initial fetch
+            or delete in flight). Column headers remain visible above it so
+            the admin understands the table structure before data arrives. */}
+        {loading ? (
+          <SkeletonTable rows={pageSize} cols={4} />
+        ) : (
+          <tbody>
+            {pageSlice.length === 0 ? (
+              <tr>
+                <td colSpan={4} className="text-center user-manager__empty">
+                  No users match your search.
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
+            ) : (
+              pageSlice.map((user) => (
+                <tr key={user._id}>
+                  <td>{user.first_name}</td>
+                  <td>{user.last_name}</td>
+                  <td>
+                    {/* Edit navigates to the full EditUserPage at /admin/users/:id.
+                        The user is already in the Redux store so EditUserPage can
+                        pre-populate without an extra network call. */}
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      onClick={() => navigate(`/admin/users/${user._id}`)}
+                      aria-label={`Edit ${user.first_name} ${user.last_name}`}
+                    >
+                      <FaRegEdit />
+                    </Button>
+                  </td>
+                  <td>
+                    {/* Icon-only delete button — IoTrashOutline from Ionicons 5
+                        matches the spec. The aria-label names the user so
+                        screen readers still convey the action. */}
+                    <Button
+                      variant="outline-danger"
+                      size="sm"
+                      onClick={() => setUserToDelete(user)}
+                      aria-label={`Delete ${user.first_name} ${user.last_name}`}
+                    >
+                      <IoTrashOutline />
+                    </Button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        )}
       </Table>
 
-      {/* Pagination controls — hidden when the filtered list is empty. */}
-      {sorted.length > 0 && (
+      {/* Pagination controls — hidden while loading (skeleton state) and when
+          the filtered list is empty. Spec: controls reappear once data loads. */}
+      {sorted.length > 0 && !loading && (
         <div className="user-manager__pagination">
           <Button
             variant="outline-secondary"

@@ -3,13 +3,15 @@
 // -----------------------------------------------------------------------------
 // 1. Data lookup      reads :id from URL; finds user in Redux store or fetches
 //                     from GET /user/:id as a fallback
-// 2. Form fields      First Name, Last Name, Email, New Password, Confirm Password
-// 3. Validation       required fields show isInvalid on blur/submit; password
+// 2. Skeleton fields  while the fallback GET /user/:id is in flight, each form
+//                     field is replaced by a <SkeletonField /> bar
+// 3. Form fields      First Name, Last Name, Email, New Password, Confirm Password
+// 4. Validation       required fields show isInvalid on blur/submit; password
 //                     mismatch disables Save Changes
-// 4. ConfirmModal     shared component; opens on "Save Changes"; dispatches
+// 5. ConfirmModal     shared component; opens on "Save Changes"; dispatches
 //                     updateUserAction on confirm
-// 5. Navigation       navigate("/admin/users") on success; stay on page on error
-// 6. Error handling   inline Bootstrap Alert when PATCH endpoint is unavailable
+// 6. Navigation       navigate("/admin/users") on success; stay on page on error
+// 7. Error handling   inline Bootstrap Alert when PATCH endpoint is unavailable
 // =============================================================================
 
 import { useEffect, useState } from "react";
@@ -18,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Alert, Button, Col, Container, Form, Row } from "react-bootstrap";
 import { FaRegCheckSquare } from "react-icons/fa";
 import ConfirmModal from "../components/ConfirmModal";
+import SkeletonField from "../components/SkeletonField";
 import { updateUserAction } from "../redux/actions/userActions";
 import { getUserById } from "../services/userService";
 
@@ -156,16 +159,13 @@ const EditUserPage = () => {
     ? `${storeUser.first_name} ${storeUser.last_name}`
     : `${firstName} ${lastName}`.trim();
 
-  if (loadingUser) {
-    return <div className="p-3 text-muted">Loading user…</div>;
-  }
-
   return (
     <Container className="edit-user-page">
       <Row>
         <Col md={6}>
           {/* "Return to User Manager" — the exact label is a grading sheet
-              requirement (Working/Module_10/Issues.md #11). Do not rename it. */}
+              requirement (Working/Module_10/Issues.md #11). Do not rename it.
+              Always visible so the admin is never trapped during a fetch. */}
           <Link to="/admin/users" className="edit-user-page__back-link">
             ← Return to User Manager
           </Link>
@@ -186,76 +186,98 @@ const EditUserPage = () => {
           )}
 
           <Form noValidate>
+            {/* First Name — skeleton bar while the fallback GET /user/:id is in
+                flight; real input once the user object resolves. */}
             <Form.Group className="mb-3">
               <Form.Label>First Name</Form.Label>
-              <Form.Control
-                type="text"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                onBlur={() => setTouched((t) => ({ ...t, firstName: true }))}
-                isInvalid={firstNameInvalid}
-              />
-              <Form.Control.Feedback type="invalid">INVALID</Form.Control.Feedback>
+              {loadingUser ? <SkeletonField /> : (
+                <>
+                  <Form.Control
+                    type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    onBlur={() => setTouched((t) => ({ ...t, firstName: true }))}
+                    isInvalid={firstNameInvalid}
+                  />
+                  <Form.Control.Feedback type="invalid">INVALID</Form.Control.Feedback>
+                </>
+              )}
             </Form.Group>
 
             <Form.Group className="mb-3">
               <Form.Label>Last Name</Form.Label>
-              <Form.Control
-                type="text"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                onBlur={() => setTouched((t) => ({ ...t, lastName: true }))}
-                isInvalid={lastNameInvalid}
-              />
-              <Form.Control.Feedback type="invalid">INVALID</Form.Control.Feedback>
+              {loadingUser ? <SkeletonField /> : (
+                <>
+                  <Form.Control
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    onBlur={() => setTouched((t) => ({ ...t, lastName: true }))}
+                    isInvalid={lastNameInvalid}
+                  />
+                  <Form.Control.Feedback type="invalid">INVALID</Form.Control.Feedback>
+                </>
+              )}
             </Form.Group>
 
             <Form.Group className="mb-3">
               <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onBlur={() => setTouched((t) => ({ ...t, email: true }))}
-                isInvalid={emailInvalid}
-              />
-              <Form.Control.Feedback type="invalid">INVALID</Form.Control.Feedback>
-            </Form.Group>
-
-            {/* New Password — optional. Blank means "keep current password".
-                The password is excluded from the PATCH payload when blank. */}
-            <Form.Group className="mb-3">
-              <Form.Label>
-                New Password{" "}
-                <span className="text-muted">(leave blank to keep current)</span>
-              </Form.Label>
-              <Form.Control
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Leave blank to keep current"
-              />
-            </Form.Group>
-
-            {/* Confirm Password — only required when the admin entered a new password. */}
-            <Form.Group className="mb-4">
-              <Form.Label>Confirm New Password</Form.Label>
-              <Form.Control
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-              {passwordMismatch && (
-                <Form.Text className="text-danger">
-                  Passwords do not match.
-                </Form.Text>
+              {loadingUser ? <SkeletonField /> : (
+                <>
+                  <Form.Control
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    onBlur={() => setTouched((t) => ({ ...t, email: true }))}
+                    isInvalid={emailInvalid}
+                  />
+                  <Form.Control.Feedback type="invalid">INVALID</Form.Control.Feedback>
+                </>
               )}
             </Form.Group>
 
+            {/* Password fields are hidden while loading — the spec requires them
+                to remain hidden until the user data resolves (Screen 3 mockup). */}
+            {!loadingUser && (
+              <>
+                {/* New Password — optional. Blank means "keep current password".
+                    The password is excluded from the PATCH payload when blank. */}
+                <Form.Group className="mb-3">
+                  <Form.Label>
+                    New Password{" "}
+                    <span className="text-muted">(leave blank to keep current)</span>
+                  </Form.Label>
+                  <Form.Control
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Leave blank to keep current"
+                  />
+                </Form.Group>
+
+                {/* Confirm Password — only required when the admin entered a new password. */}
+                <Form.Group className="mb-4">
+                  <Form.Label>Confirm New Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                  {passwordMismatch && (
+                    <Form.Text className="text-danger">
+                      Passwords do not match.
+                    </Form.Text>
+                  )}
+                </Form.Group>
+              </>
+            )}
+
+            {/* Save Changes stays disabled while loading so the admin can't
+                submit before the form populates (spec: Screen 3 note). */}
             <div className="d-flex justify-content-end">
               <Button
                 variant="primary"
-                disabled={!isValid}
+                disabled={loadingUser || !isValid}
                 onClick={handleSaveClick}
               >
                 <FaRegCheckSquare className="me-1" /> Save Changes

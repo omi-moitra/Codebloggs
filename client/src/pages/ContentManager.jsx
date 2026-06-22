@@ -3,22 +3,25 @@
 // -----------------------------------------------------------------------------
 // 1. Data fetching    dispatch fetchPosts() + fetchUsers() on mount via Redux Thunk
 // 2. Date filter      From/To date inputs; client-side filter on post time_stamp;
-//                     either field can be used independently
+//                     either field can be used independently; disabled while loading
 // 3. Select All       clears both date inputs; restores full post list; resets page 1
-// 4. Pagination       slice filtered results; previous/next controls
+// 4. Pagination       slice filtered results; previous/next controls; hidden while loading
 // 5. Results-per-page dropdown: 10, 15, 20; resets to page 1 on change
-// 6. Delete flow      Delete button (IoTrashOutline) → ConfirmModal → dispatch deletePostAction
-// 7. Author column    cross-references state.users.users by post.user_id (same pattern as Blogs/Home)
-// 8. Post column      post.title if present; otherwise truncated content (40 chars)
+// 6. Skeleton loaders SkeletonTable replaces <tbody> when state.posts.loading is true
+//                     (initial fetch AND delete in flight)
+// 7. Delete flow      Delete button (IoTrashOutline) → ConfirmModal → dispatch deletePostAction
+// 8. Author column    cross-references state.users.users by post.user_id (same pattern as Blogs/Home)
+// 9. Post column      post.title if present; otherwise truncated content (40 chars)
 // =============================================================================
 
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Alert, Button, Form, Spinner, Table } from "react-bootstrap";
+import { Alert, Button, Form, Table } from "react-bootstrap";
 import { IoTrashOutline } from "react-icons/io5";
 import { fetchPosts, deletePostAction } from "../redux/actions/postActions";
 import { fetchUsers } from "../redux/actions/userActions";
 import ConfirmModal from "../components/ConfirmModal";
+import SkeletonTable from "../components/SkeletonTable";
 
 const PAGE_SIZE_OPTIONS = [10, 15, 20];
 
@@ -178,16 +181,6 @@ const ContentManager = () => {
     }
   };
 
-  // Full-page spinner only on the initial load when the list is empty.
-  if (loading && posts.length === 0) {
-    return (
-      <div className="content-manager__loading">
-        <Spinner animation="border" size="sm" role="status" />
-        <span className="ms-2">Loading posts…</span>
-      </div>
-    );
-  }
-
   return (
     <div className="content-manager">
       {/* Store-level fetch error */}
@@ -213,6 +206,8 @@ const ContentManager = () => {
       {/* Date range filter row + "Select All" button.
           Both inputs filter independently — leaving one blank applies no bound
           on that side of the range. */}
+      {/* Date filter inputs are disabled while loading — filtering against an
+          empty array produces no visible results and is confusing UX. */}
       <div className="content-manager__filter-row">
         <span className="content-manager__filter-label">From:</span>
         <Form.Control
@@ -221,6 +216,7 @@ const ContentManager = () => {
           onChange={handleStartDateChange}
           aria-label="Filter from date"
           className="content-manager__date-input"
+          disabled={loading}
         />
         <span className="content-manager__filter-label">To:</span>
         <Form.Control
@@ -229,11 +225,13 @@ const ContentManager = () => {
           onChange={handleEndDateChange}
           aria-label="Filter to date"
           className="content-manager__date-input"
+          disabled={loading}
         />
         <Button
           variant="outline-secondary"
           size="sm"
           onClick={handleSelectAll}
+          disabled={loading}
         >
           Select All
         </Button>
@@ -255,41 +253,48 @@ const ContentManager = () => {
             <th>Delete</th>
           </tr>
         </thead>
-        <tbody>
-          {pageSlice.length === 0 ? (
-            <tr>
-              <td colSpan={4} className="text-center content-manager__empty">
-                {startDate || endDate
-                  ? "No posts match the selected date range."
-                  : "No posts found."}
-              </td>
-            </tr>
-          ) : (
-            pageSlice.map((post) => (
-              <tr key={post._id}>
-                <td>{getAuthorLabel(post, usersById)}</td>
-                <td>{getPostLabel(post)}</td>
-                <td>{formatDate(post.time_stamp)}</td>
-                <td>
-                  {/* Icon-only delete button — IoTrashOutline matches the spec.
-                      aria-label names the post so screen readers convey the action. */}
-                  <Button
-                    variant="outline-danger"
-                    size="sm"
-                    onClick={() => setPostToDelete(post)}
-                    aria-label={`Delete post: ${getPostLabel(post)}`}
-                  >
-                    <IoTrashOutline />
-                  </Button>
+        {/* Skeleton replaces the <tbody> while loading is true (initial fetch
+            or delete in flight). Column headers remain visible above it. */}
+        {loading ? (
+          <SkeletonTable rows={pageSize} cols={4} />
+        ) : (
+          <tbody>
+            {pageSlice.length === 0 ? (
+              <tr>
+                <td colSpan={4} className="text-center content-manager__empty">
+                  {startDate || endDate
+                    ? "No posts match the selected date range."
+                    : "No posts found."}
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
+            ) : (
+              pageSlice.map((post) => (
+                <tr key={post._id}>
+                  <td>{getAuthorLabel(post, usersById)}</td>
+                  <td>{getPostLabel(post)}</td>
+                  <td>{formatDate(post.time_stamp)}</td>
+                  <td>
+                    {/* Icon-only delete button — IoTrashOutline matches the spec.
+                        aria-label names the post so screen readers convey the action. */}
+                    <Button
+                      variant="outline-danger"
+                      size="sm"
+                      onClick={() => setPostToDelete(post)}
+                      aria-label={`Delete post: ${getPostLabel(post)}`}
+                    >
+                      <IoTrashOutline />
+                    </Button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        )}
       </Table>
 
-      {/* Pagination controls — hidden when the filtered list is empty. */}
-      {filtered.length > 0 && (
+      {/* Pagination controls — hidden while loading (skeleton state) and when
+          the filtered list is empty. Spec: controls reappear once data loads. */}
+      {filtered.length > 0 && !loading && (
         <div className="content-manager__pagination">
           <Button
             variant="outline-secondary"

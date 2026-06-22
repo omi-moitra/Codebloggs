@@ -1,0 +1,33 @@
+/* ==========================================================================
+   Skeleton.css — Animated placeholder styles for skeleton loaders
+   --------------------------------------------------------------------------
+   1. .skeleton-bar         Base gray rounded rectangle with pulse animation
+   2. .skeleton-bar--field  Modifier for form field skeletons (full-width, input height)
+   3. @keyframes            skeleton-pulse — opacity cycles 0.4 → 1.0 → 0.4
+   ========================================================================== */
+
+/* Base skeleton bar — used inside table cells.
+   Width is 75% so it doesn't span the full cell edge-to-edge,
+   giving a more realistic "text chunk" appearance. */
+.skeleton-bar {
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  height: 1rem;
+  width: 75%;
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+/* Form field modifier — overrides width/height so the skeleton bar
+   matches the visual footprint of a <Form.Control> input. */
+.skeleton-bar--field {
+  width: 100%;
+  height: 2.25rem;
+}
+
+/* Pulse: opacity fades back and forth to signal "loading in progress"
+   without moving elements or causing layout shift. */
+@keyframes skeleton-pulse {
+  0%   { opacity: 0.4; }
+  50%  { opacity: 1.0; }
+  100% { opacity: 0.4; }
+}
