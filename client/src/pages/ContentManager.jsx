@@ -1,14 +1,14 @@
 // =============================================================================
 // pages/ContentManager.jsx — Admin Content Manager table (/admin/content)
 // -----------------------------------------------------------------------------
-// 1. Data fetching    dispatch fetchPosts() on mount via Redux Thunk
+// 1. Data fetching    dispatch fetchPosts() + fetchUsers() on mount via Redux Thunk
 // 2. Date filter      From/To date inputs; client-side filter on post time_stamp;
 //                     either field can be used independently
 // 3. Select All       clears both date inputs; restores full post list; resets page 1
 // 4. Pagination       slice filtered results; previous/next controls
 // 5. Results-per-page dropdown: 10, 15, 20; resets to page 1 on change
 // 6. Delete flow      Delete button (IoTrashOutline) → ConfirmModal → dispatch deletePostAction
-// 7. Author column    first_name + last_name if populated; falls back to user_id string
+// 7. Author column    cross-references state.users.users by post.user_id (same pattern as Blogs/Home)
 // 8. Post column      post.title if present; otherwise truncated content (40 chars)
 // =============================================================================
 
@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Alert, Button, Form, Spinner, Table } from "react-bootstrap";
 import { IoTrashOutline } from "react-icons/io5";
 import { fetchPosts, deletePostAction } from "../redux/actions/postActions";
+import { fetchUsers } from "../redux/actions/userActions";
 import ConfirmModal from "../components/ConfirmModal";
 
 const PAGE_SIZE_OPTIONS = [10, 15, 20];
@@ -34,19 +35,28 @@ const getPostLabel = (post) => {
   return "(no content)";
 };
 
-// Returns the author's full name when the post object includes populated user
-// fields, or falls back to the raw user_id string.
-// ⚠️ Whether first_name/last_name are populated depends on the backend — if
-// GET /posts does not populate the author, only user_id will be available.
-// Flag this with the backend partner: see Working/Module_10/Integration.md.
-const getAuthorLabel = (post) => {
-  if (post.first_name || post.last_name) {
-    return `${post.first_name || ""} ${post.last_name || ""}`.trim();
-  }
-  if (post.author?.first_name || post.author?.last_name) {
-    return `${post.author.first_name || ""} ${post.author.last_name || ""}`.trim();
-  }
-  return post.user_id || "Unknown";
+// Normalises ObjectId variants to a plain string so lookup keys are consistent.
+// Mirrors the getId() helper used in Blogs.jsx and Home.jsx.
+const getId = (value) => {
+  if (!value) return "";
+  if (typeof value === "string") return value;
+  return value._id || value.$oid || String(value);
+};
+
+// Returns the user's full name, email, or "CodeBloggs user" in order of availability.
+// Mirrors the getDisplayName() helper used in Blogs.jsx and Home.jsx.
+const getDisplayName = (user) => {
+  const fullName = `${user?.first_name || ""} ${user?.last_name || ""}`.trim();
+  return fullName || user?.email || "CodeBloggs user";
+};
+
+// Cross-references the user lookup map by post.user_id to get the author's name.
+// GET /posts returns raw ObjectId references — names are resolved client-side
+// from state.users.users, which is the same approach used by Blogs and Home pages.
+const getAuthorLabel = (post, usersById) => {
+  const author = usersById[getId(post.user_id)];
+  if (author) return getDisplayName(author);
+  return String(post.user_id) || "Unknown";
 };
 
 // Format a timestamp string (ISO or date-only) into a human-readable YYYY-MM-DD.
@@ -65,6 +75,10 @@ const ContentManager = () => {
   // Pull post list and async state from the Redux store.
   const { posts, loading, error: storeError } = useSelector((state) => state.posts);
 
+  // Pull the user list for author name resolution. If the admin came from the
+  // User Manager, this is already populated — no extra network call needed.
+  const { users } = useSelector((state) => state.users);
+
   // Local UI state — does not belong in Redux because it only affects this
   // component and does not need to survive navigation.
   const [startDate, setStartDate] = useState("");
@@ -75,11 +89,13 @@ const ContentManager = () => {
   const [deleteError, setDeleteError] = useState("");
   const [deleting, setDeleting] = useState(false);
 
-  // Fetch the full post list once when the component mounts. The Thunk updates
-  // the Redux store; re-renders happen via useSelector.
+  // Fetch posts on mount. Also fetch users if the store is empty — this handles
+  // direct navigation to /admin/content without going through the User Manager
+  // (which would have already dispatched fetchUsers and populated state.users.users).
   useEffect(() => {
     dispatch(fetchPosts());
-  }, [dispatch]);
+    if (users.length === 0) dispatch(fetchUsers());
+  }, [dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // --- Client-side date filter ---
   // Posts are filtered in memory after the initial GET /posts load — no additional
@@ -97,6 +113,15 @@ const ContentManager = () => {
       return afterStart && beforeEnd;
     });
   }, [posts, startDate, endDate]);
+
+  // Build a userId → user lookup map so each row can resolve its author name
+  // in O(1) without iterating the users array per row.
+  const usersById = useMemo(() => {
+    return users.reduce((map, u) => {
+      map[getId(u._id)] = u;
+      return map;
+    }, {});
+  }, [users]);
 
   // --- Pagination math ---
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
@@ -242,7 +267,7 @@ const ContentManager = () => {
           ) : (
             pageSlice.map((post) => (
               <tr key={post._id}>
-                <td>{getAuthorLabel(post)}</td>
+                <td>{getAuthorLabel(post, usersById)}</td>
                 <td>{getPostLabel(post)}</td>
                 <td>{formatDate(post.time_stamp)}</td>
                 <td>

@@ -1797,6 +1797,11 @@ select {
 
 .content-manager__table {
   font-size: 0.9rem;
+  /* Override Bootstrap's default gray table-hover color with the same
+     periwinkle used on sidebar nav link hovers (--color-periwinkle: #B1ADFF).
+     Full opacity would overwhelm table text, so 20% gives a clear tint while
+     keeping the row readable over both plain and striped backgrounds. */
+  --bs-table-hover-bg: rgba(177, 173, 255, 0.2);
 }
 
 .content-manager__empty {

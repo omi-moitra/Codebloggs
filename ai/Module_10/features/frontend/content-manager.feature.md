@@ -43,7 +43,8 @@ Give administrators a panel inside the Admin Page Shell where they can view all 
 
 - **Content Manager page** — React component at `/admin/content`; renders inside the existing Admin Page Shell with the Content Manager tab active
 - **Redux `fetchPosts` action** — dispatches `GET /posts` on mount and stores the full post list in the Redux store; no server-side date filter (filter is client-side)
-- **Post table** — displays paginated posts with columns: Author, Post (title or content excerpt), Date, Delete
+- **Redux `fetchUsers` action** — also dispatched on mount (skipped if `state.users.users` is already populated, e.g., when navigating from User Manager); provides the user list used to resolve author names client-side
+- **Post table** — displays paginated posts with columns: Author, Post (title or content excerpt), Date, Delete; the Author column resolves names client-side via a `usersById` lookup (see below)
 - **Date range inputs** — two `<Form.Control type="date" />` inputs labelled "From:" and "To:"; filter the post list client-side on every change; either field can be used independently
 - **Client-side date filter logic** — keep posts where `time_stamp >= startDate AND time_stamp <= endDate`; if From is blank, no lower bound; if To is blank, no upper bound; both blank means show all
 - **"Select All" button** — clears both date inputs to empty and restores the full unfiltered list; resets current page to 1
@@ -198,7 +199,8 @@ No pagination controls are rendered when the filtered list is empty.
 
 ## Data Used or Modified
 
-- **Post object read:** `_id`, `title` (or `content` for excerpt if title field is not present), `time_stamp`, and author identifier (`user_id`, `first_name`, `last_name` — confirm populated shape with partner; see Notes)
+- **Post object read:** `_id`, `title` (or `content` for excerpt if title field is not present), `time_stamp`, `user_id` — `GET /posts` returns raw `user_id` ObjectId references; no author name fields are populated inline
+- **User object read (for Author column):** `_id`, `first_name`, `last_name`, `email` — sourced from `state.users.users` in the Redux store; cross-referenced against `post.user_id` using an in-memory `usersById` lookup map (same pattern as `Blogs.jsx` and `Home.jsx`)
 - **Redux store state:** post list array, loading flag, current page number, page size, start date filter string, end date filter string
 - **On delete:** dispatch the DELETE action and remove the post from the Redux store on a successful response; cascade deletion of all comments is handled entirely by the backend
 
@@ -211,6 +213,7 @@ No pagination controls are rendered when the filtered list is empty.
 - Use Redux + Redux Thunk for all async API calls (`fetchPosts`, `deletePost`)
 - Date filtering is client-side only — filter the in-memory post array; do not make additional API calls with date query parameters
 - If `GET /posts` returns all posts at once, implement pagination client-side (array slicing based on `currentPage` and `pageSize`)
+- **Author name resolution is client-side** — `GET /posts` returns raw `user_id` ObjectId strings; do not expect `first_name` or `last_name` on the post object. Fetch `GET /user` (via `fetchUsers`) on mount and build a `usersById` map (`userId → userObject`) using the same `getId` / `getDisplayName` helper pattern established in `Blogs.jsx` and `Home.jsx`; dispatch `fetchUsers` only if `state.users.users.length === 0` to avoid a redundant call when the store is already populated
 - The "Select All" button label must be exactly `Select All` — the grading sheet uses this label for Content Manager (see `Working/Module_10/Issues.md` Issue #12); do NOT use "Clear"
 - Use React Bootstrap for all UI components — no new UI libraries
 - ESM6 syntax throughout — no CommonJS
@@ -247,7 +250,7 @@ No pagination controls are rendered when the filtered list is empty.
 - The "Select All" button label must be `Select All` — not "Clear". The grading sheet uses different labels for each panel. See `Working/Module_10/Issues.md` Issue #12.
 - Date filtering is client-side. `GET /posts` returns all posts — filter the array in memory before slicing for the current page. Do not add query parameters to the fetch call.
 - Date comparison: convert `post.time_stamp` and the filter values to `Date` objects before comparing. Use `>=` for the start date and `<=` for the end date. Set the end date's time to 23:59:59 (end of day) to include posts created on the To date.
-- The `GET /posts` response shape must be confirmed with the partner. In particular: does the response include `first_name` and `last_name` of the author inline (populated), or only a `user_id`? If only `user_id` is included, the Author column cannot be populated without a separate lookup — flag this to the partner and display `user_id` as a fallback until confirmed. See `Working/Module_10/Integration.md` for the backend contract.
+- `GET /posts` returns raw `user_id` ObjectId strings — author names are NOT populated inline by the backend. Resolve author names client-side: dispatch `fetchUsers` on mount (skip if `state.users.users` is already populated), build a `usersById` map, and look up each post's author via `usersById[getId(post.user_id)]`. Use `getDisplayName(author)` for the display value, falling back to the raw `user_id` string if the user is not found. This is the same pattern used by `Blogs.jsx` and `Home.jsx`.
 - `deletePost` calls `DELETE /posts/:id`. The frontend only removes the post from the Redux store on a successful response. Do not write any cascade (comment deletion) logic in React — the backend handles it entirely.
 - Pagination, results-per-page change, and date filter change must all reset `currentPage` to 1.
 - Client-side filter logic: `filteredPosts = allPosts.filter(post => (!startDate || post.time_stamp >= startDate) && (!endDate || post.time_stamp <= endDate + 'T23:59:59'))`. Slice after filtering for the current page.
