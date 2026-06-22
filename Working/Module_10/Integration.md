@@ -120,9 +120,8 @@ No component or reducer changes needed.
 
 ## Feature: User Update Screen
 
-**Frontend path:** `/admin/users/:id`  
-**Feature spec:** `ai/Module_10/features/frontend/user-update.feature.md` *(not yet written)*  
-**Status:** Placeholder — expand when spec is created
+**Frontend path:** `/admin/users` (modal overlay — no new route)  
+**Feature spec:** `ai/Module_10/features/frontend/user-update.feature.md`
 
 ### Dependency 1 — Fetch Single User
 
@@ -130,7 +129,10 @@ No component or reducer changes needed.
 |---|---|
 | **Endpoint** | `GET /user/:id` |
 | **Status** | ✅ Exists from M9 — call directly |
-| **Fallback** | None needed |
+| **Used in** | `EditUserModal` — available as a fallback to refresh stale data; in most cases the selected user object passed as a prop from the User Manager table is sufficient |
+| **Fallback** | None needed — endpoint is live |
+
+---
 
 ### Dependency 2 — Update a User
 
@@ -138,8 +140,41 @@ No component or reducer changes needed.
 |---|---|
 | **Endpoint** | `PATCH /user/:id` |
 | **Status** | 🔴 New M10 endpoint — not yet delivered |
-| **Fallback** | Form renders and pre-populates. Submit button is either disabled or fires the Thunk, catches the 404, and shows an error message. No optimistic update. |
-| **Backend contract** | TBD — expand when `user-update.feature.md` is written. Must accept partial body; must hash password if provided. |
+| **Redux action** | `updateUser(id, payload)` |
+| **Fallback** | The Edit User modal renders and pre-populates normally. On submit confirmation, the Thunk fires the fetch. Until the endpoint exists, the fetch returns a 404 — the action catches the error, dispatches an error state, and the modal shows an inline alert: "Update unavailable — backend update in progress." The modal stays open. The user is NOT updated in the Redux store on error. |
+
+**Backend contract (what the partner must deliver):**
+```
+PATCH /user/:id
+→ Body: { first_name?, last_name?, email?, password? }  (all fields optional — partial update)
+→ 200 OK
+→ Body: { ...updatedUser }  (the full updated user object, same shape as GET /user response)
+→ If password is included: backend must hash before saving — never store plain-text
+→ If password is excluded: do not modify the existing password
+→ Side effects: none (no cascade logic needed for update)
+```
+
+**Required response shape (confirm with partner):**
+```json
+{
+  "_id": "string",
+  "first_name": "string",
+  "last_name": "string",
+  "email": "string",
+  "role": "admin | user",
+  "profile_image": "string"
+}
+```
+
+**Integration swap (one-line change in the Thunk when endpoint is ready):**
+```js
+// Before (error state reached naturally because route doesn't exist):
+const res = await fetch(`/user/${id}`, { method: 'PATCH', body: JSON.stringify(payload) });
+
+// After (no change needed — same line, endpoint now exists):
+const res = await fetch(`/user/${id}`, { method: 'PATCH', body: JSON.stringify(payload) });
+```
+No component or reducer changes needed — only the endpoint must exist and return the expected shape.
 
 ---
 
@@ -200,7 +235,13 @@ Use this checklist when the backend partner signals that a new M10 endpoint is r
 
 ### User Update Screen
 
-- [ ] *(Fill in when `user-update.feature.md` is written)*
+- [ ] Confirm `GET /user/:id` response shape matches the shape used to pre-populate the Edit User modal fields — update prop mapping if needed
+- [ ] Partner delivers `PATCH /user/:id` accepting a partial body (`first_name?`, `last_name?`, `email?`, `password?`)
+- [ ] Confirm that if `password` is omitted from the body, the backend does NOT overwrite the existing password
+- [ ] Confirm the `PATCH` response returns the full updated user object (same shape as `GET /user` array entries)
+- [ ] Test edit with a real user: verify the Redux store updates and the User Manager table reflects the change without a page reload
+- [ ] Test password change: verify new password works for login; verify plain-text is not stored in MongoDB
+- [ ] Remove or verify the inline error-fallback path in `updateUser` Thunk (it will simply never be reached once the endpoint exists)
 
 ### Content Manager
 
