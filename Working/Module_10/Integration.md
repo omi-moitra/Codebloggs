@@ -1,0 +1,207 @@
+# Frontend–Backend Integration Map — Module 10 CodeBloggs
+
+> **Purpose:** This document tracks every frontend feature or path that depends on a new M10 backend endpoint that has not yet been delivered by the partner at the time the frontend is implemented. For each dependency it records:
+> - What the backend is expected to provide
+> - What the frontend does in the meantime (graceful fallback — no data fabrication; real MongoDB data is already connected)
+> - The exact contract (route, response shape, status codes) the backend must fulfill for integration to succeed
+>
+> **Goal:** The frontend renders correctly and is testable for completed endpoints. Features backed by undelivered endpoints degrade gracefully. When the partner delivers an endpoint, wiring it in requires changes in one place only (the Redux Thunk action) with no changes to components or reducers.
+>
+> **Not included:** Module 9 endpoints that already exist — those are called directly.  
+> **Update this file** whenever a new frontend feature is implemented that depends on a new M10 backend endpoint.
+
+---
+
+## Table of Contents
+
+1. [Endpoint Status Reference](#endpoint-status-reference)
+2. [Feature: User Manager](#feature-user-manager)
+3. [Feature: User Update Screen](#feature-user-update-screen)
+4. [Feature: Content Manager](#feature-content-manager)
+5. [Feature: Skeleton Loaders (Reactive Design)](#feature-skeleton-loaders-reactive-design)
+6. [Feature: Responsive Navbar](#feature-responsive-navbar)
+7. [Integration Checklist](#integration-checklist)
+
+---
+
+## Endpoint Status Reference
+
+| Endpoint | Status | Owner | Notes |
+|---|---|---|---|
+| `GET /user` | ✅ Exists (M9) | Partner | Call directly |
+| `GET /user/:id` | ✅ Exists (M9) | Partner | Call directly |
+| `PATCH /user/:id` | 🔴 New (M10) | Partner | Needed for User Update Screen |
+| `DELETE /user/:id` | 🔴 New (M10) | Partner | Needed for User Manager delete; must cascade-delete posts + comments |
+| `GET /posts` | ✅ Exists (M9) | Partner | Call directly |
+| `POST /posts` | ✅ Exists (M9) | Partner | Not touched in M10 frontend |
+| `PATCH /posts/:id` | ✅ Exists (M9) | Partner | Post likes/interactions — not touched in M10 frontend |
+| `DELETE /posts/:id` | 🔴 New (M10) | Partner | Needed for Content Manager delete; must cascade-delete comments |
+| `GET /comments` | ✅ Exists (M9) | Partner | Not touched in M10 frontend |
+| `DELETE /comments/:id` | 🔴 New (M10) | Partner | Called by backend cascade only — no direct frontend call |
+| `POST /session` | ✅ Exists (M9) | Partner | Login — must include `role` in user object |
+| `GET /session/validate` | ✅ Exists (M9) | Partner | Session check |
+| `DELETE /session` | ✅ Exists (M9) | Partner | Logout |
+
+---
+
+## Feature: User Manager
+
+**Frontend path:** `/admin/users`  
+**Feature spec:** `ai/Module_10/features/frontend/user-manager.feature.md`
+
+### Dependency 1 — Fetch All Users
+
+| | Detail |
+|---|---|
+| **Endpoint** | `GET /user` |
+| **Status** | ✅ Exists from M9 — call directly |
+| **Redux action** | `fetchUsers` |
+| **Fallback** | None needed — endpoint is live |
+
+**Required response shape (confirm with partner):**
+```json
+[
+  {
+    "_id": "string",
+    "first_name": "string",
+    "last_name": "string",
+    "email": "string",
+    "role": "admin | user",
+    "profile_image": "string"
+  }
+]
+```
+
+**Notes:** Confirm whether the response is a plain array or wrapped in an object (e.g., `{ users: [...] }`). Update the Redux reducer accordingly.
+
+---
+
+### Dependency 2 — Delete a User
+
+| | Detail |
+|---|---|
+| **Endpoint** | `DELETE /user/:id` |
+| **Status** | 🔴 New M10 endpoint — not yet delivered |
+| **Redux action** | `deleteUser(id)` |
+| **Fallback** | The Delete button and confirmation modal render normally. On confirm, the Thunk fires the fetch. Until the endpoint exists, the fetch returns a 404 — the action catches the error, dispatches an error state, and the component shows a toast/alert: "Delete unavailable — backend update in progress." The user is NOT removed from the Redux store on error. |
+
+**Backend contract (what the partner must deliver):**
+```
+DELETE /user/:id
+→ 200 OK  (or 204 No Content)
+→ Body: { message: "User deleted" }  (or empty on 204)
+→ Side effects: all posts by this user must be deleted; all comments on those posts must be deleted
+```
+
+**Integration swap (one-line change in the Thunk when endpoint is ready):**
+```js
+// Before (error state reached naturally because route doesn't exist):
+const res = await fetch(`/user/${id}`, { method: 'DELETE' });
+
+// After (no change needed — same line, endpoint now exists):
+const res = await fetch(`/user/${id}`, { method: 'DELETE' });
+```
+No component or reducer changes needed.
+
+---
+
+### Dependency 3 — Admin Role in Auth State
+
+| | Detail |
+|---|---|
+| **Endpoint** | `POST /session` (login) |
+| **Status** | ✅ Exists from M9 |
+| **Used in** | Admin route guard reads `state.auth.user.role` from Redux |
+| **Concern** | The M9 login response must include `role` in the user object for the route guard to work |
+
+**Confirm with partner:** Does the existing `POST /session` response include `role`? If the M9 user object does not have `role`, the route guard will fail to distinguish admins. The partner must either add `role` to the session response or the Redux auth reducer must be updated to fetch it separately.
+
+---
+
+## Feature: User Update Screen
+
+**Frontend path:** `/admin/users/:id`  
+**Feature spec:** `ai/Module_10/features/frontend/user-update.feature.md` *(not yet written)*  
+**Status:** Placeholder — expand when spec is created
+
+### Dependency 1 — Fetch Single User
+
+| | Detail |
+|---|---|
+| **Endpoint** | `GET /user/:id` |
+| **Status** | ✅ Exists from M9 — call directly |
+| **Fallback** | None needed |
+
+### Dependency 2 — Update a User
+
+| | Detail |
+|---|---|
+| **Endpoint** | `PATCH /user/:id` |
+| **Status** | 🔴 New M10 endpoint — not yet delivered |
+| **Fallback** | Form renders and pre-populates. Submit button is either disabled or fires the Thunk, catches the 404, and shows an error message. No optimistic update. |
+| **Backend contract** | TBD — expand when `user-update.feature.md` is written. Must accept partial body; must hash password if provided. |
+
+---
+
+## Feature: Content Manager
+
+**Frontend path:** `/admin/content`  
+**Feature spec:** `ai/Module_10/features/frontend/content-manager.feature.md` *(not yet written)*  
+**Status:** Placeholder — expand when spec is created
+
+### Dependency 1 — Fetch All Posts
+
+| | Detail |
+|---|---|
+| **Endpoint** | `GET /posts` |
+| **Status** | ✅ Exists from M9 — call directly |
+| **Fallback** | None needed |
+
+### Dependency 2 — Delete a Post
+
+| | Detail |
+|---|---|
+| **Endpoint** | `DELETE /posts/:id` |
+| **Status** | 🔴 New M10 endpoint — not yet delivered |
+| **Fallback** | Same pattern as Delete User: button and modal render; error caught gracefully; post NOT removed from store on error. |
+| **Backend contract** | TBD — expand when spec is written. Must cascade-delete all comments on the post. |
+
+---
+
+## Feature: Skeleton Loaders (Reactive Design)
+
+**Frontend path:** `/admin/users`, `/admin/content`  
+**Feature spec:** `ai/Module_10/features/frontend/reactive-design.feature.md` *(not yet written)*
+
+No new backend dependencies. Skeleton loaders are triggered by existing Redux `LOADING` action states already dispatched by `fetchUsers` and `fetchPosts`. No integration concerns.
+
+---
+
+## Feature: Responsive Navbar
+
+**Frontend path:** All pages  
+**Feature spec:** `ai/Module_10/features/frontend/responsive-design.feature.md` *(not yet written)*
+
+No backend dependencies. CSS media queries only. No integration concerns.
+
+---
+
+## Integration Checklist
+
+Use this checklist when the backend partner signals that a new M10 endpoint is ready.
+
+### User Manager
+
+- [ ] Confirm `GET /user` response shape — plain array or object-wrapped? Update reducer if needed
+- [ ] Confirm `POST /session` response includes `role` field — if not, coordinate fix with partner
+- [ ] Partner delivers `DELETE /user/:id` with cascade
+- [ ] Test delete with a real user: verify user disappears from the table and their posts/comments are removed from MongoDB
+- [ ] Remove error-fallback path from `deleteUser` Thunk (or leave it — it will simply never be reached once the endpoint exists)
+
+### User Update Screen
+
+- [ ] *(Fill in when `user-update.feature.md` is written)*
+
+### Content Manager
+
+- [ ] *(Fill in when `content-manager.feature.md` is written)*
