@@ -1,0 +1,1226 @@
+[
+  {
+    "_id": {
+      "$oid": "6e63fb89f972d9efe10fe93f"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489a"
+    },
+    "content": "The clouds gathered today, and I was reminded that leadership is not only about power. It is also about protecting the order of the skies and listening before the storm.",
+    "category": "Greek gods",
+    "createdAt": {
+      "$date": "2026-06-17T08:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T08:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "1a237bf1f5c715dbbd173b1e"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a3"
+    },
+    "content": "Today I am thinking about loyalty, dignity, and the strength it takes to hold a household, a kingdom, or a promise together.",
+    "category": "Greek gods",
+    "createdAt": {
+      "$date": "2026-06-17T09:07:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T09:07:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "d8780a1b99513a55e6678c9d"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489e"
+    },
+    "content": "The sea is calm this morning, but every wave remembers its strength. Respect the water, and it may carry you farther than you imagined.",
+    "category": "Greek gods",
+    "createdAt": {
+      "$date": "2026-06-17T10:14:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T10:14:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "748f8f3051a846db28fb3bd6"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a3"
+    },
+    "content": "A good harvest begins long before anyone sees the grain. Care, patience, and seasons of waiting are part of every kind of growth.",
+    "category": "Greek gods",
+    "createdAt": {
+      "$date": "2026-06-17T11:21:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T11:21:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "5891fdc221fb3095d277e3cb"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a0"
+    },
+    "content": "A clear mind is sharper than any blade. Today’s goal: choose wisdom first, strategy second, and pride last.",
+    "category": "Greek gods",
+    "createdAt": {
+      "$date": "2026-06-17T12:28:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T12:28:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "1d9d1a14a9e2b19be0983a8f"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489c"
+    },
+    "content": "I began the day with music and sunlight. Sometimes the brightest answers arrive when we make room for beauty and quiet thought.",
+    "category": "Greek gods",
+    "createdAt": {
+      "$date": "2026-06-17T13:35:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T13:35:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "839d57ebcf553c34202d0f31"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489e"
+    },
+    "content": "The forest has its own rhythm. Walk carefully, protect what is wild, and remember that independence can still be deeply connected to the world.",
+    "category": "Greek gods",
+    "createdAt": {
+      "$date": "2026-06-17T14:42:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T14:42:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "803f619ec4b5d4536ff27758"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a3"
+    },
+    "content": "Strength without discipline is only noise. The real battle today is learning when to act and when to stand down.",
+    "category": "Greek gods",
+    "createdAt": {
+      "$date": "2026-06-17T15:49:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T15:49:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "4bb14263505a717de7f844f5"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489d"
+    },
+    "content": "Beauty is not only what is seen. It is also kindness, confidence, and the courage to let love soften the hard edges of the day.",
+    "category": "Greek gods",
+    "createdAt": {
+      "$date": "2026-06-17T16:56:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T16:56:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "f3c5cd6e78ecab124af75e39"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a2"
+    },
+    "content": "Back at the forge today. Every flaw in the metal is a chance to shape something stronger, more useful, and more honest.",
+    "category": "Greek gods",
+    "createdAt": {
+      "$date": "2026-06-17T17:03:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T17:03:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "526ec4646b23062e95c3f502"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489a"
+    },
+    "content": "Messages, roads, quick thoughts, and quicker sandals. Today is for movement, clever solutions, and finding the shortcut that still gets the job done right.",
+    "category": "Greek gods",
+    "createdAt": {
+      "$date": "2026-06-17T18:10:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T18:10:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6ed752645c9d45f50465c5fa"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489e"
+    },
+    "content": "A little joy can change the whole room. Make space for laughter, art, and the kind of celebration that helps people feel alive.",
+    "category": "Greek gods",
+    "createdAt": {
+      "$date": "2026-06-17T19:17:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T19:17:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "32a90c982f7ee9b09f6b9bc9"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a0"
+    },
+    "content": "Some days saving the world starts with something small: telling the truth, helping a neighbor, and choosing hope when it would be easier not to.",
+    "category": "DC comicbook characters",
+    "createdAt": {
+      "$date": "2026-06-17T08:24:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T08:24:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "815d6c69769a47dfb2208dc2"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a3"
+    },
+    "content": "Gotham never sleeps, and neither does the work. Preparation, discipline, and paying attention to details can make all the difference.",
+    "category": "DC comicbook characters",
+    "createdAt": {
+      "$date": "2026-06-17T09:31:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T09:31:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "f27ce4eae03d304ed61d6ef3"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a1"
+    },
+    "content": "Strength means very little without compassion. Today I am choosing truth, courage, and peace whenever peace is possible.",
+    "category": "DC comicbook characters",
+    "createdAt": {
+      "$date": "2026-06-17T10:38:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T10:38:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "c400665a6d926b0449a35aff"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489c"
+    },
+    "content": "Running fast is useful, but showing up on time for people matters even more. One step, one second, one choice can change everything.",
+    "category": "DC comicbook characters",
+    "createdAt": {
+      "$date": "2026-06-17T11:45:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T11:45:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "f4d027d7a1da3e9319749eba"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a3"
+    },
+    "content": "Two worlds can be difficult to balance, but bridges matter. The ocean reminds me that responsibility runs deeper than the surface.",
+    "category": "DC comicbook characters",
+    "createdAt": {
+      "$date": "2026-06-17T12:52:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T12:52:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "0436ad24896ffaf94db9a305"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a1"
+    },
+    "content": "Courage is not the absence of fear. It is taking the ring, facing the unknown, and deciding your will is stronger than your doubt.",
+    "category": "DC comicbook characters",
+    "createdAt": {
+      "$date": "2026-06-17T13:59:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T13:59:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "a92433d58b0cd9ddf66f57c5"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a0"
+    },
+    "content": "Being part machine does not make me less human. Every upgrade is also a reminder to stay connected to the people who matter.",
+    "category": "DC comicbook characters",
+    "createdAt": {
+      "$date": "2026-06-17T14:06:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T14:06:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "7cd56ea77459716681e57706"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a0"
+    },
+    "content": "Still learning how to carry big power with a young heart. Wisdom, strength, and kindness all have to grow together.",
+    "category": "DC comicbook characters",
+    "createdAt": {
+      "$date": "2026-06-17T15:13:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T15:13:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6ccf94faf1c4a8d95ba41547"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489a"
+    },
+    "content": "A straight shot takes practice. So does standing up for people who do not always get heard.",
+    "category": "DC comicbook characters",
+    "createdAt": {
+      "$date": "2026-06-17T16:20:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T16:20:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "515b2f85d8429122a6011dd7"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a2"
+    },
+    "content": "My voice is my power, but it is also my choice. Today I am using it to protect, challenge, and lift people up.",
+    "category": "DC comicbook characters",
+    "createdAt": {
+      "$date": "2026-06-17T17:27:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T17:27:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "94a9e86b06ea27d771a52417"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489b"
+    },
+    "content": "Fresh start, same sparkle. Growth is messy, but I am choosing my own story today, one chaotic little victory at a time.",
+    "category": "DC comicbook characters",
+    "createdAt": {
+      "$date": "2026-06-17T18:34:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T18:34:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "e74eacb22efe915bebf28446"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a0"
+    },
+    "content": "The rooftops are quiet tonight. Sometimes survival means balance, patience, and knowing exactly when to leap.",
+    "category": "DC comicbook characters",
+    "createdAt": {
+      "$date": "2026-06-17T19:41:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T19:41:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "3b6e9df0b5e3c31c36ee6a7f"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489b"
+    },
+    "content": "Trying to remember that responsibility is not about being perfect. It is about getting back up, helping where I can, and doing the next right thing.",
+    "category": "Marvel characters",
+    "createdAt": {
+      "$date": "2026-06-17T08:48:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T08:48:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "8edf062b90d4d1e7512665d4"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489c"
+    },
+    "content": "Ran three tests, broke two prototypes, and learned something from all of them. Innovation is just failure with better lighting and more coffee.",
+    "category": "Marvel characters",
+    "createdAt": {
+      "$date": "2026-06-17T09:55:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T09:55:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "cfa042566d23185f50fa3aa0"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489a"
+    },
+    "content": "The world keeps changing, but doing the right thing still matters. Stand up, stay steady, and look out for the person next to you.",
+    "category": "Marvel characters",
+    "createdAt": {
+      "$date": "2026-06-17T10:02:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T10:02:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "e44d385c72750981bf0c48d5"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489d"
+    },
+    "content": "Breathing through a stressful morning. Progress is not always loud; sometimes it is staying calm when everything in you wants to react.",
+    "category": "Marvel characters",
+    "createdAt": {
+      "$date": "2026-06-17T11:09:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T11:09:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "b78ebfaa60947bf5377235b5"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a2"
+    },
+    "content": "Wakanda teaches that tradition and progress can walk together. Today I honor the past while building carefully for the future.",
+    "category": "Marvel characters",
+    "createdAt": {
+      "$date": "2026-06-17T12:16:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T12:16:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "d32b61fcd83ca7ae2c4841c9"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a1"
+    },
+    "content": "Not much for speeches. Just a reminder: healing takes time, claws are not always the answer, and some fights are worth walking away from.",
+    "category": "Marvel characters",
+    "createdAt": {
+      "$date": "2026-06-17T13:23:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T13:23:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "0777d2ff86024862da70952c"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489f"
+    },
+    "content": "First blog post! I was told to be inspirational, so here it is: wear the suit, eat the snacks, and never trust a suspiciously quiet hallway.",
+    "category": "Marvel characters",
+    "createdAt": {
+      "$date": "2026-06-17T14:30:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T14:30:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6b0a08efdc7eb91c6733f6be"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a3"
+    },
+    "content": "The universe is full of doors, but not every door should be opened. Wisdom begins with knowing the difference.",
+    "category": "Marvel characters",
+    "createdAt": {
+      "$date": "2026-06-17T15:37:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T15:37:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "3c44528c726c2ecd9ca07d2a"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489f"
+    },
+    "content": "Higher, further, faster is not just about flight. It is about refusing to shrink when the sky gets bigger.",
+    "category": "Marvel characters",
+    "createdAt": {
+      "$date": "2026-06-17T16:44:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T16:44:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "b61453e84d4b9a11e4d8e656"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489c"
+    },
+    "content": "Quiet work still matters. Today is about patience, reading the room, and choosing who I want to be beyond the past.",
+    "category": "Marvel characters",
+    "createdAt": {
+      "$date": "2026-06-17T17:51:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T17:51:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "9d4179b6ccd57c0331cb6833"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489d"
+    },
+    "content": "Power is complicated, and grief can echo loudly. I am learning to choose care, honesty, and control one day at a time.",
+    "category": "Marvel characters",
+    "createdAt": {
+      "$date": "2026-06-17T18:58:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T18:58:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "f1d3b2873eb0c7bbf305a00d"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a2"
+    },
+    "content": "Justice is not always clean or simple. But every person deserves to be heard, especially in the dark.",
+    "category": "Marvel characters",
+    "createdAt": {
+      "$date": "2026-06-17T19:05:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T19:05:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "bd032795b02a2f65253c3be5"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a2"
+    },
+    "content": "Wisdom often costs something. Today I am listening to ravens, watching the roads, and remembering that knowledge must be used with care.",
+    "category": "Norse gods",
+    "createdAt": {
+      "$date": "2026-06-17T08:12:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T08:12:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "bbab61d808b3951909c5eb2e"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489c"
+    },
+    "content": "Knowing what may come does not make the heart less tender. Love still asks us to protect, hope, and prepare.",
+    "category": "Norse gods",
+    "createdAt": {
+      "$date": "2026-06-17T09:19:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T09:19:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "e263ced04c6bfa9bcf87de3c"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489d"
+    },
+    "content": "The hammer is ready, but so is the heart. Strength is best used to defend those who cannot lift the storm themselves.",
+    "category": "Norse gods",
+    "createdAt": {
+      "$date": "2026-06-17T10:26:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T10:26:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "f91f740e2f4db106a82d283c"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489f"
+    },
+    "content": "Peace is powerful work. May today bring good harvests, fair weather, and enough abundance to share.",
+    "category": "Norse gods",
+    "createdAt": {
+      "$date": "2026-06-17T11:33:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T11:33:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "8e01aee9324406677567b41e"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489c"
+    },
+    "content": "Beauty, courage, and magic can live in the same breath. Today I honor all three without apology.",
+    "category": "Norse gods",
+    "createdAt": {
+      "$date": "2026-06-17T12:40:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T12:40:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "1a38bf5b06cd00dfc040273b"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a2"
+    },
+    "content": "A little mischief can reveal the truth hiding under everyone’s serious faces. Try not to panic; I said little.",
+    "category": "Norse gods",
+    "createdAt": {
+      "$date": "2026-06-17T13:47:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T13:47:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "9050945b6120925c86af50b6"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a3"
+    },
+    "content": "The bridge is quiet, but I remain watchful. Protection often means noticing the small changes before they become storms.",
+    "category": "Norse gods",
+    "createdAt": {
+      "$date": "2026-06-17T14:54:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T14:54:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "7a4e99206f17291bc8bc811f"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a3"
+    },
+    "content": "A bright day is a gift. I am choosing gentleness, gratitude, and the kind of light that makes others feel safe.",
+    "category": "Norse gods",
+    "createdAt": {
+      "$date": "2026-06-17T15:01:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T15:01:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "0abea540885d79d4a3ecf106"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489c"
+    },
+    "content": "Honor is proven when the cost is real. Today I am thinking about fairness, courage, and promises that must be kept.",
+    "category": "Norse gods",
+    "createdAt": {
+      "$date": "2026-06-17T16:08:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T16:08:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "9388c2b60415e7e0cdb83a55"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a0"
+    },
+    "content": "The wind is generous today, and the waters are steady. Prosperity is sweeter when it brings safe passage for all.",
+    "category": "Norse gods",
+    "createdAt": {
+      "$date": "2026-06-17T17:15:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T17:15:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "a9be79c22a2dc3ac2244e2a2"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a0"
+    },
+    "content": "Every ending deserves dignity. My halls are quiet, and I keep them with solemn care.",
+    "category": "Norse gods",
+    "createdAt": {
+      "$date": "2026-06-17T18:22:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T18:22:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "ea2cd11486ea0707ebc72543"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a0"
+    },
+    "content": "A well-shaped word can outlast a sword. Today I am collecting stories and giving them a rhythm worth remembering.",
+    "category": "Norse gods",
+    "createdAt": {
+      "$date": "2026-06-17T19:29:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T19:29:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "1d90cc12f3d070c5de8f3b1f"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489e"
+    },
+    "content": "Creation begins with intention. Today I am reflecting on beginnings, balance, and the responsibility that comes with making something new.",
+    "category": "Indian gods",
+    "createdAt": {
+      "$date": "2026-06-17T08:36:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T08:36:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "1a1f51fc0842556c32c55323"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a0"
+    },
+    "content": "Preservation is active work. To protect harmony, we must notice when the world needs patience, care, and restoration.",
+    "category": "Indian gods",
+    "createdAt": {
+      "$date": "2026-06-17T09:43:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T09:43:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "e26586ef100730a083295132"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a0"
+    },
+    "content": "Transformation is not only destruction. It is also release, renewal, and the quiet space where something better can begin.",
+    "category": "Indian gods",
+    "createdAt": {
+      "$date": "2026-06-17T10:50:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T10:50:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "832d9a882f557a0510f1e74a"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489c"
+    },
+    "content": "True abundance is more than wealth. It is generosity, gratitude, and the grace to share good fortune wisely.",
+    "category": "Indian gods",
+    "createdAt": {
+      "$date": "2026-06-17T11:57:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T11:57:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "fa878853eb951dafb6ad763f"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a0"
+    },
+    "content": "Learning is sacred work. Today I celebrate music, language, study, and the courage to ask better questions.",
+    "category": "Indian gods",
+    "createdAt": {
+      "$date": "2026-06-17T12:04:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T12:04:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "a0c925560142a0e28739e5cc"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489c"
+    },
+    "content": "A new path often begins with one obstacle moved aside. Start with patience, then take the next step with confidence.",
+    "category": "Indian gods",
+    "createdAt": {
+      "$date": "2026-06-17T13:11:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T13:11:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "92a0bd405fbba951efcc8c3b"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489d"
+    },
+    "content": "Joy and wisdom can meet in the same moment. Today I am choosing devotion, friendship, and playful courage.",
+    "category": "Indian gods",
+    "createdAt": {
+      "$date": "2026-06-17T14:18:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T14:18:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "ef42c92e1f39a119355f0406"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a0"
+    },
+    "content": "Duty is strongest when guided by compassion. May today’s choices be honorable, steady, and kind.",
+    "category": "Indian gods",
+    "createdAt": {
+      "$date": "2026-06-17T15:25:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T15:25:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "e861dfabf78a12409d75d06b"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489a"
+    },
+    "content": "Devotion gives strength to the impossible. With focus, humility, and love, even mountains can be carried.",
+    "category": "Indian gods",
+    "createdAt": {
+      "$date": "2026-06-17T16:32:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T16:32:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "0535b44b3330362f6454f8c3"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489e"
+    },
+    "content": "Courage can be fierce and compassionate at once. Today is for protecting what is good and standing firmly against harm.",
+    "category": "Indian gods",
+    "createdAt": {
+      "$date": "2026-06-17T17:39:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T17:39:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "37ba52f5b9919f8c08bfa781"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489c"
+    },
+    "content": "I honor the power of endings that clear the way for truth. Transformation can be fierce, but it can also be freeing.",
+    "category": "Indian gods",
+    "createdAt": {
+      "$date": "2026-06-17T18:46:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T18:46:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "637610a5dff6e883dc3fa842"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a2"
+    },
+    "content": "The rain arrived with thunder today. Power must be guided carefully, because every storm touches the earth below.",
+    "category": "Indian gods",
+    "createdAt": {
+      "$date": "2026-06-17T19:53:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T19:53:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "461f166a4b726291f8c3971f"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489b"
+    },
+    "content": "The round table reminds me that leadership is not a throne above others. It is a place where brave voices can gather.",
+    "category": "Myths and legends",
+    "createdAt": {
+      "$date": "2026-06-17T08:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T08:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "91336b3f0dd12bc7e8e35fc5"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489f"
+    },
+    "content": "A full purse means little when others go hungry. Today I am thinking about fairness, generosity, and hitting the mark.",
+    "category": "Myths and legends",
+    "createdAt": {
+      "$date": "2026-06-17T09:07:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T09:07:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6e31aa97cde6ba877146b67a"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489e"
+    },
+    "content": "A king may build walls, but friendship teaches him what strength is for. I am still learning from the road beyond Uruk.",
+    "category": "Myths and legends",
+    "createdAt": {
+      "$date": "2026-06-17T10:14:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T10:14:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "c6cb9c71b2df5f4b89bf84b2"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a3"
+    },
+    "content": "Glory fades if courage serves only pride. The better victory is protecting the hall and the people within it.",
+    "category": "Myths and legends",
+    "createdAt": {
+      "$date": "2026-06-17T11:21:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T11:21:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "fa7a0db0cf1062abe46569be"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a2"
+    },
+    "content": "Courage can look like devotion, disguise, discipline, and love for family. Today I honor the quiet bravery behind every choice.",
+    "category": "Myths and legends",
+    "createdAt": {
+      "$date": "2026-06-17T12:28:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T12:28:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "7c807ebf25021ad75921e737"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489e"
+    },
+    "content": "The future speaks in riddles, as usual. Wisdom is knowing when to guide, when to warn, and when to let people choose.",
+    "category": "Myths and legends",
+    "createdAt": {
+      "$date": "2026-06-17T13:35:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T13:35:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "5cd10714aaf1a857dec511c0"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a0"
+    },
+    "content": "The hut is walking, the kettle is warm, and the questions are never simple. Come respectfully, or do not come at all.",
+    "category": "Myths and legends",
+    "createdAt": {
+      "$date": "2026-06-17T14:42:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T14:42:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "a6f12ae5fb7ad96e92b2ebb9"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a1"
+    },
+    "content": "Stories are clever little webs. Tell them well, and they can carry wisdom farther than footsteps ever could.",
+    "category": "Myths and legends",
+    "createdAt": {
+      "$date": "2026-06-17T15:49:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T15:49:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "09fa9f398e4ff2dce374420e"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489a"
+    },
+    "content": "Wind, learning, and renewal move together. Today I am honoring knowledge that lifts people upward.",
+    "category": "Myths and legends",
+    "createdAt": {
+      "$date": "2026-06-17T16:56:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T16:56:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "f355e78d8ba8918b4b99848c"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a3"
+    },
+    "content": "A restless spirit can still learn discipline. Immortality is impressive, but growth is the real adventure.",
+    "category": "Myths and legends",
+    "createdAt": {
+      "$date": "2026-06-17T17:03:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T17:03:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "d4c261e0fb38c1f2e88f786f"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f4704361348a2"
+    },
+    "content": "A hero’s strength is tested by more than battle. Honor, loyalty, and restraint matter when the blood runs hot.",
+    "category": "Myths and legends",
+    "createdAt": {
+      "$date": "2026-06-17T18:10:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T18:10:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "ae5c14df05c9c3e82ff86df5"
+    },
+    "user": {
+      "$oid": "6a32b4d4223f47043613489f"
+    },
+    "content": "Dragons make dramatic stories, but courage is built before the sword is drawn. Today I am sharpening patience first.",
+    "category": "Myths and legends",
+    "createdAt": {
+      "$date": "2026-06-17T19:17:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-06-17T19:17:00.000Z"
+    },
+    "__v": 0
+  }
+]

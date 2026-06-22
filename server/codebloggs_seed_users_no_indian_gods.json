@@ -1,0 +1,1039 @@
+[
+  {
+    "_id": {
+      "$oid": "cc5993fec5cece755027a8c9"
+    },
+    "first_name": "Zeus",
+    "last_name": "Olympian",
+    "birthday": {
+      "$date": "1970-01-01T00:00:00.000Z"
+    },
+    "email": "zeus.olympian@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Mount Olympus",
+    "occupation": "Sky and Thunder Deity",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "2e80468f9f32c1012165aa8a"
+    },
+    "first_name": "Hera",
+    "last_name": "Olympian",
+    "birthday": {
+      "$date": "1971-02-02T00:00:00.000Z"
+    },
+    "email": "hera.olympian@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Mount Olympus",
+    "occupation": "Queen of the Gods",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "1de07c427fd3587fb61bc667"
+    },
+    "first_name": "Poseidon",
+    "last_name": "Olympian",
+    "birthday": {
+      "$date": "1972-03-03T00:00:00.000Z"
+    },
+    "email": "poseidon.olympian@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Aegean Sea",
+    "occupation": "Sea Deity",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "91040aea02b88677ae8c3720"
+    },
+    "first_name": "Demeter",
+    "last_name": "Olympian",
+    "birthday": {
+      "$date": "1973-04-04T00:00:00.000Z"
+    },
+    "email": "demeter.olympian@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Eleusis",
+    "occupation": "Harvest Deity",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "673e836440b26440a1f5e8b0"
+    },
+    "first_name": "Athena",
+    "last_name": "Olympian",
+    "birthday": {
+      "$date": "1974-05-05T00:00:00.000Z"
+    },
+    "email": "athena.olympian@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Athens",
+    "occupation": "Wisdom and Strategy Deity",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "0c8c1f72537c9545e719fbcb"
+    },
+    "first_name": "Apollo",
+    "last_name": "Olympian",
+    "birthday": {
+      "$date": "1975-06-06T00:00:00.000Z"
+    },
+    "email": "apollo.olympian@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Delphi",
+    "occupation": "Music and Prophecy Deity",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "0e3542bf3bde02331757856c"
+    },
+    "first_name": "Artemis",
+    "last_name": "Olympian",
+    "birthday": {
+      "$date": "1976-07-07T00:00:00.000Z"
+    },
+    "email": "artemis.olympian@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Arcadia",
+    "occupation": "Wilderness and Moon Deity",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "5c212f92519d2ff92639b0a8"
+    },
+    "first_name": "Ares",
+    "last_name": "Olympian",
+    "birthday": {
+      "$date": "1977-08-08T00:00:00.000Z"
+    },
+    "email": "ares.olympian@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Thrace",
+    "occupation": "War Deity",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "2990f81d57a70e8b39afea75"
+    },
+    "first_name": "Aphrodite",
+    "last_name": "Olympian",
+    "birthday": {
+      "$date": "1978-09-09T00:00:00.000Z"
+    },
+    "email": "aphrodite.olympian@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Cyprus",
+    "occupation": "Love and Beauty Deity",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "b5047b25573f42e060ab1bd1"
+    },
+    "first_name": "Hephaestus",
+    "last_name": "Olympian",
+    "birthday": {
+      "$date": "1979-10-10T00:00:00.000Z"
+    },
+    "email": "hephaestus.olympian@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Lemnos",
+    "occupation": "Craft and Forge Deity",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "52597b271ab6130b7971462e"
+    },
+    "first_name": "Hermes",
+    "last_name": "Olympian",
+    "birthday": {
+      "$date": "1980-11-11T00:00:00.000Z"
+    },
+    "email": "hermes.olympian@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Mount Cyllene",
+    "occupation": "Messenger Deity",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "a7b121970e040540ed068e02"
+    },
+    "first_name": "Dionysus",
+    "last_name": "Olympian",
+    "birthday": {
+      "$date": "1981-12-12T00:00:00.000Z"
+    },
+    "email": "dionysus.olympian@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Thebes",
+    "occupation": "Wine and Theater Deity",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "ed3446fc6229049ebbc2f34d"
+    },
+    "first_name": "Clark",
+    "last_name": "Kent",
+    "birthday": {
+      "$date": "1982-01-13T00:00:00.000Z"
+    },
+    "email": "clark.kent@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Metropolis",
+    "occupation": "Reporter",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "dba388050afbcbe5f5d379b8"
+    },
+    "first_name": "Bruce",
+    "last_name": "Wayne",
+    "birthday": {
+      "$date": "1983-02-14T00:00:00.000Z"
+    },
+    "email": "bruce.wayne@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Gotham City",
+    "occupation": "Detective",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "014e0166d38cf0b1de107760"
+    },
+    "first_name": "Diana",
+    "last_name": "Prince",
+    "birthday": {
+      "$date": "1984-03-15T00:00:00.000Z"
+    },
+    "email": "diana.prince@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Themyscira",
+    "occupation": "Ambassador",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "e6f899e1d33e83da46298131"
+    },
+    "first_name": "Barry",
+    "last_name": "Allen",
+    "birthday": {
+      "$date": "1985-04-16T00:00:00.000Z"
+    },
+    "email": "barry.allen@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Central City",
+    "occupation": "Forensic Scientist",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "b148b5d191e9e0efef842eef"
+    },
+    "first_name": "Arthur",
+    "last_name": "Curry",
+    "birthday": {
+      "$date": "1986-05-17T00:00:00.000Z"
+    },
+    "email": "arthur.curry@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Atlantis",
+    "occupation": "King of Atlantis",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "011b22b448abed412885807f"
+    },
+    "first_name": "Hal",
+    "last_name": "Jordan",
+    "birthday": {
+      "$date": "1987-06-18T00:00:00.000Z"
+    },
+    "email": "hal.jordan@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Coast City",
+    "occupation": "Pilot",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "03cc15e3e88c17e136179fda"
+    },
+    "first_name": "Victor",
+    "last_name": "Stone",
+    "birthday": {
+      "$date": "1988-07-19T00:00:00.000Z"
+    },
+    "email": "victor.stone@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Detroit",
+    "occupation": "Technologist",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "0c8c6a9fcea925ed2e96398f"
+    },
+    "first_name": "Billy",
+    "last_name": "Batson",
+    "birthday": {
+      "$date": "1989-08-20T00:00:00.000Z"
+    },
+    "email": "billy.batson@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Fawcett City",
+    "occupation": "Student Hero",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "41a427bb66fbc3a943b686d0"
+    },
+    "first_name": "Oliver",
+    "last_name": "Queen",
+    "birthday": {
+      "$date": "1990-09-21T00:00:00.000Z"
+    },
+    "email": "oliver.queen@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Star City",
+    "occupation": "Archer",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "15f04ce9e3cdab272e5c5225"
+    },
+    "first_name": "Dinah",
+    "last_name": "Lance",
+    "birthday": {
+      "$date": "1991-10-22T00:00:00.000Z"
+    },
+    "email": "dinah.lance@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Star City",
+    "occupation": "Vocalist and Hero",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "759054a4471430fde87aa04d"
+    },
+    "first_name": "Harleen",
+    "last_name": "Quinzel",
+    "birthday": {
+      "$date": "1992-11-23T00:00:00.000Z"
+    },
+    "email": "harleen.quinzel@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Gotham City",
+    "occupation": "Independent Antihero",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "10aa9df99b97f53c01c620fa"
+    },
+    "first_name": "Selina",
+    "last_name": "Kyle",
+    "birthday": {
+      "$date": "1993-12-24T00:00:00.000Z"
+    },
+    "email": "selina.kyle@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Gotham City",
+    "occupation": "Cat Burglar",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "70e2fab20c081de53c26e939"
+    },
+    "first_name": "Peter",
+    "last_name": "Parker",
+    "birthday": {
+      "$date": "1994-01-25T00:00:00.000Z"
+    },
+    "email": "peter.parker@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Queens",
+    "occupation": "Photographer",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "c7ddc0fc1011af586cbc5693"
+    },
+    "first_name": "Tony",
+    "last_name": "Stark",
+    "birthday": {
+      "$date": "1995-02-26T00:00:00.000Z"
+    },
+    "email": "tony.stark@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Malibu",
+    "occupation": "Inventor",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "a40fd3c62086fc25e6694030"
+    },
+    "first_name": "Steve",
+    "last_name": "Rogers",
+    "birthday": {
+      "$date": "1996-03-27T00:00:00.000Z"
+    },
+    "email": "steve.rogers@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Brooklyn",
+    "occupation": "Soldier",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "feaf7998040b544837ed6d07"
+    },
+    "first_name": "Bruce",
+    "last_name": "Banner",
+    "birthday": {
+      "$date": "1997-04-01T00:00:00.000Z"
+    },
+    "email": "bruce.banner@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Dayton",
+    "occupation": "Scientist",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "716ae5803b79c06ec0a351d1"
+    },
+    "first_name": "TChalla",
+    "last_name": "Udaku",
+    "birthday": {
+      "$date": "1998-05-02T00:00:00.000Z"
+    },
+    "email": "tchalla.udaku@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Wakanda",
+    "occupation": "King and Protector",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "fc1a2ff595559271ce520836"
+    },
+    "first_name": "Logan",
+    "last_name": "Howlett",
+    "birthday": {
+      "$date": "1999-06-03T00:00:00.000Z"
+    },
+    "email": "logan.howlett@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Alberta",
+    "occupation": "Wanderer",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "194a28f94d4e594628d96fb7"
+    },
+    "first_name": "Wade",
+    "last_name": "Wilson",
+    "birthday": {
+      "$date": "2000-07-04T00:00:00.000Z"
+    },
+    "email": "wade.wilson@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Vancouver",
+    "occupation": "Mercenary",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "f2fddeefb2854bc01401913d"
+    },
+    "first_name": "Stephen",
+    "last_name": "Strange",
+    "birthday": {
+      "$date": "2001-08-05T00:00:00.000Z"
+    },
+    "email": "stephen.strange@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "New York City",
+    "occupation": "Sorcerer",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "713aceb8a768e861428bcf0f"
+    },
+    "first_name": "Carol",
+    "last_name": "Danvers",
+    "birthday": {
+      "$date": "2002-09-06T00:00:00.000Z"
+    },
+    "email": "carol.danvers@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Boston",
+    "occupation": "Pilot",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "087585d95fa2b3be481f1a83"
+    },
+    "first_name": "Natasha",
+    "last_name": "Romanoff",
+    "birthday": {
+      "$date": "2003-10-07T00:00:00.000Z"
+    },
+    "email": "natasha.romanoff@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Stalingrad",
+    "occupation": "Strategist",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "db17aa38d86749e18c423be6"
+    },
+    "first_name": "Wanda",
+    "last_name": "Maximoff",
+    "birthday": {
+      "$date": "2004-11-08T00:00:00.000Z"
+    },
+    "email": "wanda.maximoff@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Sokovia",
+    "occupation": "Mystic",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "55d1195c65538aba1c6cadd0"
+    },
+    "first_name": "Matt",
+    "last_name": "Murdock",
+    "birthday": {
+      "$date": "1970-12-09T00:00:00.000Z"
+    },
+    "email": "matt.murdock@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Hell's Kitchen",
+    "occupation": "Attorney",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "68f9fcd85b359d1c3945a5b9"
+    },
+    "first_name": "Odin",
+    "last_name": "Asgard",
+    "birthday": {
+      "$date": "1971-01-10T00:00:00.000Z"
+    },
+    "email": "odin.asgard@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Asgard",
+    "occupation": "All-Father",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "a7bdcc316e1794c3063acca7"
+    },
+    "first_name": "Frigg",
+    "last_name": "Asgard",
+    "birthday": {
+      "$date": "1972-02-11T00:00:00.000Z"
+    },
+    "email": "frigg.asgard@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Asgard",
+    "occupation": "Queen and Seer",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "0c88f60873e72014d0755835"
+    },
+    "first_name": "Thor",
+    "last_name": "Asgard",
+    "birthday": {
+      "$date": "1973-03-12T00:00:00.000Z"
+    },
+    "email": "thor.asgard@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Asgard",
+    "occupation": "Thunder Deity",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "d8c4c1e8fb315ca5564bf161"
+    },
+    "first_name": "Freyr",
+    "last_name": "Vanir",
+    "birthday": {
+      "$date": "1974-04-13T00:00:00.000Z"
+    },
+    "email": "freyr.vanir@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Alfheim",
+    "occupation": "Prosperity Deity",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "08df58c1693809dc27d348a8"
+    },
+    "first_name": "Freyja",
+    "last_name": "Vanir",
+    "birthday": {
+      "$date": "1975-05-14T00:00:00.000Z"
+    },
+    "email": "freyja.vanir@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Folkvangr",
+    "occupation": "Love and Magic Deity",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "ddc53fc1c1be294318fd98e1"
+    },
+    "first_name": "Loki",
+    "last_name": "Laufeyson",
+    "birthday": {
+      "$date": "1976-06-15T00:00:00.000Z"
+    },
+    "email": "loki.laufeyson@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Asgard",
+    "occupation": "Trickster",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "adbd70148c243dc30096cf1c"
+    },
+    "first_name": "Heimdall",
+    "last_name": "Bifrost",
+    "birthday": {
+      "$date": "1977-07-16T00:00:00.000Z"
+    },
+    "email": "heimdall.bifrost@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Asgard",
+    "occupation": "Watchman",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "e487ed930ddefba63a45a906"
+    },
+    "first_name": "Balder",
+    "last_name": "Asgard",
+    "birthday": {
+      "$date": "1978-08-17T00:00:00.000Z"
+    },
+    "email": "balder.asgard@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Asgard",
+    "occupation": "Light Deity",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "a9f366b86c901d70760c4ad6"
+    },
+    "first_name": "Tyr",
+    "last_name": "Asgard",
+    "birthday": {
+      "$date": "1979-09-18T00:00:00.000Z"
+    },
+    "email": "tyr.asgard@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Asgard",
+    "occupation": "Justice Deity",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "489f4317a01505978133e178"
+    },
+    "first_name": "Njord",
+    "last_name": "Vanir",
+    "birthday": {
+      "$date": "1980-10-19T00:00:00.000Z"
+    },
+    "email": "njord.vanir@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Noatun",
+    "occupation": "Sea and Wind Deity",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "a841bd58ae4ac48df512b07f"
+    },
+    "first_name": "Hel",
+    "last_name": "Niflheim",
+    "birthday": {
+      "$date": "1981-11-20T00:00:00.000Z"
+    },
+    "email": "hel.niflheim@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Helheim",
+    "occupation": "Keeper of the Dead",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "170cb2b99b002f37712b671f"
+    },
+    "first_name": "Bragi",
+    "last_name": "Asgard",
+    "birthday": {
+      "$date": "1982-12-21T00:00:00.000Z"
+    },
+    "email": "bragi.asgard@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Asgard",
+    "occupation": "Poetry Deity",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "2c1116f9f377f4cf385285aa"
+    },
+    "first_name": "Indra",
+    "last_name": "Deva",
+    "birthday": {
+      "$date": "1994-12-06T00:00:00.000Z"
+    },
+    "email": "indra.deva@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Svarga",
+    "occupation": "Storm and Sky Deity",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "af670fa99ac6ec26864608ac"
+    },
+    "first_name": "King",
+    "last_name": "Arthur",
+    "birthday": {
+      "$date": "1995-01-07T00:00:00.000Z"
+    },
+    "email": "king.arthur@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Camelot",
+    "occupation": "Legendary King",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "9b6fb14116ca2db402d8ccc2"
+    },
+    "first_name": "Robin",
+    "last_name": "Hood",
+    "birthday": {
+      "$date": "1996-02-08T00:00:00.000Z"
+    },
+    "email": "robin.hood@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Sherwood Forest",
+    "occupation": "Outlaw Hero",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "3e36f0f0b05930a786ff9a1d"
+    },
+    "first_name": "Gilgamesh",
+    "last_name": "Uruk",
+    "birthday": {
+      "$date": "1997-03-09T00:00:00.000Z"
+    },
+    "email": "gilgamesh.uruk@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Uruk",
+    "occupation": "Legendary King",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "0606221e7bc03018912bc896"
+    },
+    "first_name": "Beowulf",
+    "last_name": "Geat",
+    "birthday": {
+      "$date": "1998-04-10T00:00:00.000Z"
+    },
+    "email": "beowulf.geat@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Geatland",
+    "occupation": "Legendary Warrior",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "4bba1535ebff2cad8e199dc2"
+    },
+    "first_name": "Mulan",
+    "last_name": "Hua",
+    "birthday": {
+      "$date": "1999-05-11T00:00:00.000Z"
+    },
+    "email": "mulan.hua@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Ancient China",
+    "occupation": "Legendary Warrior",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "25dbfc2869d521cb0588a203"
+    },
+    "first_name": "Merlin",
+    "last_name": "Ambrosius",
+    "birthday": {
+      "$date": "2000-06-12T00:00:00.000Z"
+    },
+    "email": "merlin.ambrosius@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Camelot",
+    "occupation": "Wizard",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "bea930ef4112c8f61c29444d"
+    },
+    "first_name": "Baba",
+    "last_name": "Yaga",
+    "birthday": {
+      "$date": "2001-07-13T00:00:00.000Z"
+    },
+    "email": "baba.yaga@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Slavic Forest",
+    "occupation": "Folklore Figure",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "854dc8bfd34daad60a5de704"
+    },
+    "first_name": "Anansi",
+    "last_name": "Spider",
+    "birthday": {
+      "$date": "2002-08-14T00:00:00.000Z"
+    },
+    "email": "anansi.spider@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "West African Folklore",
+    "occupation": "Storyteller",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6fd0413f72c9fe5b8c43e735"
+    },
+    "first_name": "Quetzalcoatl",
+    "last_name": "FeatheredSerpent",
+    "birthday": {
+      "$date": "2003-09-15T00:00:00.000Z"
+    },
+    "email": "quetzalcoatl.featheredserpent@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Tollan",
+    "occupation": "Feathered Serpent",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "399dfd5b045bfb4548257896"
+    },
+    "first_name": "Sun",
+    "last_name": "Wukong",
+    "birthday": {
+      "$date": "2004-10-16T00:00:00.000Z"
+    },
+    "email": "sun.wukong@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Flower Fruit Mountain",
+    "occupation": "Monkey King",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "f508335d059838e445537894"
+    },
+    "first_name": "Cuchulainn",
+    "last_name": "Ulster",
+    "birthday": {
+      "$date": "1970-11-17T00:00:00.000Z"
+    },
+    "email": "cuchulainn.ulster@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Ulster",
+    "occupation": "Hero",
+    "auth_level": "basic",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "f50a11733331fd560808ee41"
+    },
+    "first_name": "Siegfried",
+    "last_name": "DragonSlayer",
+    "birthday": {
+      "$date": "1971-12-18T00:00:00.000Z"
+    },
+    "email": "siegfried.dragonslayer@codebloggs.fake",
+    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
+    "status": false,
+    "location": "Xanten",
+    "occupation": "Legendary Hero",
+    "auth_level": "basic",
+    "__v": 0
+  }
+]

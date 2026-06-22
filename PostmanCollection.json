@@ -1,0 +1,853 @@
+{
+  "info": {
+    "_postman_id": "cb1e2f3a-4d5b-6c7e-8f9a-0b1c2d3e4f5a",
+    "name": "M9_10",
+    "description": "## CodeBloggs API — M9_10\n\n---\n\n## Setup Instructions\n\n### 1. Import this collection\nOpen Postman → **Import** → drag this file in. The collection and its variables load automatically.\n\n### 2. Verify the base URL\nThe collection ships with `base_url = http://localhost:5050`. If your server runs on a different port, click the collection name → **Variables** tab and update the `base_url` current value.\n\n### 3. Start the server\n```bash\ncd server && npm start\n```\nWait for `🚀 Server listening on port 5050` before sending any requests.\n\n### 4. Enable cookies (critical for auth)\n- **Postman Desktop** — cookies are captured and replayed automatically. Nothing extra needed.\n- **Postman Web** — install the **Postman Interceptor** browser extension. Without it, the `session_token` cookie set by `POST /session` will not be forwarded on subsequent requests and `GET /session/validate` will return 401.\n\n### 5. Run in the recommended order\nRequests are organized into seven folders. Run them **top to bottom** starting with **User**, then **Session**, then **Presence**, then **Posts**, then **Comments**, then **Replies**, then **Profile Pic**.\n\n---\n\n## Auto-captured collection variables\n\nFour requests save MongoDB `_id` values into collection variables automatically via test scripts — no manual copy-paste required.\n\n| Variable | Populated by | Used by |\n|---|---|---|\n| `user_id` | POST /user | GET /user/:id · GET /profile-pic/:userId |\n| `post_id` | POST /posts | PATCH /posts/:id · POST /comments · GET /replies · POST /replies |\n| `comment_id` | POST /comments | PATCH /comments/:id · POST /replies (as parent_id) |\n| `reply_id` | POST /replies | PUT /replies/:id |\n\n---\n\n## Presence\n\n`GET /presence` returns the list of MongoDB user `_id` values that are currently online. It requires an active session cookie — the same request also acts as a heartbeat, refreshing the caller's own presence window.\n\n---\n\n## Recommended run order\n\n```\n1.  POST   /user                        → Register (captures user_id)\n2.  POST   /session                     → Login (sets session cookie)\n3.  GET    /session/validate            → Confirm session is live\n4.  GET    /presence                    → List active user IDs (also heartbeats the caller)\n5.  GET    /user                        → List all users\n6.  GET    /user/{{user_id}}            → Fetch your registered user\n7.  POST   /posts                       → Create a post (captures post_id)\n8.  GET    /posts                       → List all posts\n9.  PATCH  /posts/{{post_id}}           → Increment likes\n10. POST   /comments                    → Add a comment (captures comment_id)\n11. GET    /comments                    → List all comments\n12. PATCH  /comments/{{comment_id}}     → Edit the comment\n13. POST   /replies                     → Add a reply to the comment (captures reply_id)\n14. GET    /replies?post_id={{post_id}} → List all replies for the post\n15. PUT    /replies/{{reply_id}}        → Increment reply likes\n16. POST   /profile-pic                 → Upload a profile picture\n17. GET    /profile-pic/{{user_id}}     → Fetch the profile picture\n18. DELETE /session                     → Logout (run last)\n```\n\n---\n\n## Notes\n- All JSON responses follow the shape `{ status, data, message }`.\n- `time_stamp` is generated server-side on create for posts, comments, and replies — do not send it in request bodies.\n- `user_id` on posts, comments, and replies is taken from the session cookie by the `requireSession` middleware — do not send it in request bodies.\n- `likes`, `comments[]`, `auth_level`, and `status` are always set server-side and are ignored if sent in create request bodies.\n- `GET /profile-pic/:userId` returns raw image binary (not JSON) — open it in a browser or Postman's image preview to see the picture.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5050",
+      "type": "string",
+      "description": "Base URL of the CodeBloggs API. Update if your server runs on a different host or port."
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "type": "string",
+      "description": "Auto-populated by POST /user. Used in GET /user/:id and GET /profile-pic/:userId."
+    },
+    {
+      "key": "post_id",
+      "value": "",
+      "type": "string",
+      "description": "Auto-populated by POST /posts. Used in PATCH /posts/:id, POST /comments, POST /replies, and GET /replies."
+    },
+    {
+      "key": "comment_id",
+      "value": "",
+      "type": "string",
+      "description": "Auto-populated by POST /comments. Used in PATCH /comments/:id and POST /replies (as parent_id for a depth-1 reply)."
+    },
+    {
+      "key": "reply_id",
+      "value": "",
+      "type": "string",
+      "description": "Auto-populated by POST /replies. Used in PUT /replies/:id."
+    }
+  ],
+  "item": [
+    {
+      "name": "User",
+      "description": "User registration and retrieval endpoints. Run 'Create User' first — it populates {{user_id}} for downstream requests.",
+      "item": [
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/user",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Jane\",\n  \"last_name\": \"Doe\",\n  \"email\": \"jane.doe@example.com\",\n  \"password\": \"Password123\",\n  \"birthday\": \"1995-06-15\",\n  \"location\": \"Montreal, QC\",\n  \"occupation\": \"Software Developer\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Register a new user account.\n\n**Required:** `first_name`, `last_name`, `email`, `password`, `birthday`\n**Optional:** `location`, `occupation`\n\n`auth_level` and `status` are always set server-side (`basic` / `true`). The password is hashed with bcrypt and never returned.\n\nReturns **201** on success. The test script captures `data.user._id` into `{{user_id}}`."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const body = pm.response.json();",
+                  "  const id = body?.data?.user?._id;",
+                  "  if (id) {",
+                  "    pm.collectionVariables.set('user_id', id);",
+                  "    console.log('[M9_10] user_id saved:', id);",
+                  "  }",
+                  "}",
+                  "pm.test('Status 201 Created', () => pm.response.to.have.status(201));",
+                  "pm.test('Response body shape is correct', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.status).to.equal('ok');",
+                  "  pm.expect(body.data).to.have.property('user');",
+                  "  pm.expect(body.data.user).to.not.have.property('password');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/user",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user"
+              ]
+            },
+            "description": "Retrieve all registered users. Passwords are excluded from every returned document. Returns an empty array when no users exist."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns a users array', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.status).to.equal('ok');",
+                  "  pm.expect(body.data.users).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/user/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "{{user_id}}"
+              ]
+            },
+            "description": "Retrieve a single user by their MongoDB `_id`. Uses `{{user_id}}` captured by **Create User**.\n\nReturns **404** if the ID is not found or is malformed."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns a single user without password', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.status).to.equal('ok');",
+                  "  pm.expect(body.data).to.have.property('user');",
+                  "  pm.expect(body.data.user).to.not.have.property('password');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Session",
+      "description": "Cookie-based authentication. Login sets an HTTP-only `session_token` cookie that Postman forwards automatically on all subsequent requests.",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/session",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "session"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jane.doe@example.com\",\n  \"password\": \"Password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Authenticate with email and password. On success the server sets an HTTP-only `session_token` cookie (TTL: 24 hours). Postman captures this cookie automatically — no manual token handling needed.\n\n**Use the same credentials you used in Create User.**\n\nReturns **401** for invalid credentials (same message for wrong email or wrong password — by design)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Login response is ok and returns user', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.status).to.equal('ok');",
+                  "  pm.expect(body.message).to.equal('Login successful');",
+                  "  pm.expect(body.data).to.have.property('user');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validate Session",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/session/validate",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "session",
+                "validate"
+              ]
+            },
+            "description": "Confirm the current `session_token` cookie maps to a live, unexpired session. Returns the associated user on success.\n\nRun this after Login to verify the cookie is being forwarded correctly. Returns **401** if unauthenticated or the session has expired (> 24 hours old)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Session is valid and returns user', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.status).to.equal('ok');",
+                  "  pm.expect(body.message).to.equal('Session is valid');",
+                  "  pm.expect(body.data).to.have.property('user');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/session",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "session"
+              ]
+            },
+            "description": "Destroy the current session. The server deletes the `Session` document from MongoDB and clears the `session_token` cookie.\n\n**Run this last.** This endpoint is idempotent — it returns 200 even if no active session exists."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Logout successful', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.status).to.equal('ok');",
+                  "  pm.expect(body.message).to.equal('Logged out successfully');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Presence",
+      "description": "Real-time presence. Requires an active session cookie — the request also doubles as a heartbeat, refreshing the caller's presence window.",
+      "item": [
+        {
+          "name": "Get Active Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/presence",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "presence"
+              ]
+            },
+            "description": "Return an array of MongoDB user `_id` strings that are currently online. **Requires an active session cookie** — run Login first.\n\nBecause `requireSession` refreshes presence on every authenticated request, calling this endpoint also acts as a heartbeat: it extends the caller's own online window without a separate call.\n\nReturns **200** with `data.activeUserIds` (string array) on success. Returns **401** if no valid session cookie is present."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns activeUserIds array', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.status).to.equal('ok');",
+                  "  pm.expect(body.data.activeUserIds).to.be.an('array');",
+                  "  pm.expect(body.message).to.equal('Presence retrieved successfully');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Posts",
+      "description": "Blog post CRUD. Requires an active session cookie (run Login first). Create Post populates {{post_id}} for update requests.",
+      "item": [
+        {
+          "name": "Create Post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/posts",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "posts"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Hello world! This is my first post on CodeBloggs.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Create a new blog post. **Requires an active session cookie** — run Login first.\n\n**Required:** `content`\n\n`user_id` is resolved from the session cookie by the `requireSession` middleware and never read from the request body. `time_stamp` is generated server-side as an ISO 8601 string. `likes` starts at `0` and `comments` starts as `[]` — all set server-side.\n\nReturns **201** on success. Returns **401** if no valid session cookie is present. The test script captures `data.post._id` into `{{post_id}}`."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const body = pm.response.json();",
+                  "  const id = body?.data?.post?._id;",
+                  "  if (id) {",
+                  "    pm.collectionVariables.set('post_id', id);",
+                  "    console.log('[M9_10] post_id saved:', id);",
+                  "  }",
+                  "}",
+                  "pm.test('Status 201 Created', () => pm.response.to.have.status(201));",
+                  "pm.test('Response body shape is correct', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.status).to.equal('ok');",
+                  "  pm.expect(body.data).to.have.property('post');",
+                  "  pm.expect(body.data.post.likes).to.equal(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Posts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/posts",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "posts"
+              ]
+            },
+            "description": "Retrieve all blog posts. Returns an empty array when none exist."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns a posts array', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.status).to.equal('ok');",
+                  "  pm.expect(body.data.posts).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Post (likes)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/posts/{{post_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "posts",
+                "{{post_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"likes\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Partial update for a post. Only `likes` is accepted — `content`, `user_id`, `time_stamp`, and all other fields are ignored even if sent. Uses `{{post_id}}` captured by **Create Post**.\n\nLike de-duplication is handled client-side via localStorage (see Issues.md #11) — the server stores only the raw `likes` count.\n\nReturns **404** if the ID is not found or is malformed."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Post updated successfully', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.status).to.equal('ok');",
+                  "  pm.expect(body.data).to.have.property('post');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Comments",
+      "description": "Comment CRUD. Requires an active session cookie and {{post_id}} from the Posts folder. Create Comment populates {{comment_id}}.",
+      "item": [
+        {
+          "name": "Create Comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/comments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "comments"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Great post! Thanks for sharing.\",\n  \"post_id\": \"{{post_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Add a comment to an existing post. **Requires an active session cookie** — run Login first.\n\n**Required:** `content`, `post_id` (must reference an existing post)\n\n`user_id` is resolved from the session cookie by the `requireSession` middleware and never read from the request body. `time_stamp` is generated server-side. The server verifies the parent post exists before saving, and pushes the new comment's `_id` onto the parent `Post.comments[]` array (two-way link). `likes` is always initialized to `0`.\n\nReturns **401** if no valid session cookie is present. Returns **404** if `post_id` does not match any post. Returns **201** on success. The test script captures `data.comment._id` into `{{comment_id}}`."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const body = pm.response.json();",
+                  "  const id = body?.data?.comment?._id;",
+                  "  if (id) {",
+                  "    pm.collectionVariables.set('comment_id', id);",
+                  "    console.log('[M9_10] comment_id saved:', id);",
+                  "  }",
+                  "}",
+                  "pm.test('Status 201 Created', () => pm.response.to.have.status(201));",
+                  "pm.test('Response body shape is correct', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.status).to.equal('ok');",
+                  "  pm.expect(body.data).to.have.property('comment');",
+                  "  pm.expect(body.data.comment.likes).to.equal(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Comments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/comments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "comments"
+              ]
+            },
+            "description": "Retrieve all comments across all posts. Returns an empty array when none exist."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns a comments array', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.status).to.equal('ok');",
+                  "  pm.expect(body.data.comments).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Comment",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/comments/{{comment_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "comments",
+                "{{comment_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Updated: Great post! Really enjoyed reading this.\",\n  \"likes\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Edit an existing comment. Both `content` and `likes` are accepted — send either or both. `post_id`, `user_id`, and `time_stamp` are permanently fixed at creation and are ignored even if sent. Uses `{{comment_id}}` captured by **Create Comment**.\n\nReturns **404** if the ID is not found or is malformed."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Comment updated successfully', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.status).to.equal('ok');",
+                  "  pm.expect(body.data).to.have.property('comment');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Replies",
+      "description": "Nested reply CRUD. Requires an active session cookie and {{post_id}} / {{comment_id}} from earlier folders. Supports up to 3 levels of nesting (depth 1–3). Create Reply populates {{reply_id}}.",
+      "item": [
+        {
+          "name": "Create Reply",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/replies",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "replies"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Thanks for the kind words!\",\n  \"parent_id\": \"{{comment_id}}\",\n  \"parent_type\": \"Comment\",\n  \"root_comment_id\": \"{{comment_id}}\",\n  \"post_id\": \"{{post_id}}\",\n  \"depth\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Add a reply to a comment or another reply. **Requires an active session cookie** — run Login first.\n\n**Required:** `content`, `parent_id`, `parent_type`, `root_comment_id`, `post_id`, `depth`\n\n- `parent_id` — MongoDB `_id` of the comment or reply being replied to.\n- `parent_type` — `\"Comment\"` when replying directly to a comment; `\"Reply\"` when replying to an existing reply.\n- `root_comment_id` — always the top-level comment's `_id`, even for deeply nested replies. Used to reconstruct the thread.\n- `depth` — nesting level (1 = direct reply to a comment, 2 = reply to a depth-1 reply, 3 = max depth). The server clamps this to 1–3.\n\n`user_id` is resolved from the session cookie. `time_stamp` is generated server-side. `likes` is initialized to `0`.\n\nThe server verifies the parent exists before saving. Returns **404** if the parent is not found. Returns **401** if no valid session cookie is present. Returns **201** on success. The test script captures `data.reply._id` into `{{reply_id}}`."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const body = pm.response.json();",
+                  "  const id = body?.data?.reply?._id;",
+                  "  if (id) {",
+                  "    pm.collectionVariables.set('reply_id', id);",
+                  "    console.log('[M9_10] reply_id saved:', id);",
+                  "  }",
+                  "}",
+                  "pm.test('Status 201 Created', () => pm.response.to.have.status(201));",
+                  "pm.test('Response body shape is correct', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.status).to.equal('ok');",
+                  "  pm.expect(body.data).to.have.property('reply');",
+                  "  pm.expect(body.data.reply.likes).to.equal(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Replies by Post",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/replies?post_id={{post_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "replies"
+              ],
+              "query": [
+                {
+                  "key": "post_id",
+                  "value": "{{post_id}}",
+                  "description": "MongoDB _id of the post whose replies you want to retrieve."
+                }
+              ]
+            },
+            "description": "Retrieve all replies for a given post as a flat array ordered by `time_stamp` ascending. Uses `{{post_id}}` captured by **Create Post**.\n\n**Required query param:** `post_id` — the server returns **400** if omitted.\n\nThe client reconstructs the nested tree by grouping replies by `parent_id`. Returns an empty array when no replies exist for the post."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns a replies array', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.status).to.equal('ok');",
+                  "  pm.expect(body.data.replies).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Reply (likes)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/replies/{{reply_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "replies",
+                "{{reply_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"likes\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Increment or decrement a reply's like count. Uses `{{reply_id}}` captured by **Create Reply**.\n\n`likes` is applied as an increment via `$inc` — send `1` to add a like, `-1` to remove one. All other fields are ignored.\n\nReturns **404** if the ID is not found or is malformed."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Reply updated successfully', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.status).to.equal('ok');",
+                  "  pm.expect(body.data).to.have.property('reply');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Profile Pic",
+      "description": "Profile picture upload and retrieval. Upload requires an active session cookie. The GET endpoint is public — no session needed.",
+      "item": [
+        {
+          "name": "Upload Profile Picture",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/profile-pic",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "profile-pic"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [],
+                  "description": "JPEG or PNG image file. Maximum size: 2 MB."
+                }
+              ]
+            },
+            "description": "Upload or replace the current user's profile picture. **Requires an active session cookie** — run Login first.\n\nSend the image as `multipart/form-data` with the field key `image`. Accepted types: `image/jpeg`, `image/png`. Maximum size: **2 MB**.\n\n`user_id` is resolved from the session cookie — do not send it in the body. If the user already has a profile picture, it is replaced (upsert).\n\nReturns **400** if no file is provided, the file exceeds 2 MB, or the MIME type is unsupported. Returns **401** if no valid session cookie is present. Returns **200** on success with an empty `data` object."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Upload successful', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.status).to.equal('ok');",
+                  "  pm.expect(body.message).to.equal('Profile picture uploaded successfully.');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Profile Picture",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/profile-pic/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "profile-pic",
+                "{{user_id}}"
+              ]
+            },
+            "description": "Retrieve a user's profile picture as raw image binary. Uses `{{user_id}}` captured by **Create User**.\n\nThis is a **public endpoint** — no session cookie required, so `<img src=\"...\">` tags work without credentials.\n\nThe response `Content-Type` is set to the stored MIME type (`image/jpeg` or `image/png`) and a `Cache-Control: public, max-age=3600` header is included. Use Postman's image preview panel to view the result.\n\nReturns **404** JSON if the user has not uploaded a profile picture or if the `userId` is malformed."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Response is an image', () => {",
+                  "  const ct = pm.response.headers.get('Content-Type') || '';",
+                  "  pm.expect(ct).to.match(/^image\\/(jpeg|png)/);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

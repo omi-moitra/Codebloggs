@@ -1,0 +1,75 @@
+/* ==========================================================================
+   CodeBloggs Theme — Dark Mode
+   --------------------------------------------------------------------------
+   This file ONLY redefines the CSS custom properties declared in theme.css.
+   Because every color in theme.css is driven by a variable, there are no
+   per-component dark rules here — recoloring the whole app is a matter of
+   overriding the variables below under [data-theme="dark"].
+
+   Bootstrap's own components (.card, .dropdown-menu, .form-control, .modal,
+   buttons, alerts) are recolored separately by Bootstrap 5.3's built-in
+   [data-bs-theme="dark"], which ThemeContext sets on <html> alongside
+   [data-theme="dark"].
+   ========================================================================== */
+
+[data-theme="dark"] {
+  /* Brand palette — accent surfaces (header, active nav, avatars, buttons)
+     stay in the dark-purple range so white text on them keeps contrast.
+     The few colors used as TEXT/muted are lightened. */
+  --color-delft-blue: #403E6B;        /* accent background (header, active link, avatar gradient) */
+  --color-lavender: #BCB8DD;          /* light text on header + soft borders */
+  --color-tropical-indigo: #8D88EA;
+  --color-periwinkle: #B1ADFF;
+  --color-dim-gray: #A3A1B3;          /* muted text — lightened for dark surfaces */
+  --color-slate-blue: #8D88EA;        /* links & primary buttons — lightened */
+
+  /* Surfaces & text */
+  --color-background: #14131D;
+  --color-surface: #1E1C2B;
+  --color-text: #E7E5F2;
+  --color-heading: #C9C5F2;           /* explicit light heading (no longer delft-blue) */
+  --color-on-accent: #FFFFFF;
+
+  /* Borders & dividers */
+  --color-border: rgba(177, 173, 255, 0.16);
+  --color-border-strong: rgba(177, 173, 255, 0.28);
+  --color-divider: rgba(177, 173, 255, 0.20);
+
+  /* Tinted surfaces */
+  --color-surface-tint: rgba(177, 173, 255, 0.06);
+  --color-surface-tint-strong: rgba(177, 173, 255, 0.10);
+  --color-reply-bg: rgba(255, 255, 255, 0.04);
+  --color-reply-bg-2: rgba(177, 173, 255, 0.07);
+  --color-reply-bg-3: rgba(141, 136, 234, 0.13);
+
+  /* Shadows — deeper on a dark page */
+  --color-shadow: rgba(0, 0, 0, 0.40);
+  --color-shadow-soft: rgba(0, 0, 0, 0.45);
+  --color-shadow-strong: rgba(0, 0, 0, 0.55);
+
+  /* Overlays */
+  --color-overlay: rgba(0, 0, 0, 0.66);
+  --color-overlay-shadow: rgba(0, 0, 0, 0.55);
+
+  /* Accents & misc */
+  --color-avatar-ring: rgba(255, 255, 255, 0.16);
+  --color-feedback-border: rgba(177, 173, 255, 0.28);
+  --color-accent-glow: rgba(177, 173, 255, 0.50);
+  --color-focus-ring: rgba(177, 173, 255, 0.60);
+
+  /* Liquid glass — deeper tints + dimmer sheen on dark surfaces */
+  --glass-header-bg: linear-gradient(to right, rgba(100, 96, 168, 0.72), rgba(15, 14, 25, 0.96));
+  --glass-sidebar-bg: linear-gradient(160deg, rgba(30, 28, 43, 0.62), rgba(64, 62, 107, 0.4));
+  --glass-highlight: rgba(177, 173, 255, 0.26);
+  --glass-border: rgba(177, 173, 255, 0.18);
+
+  /* Semantic color roles — lightened for dark surfaces */
+  --color-deep-slate: #9490C0;          /* status label text */
+  --color-storm-gray: #8A88A0;          /* profile meta / secondary text */
+
+  /* Presence (online status dot) — same hue, slightly stronger glow on dark */
+  --color-presence-active: #22C55E;
+  --color-presence-active-glow: rgba(34, 197, 94, 0.80);
+  --color-presence-offline: #EF4444;
+  --color-presence-offline-glow: rgba(239, 68, 68, 0.60);
+}

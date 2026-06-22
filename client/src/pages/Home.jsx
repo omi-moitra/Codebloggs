@@ -1,0 +1,926 @@
+import { useEffect, useMemo, useState } from "react";
+import { Badge, Button, Card, Col, Form, Row, Spinner } from "react-bootstrap";
+import { FaRegThumbsUp, FaThumbsUp } from "react-icons/fa";
+import AutoDismissAlert from "../components/AutoDismissAlert";
+import ProfileAvatar from "../components/ProfileAvatar";
+import StatusDot from "../components/StatusDot";
+import { useAuth } from "../context/AuthContext";
+import { usePresence } from "../context/PresenceContext";
+import { createComment, getComments, updateCommentLikes } from "../services/commentService";
+import { getPosts, updatePostLikes } from "../services/postService";
+import { createReply, getReplies, updateReplyLikes } from "../services/replyService";
+import { hasLocalLike, setLocalLike } from "../services/socialInteractionService";
+import { getUserById, getUsers } from "../services/userService";
+
+const getId = (value) => {
+  if (!value) {
+    return "";
+  }
+
+  if (typeof value === "string") {
+    return value;
+  }
+
+  return value._id || value.$oid || String(value);
+};
+
+const parseDateValue = (value) => {
+  if (!value) {
+    return null;
+  }
+
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
+};
+
+const getPostDate = (post) =>
+  parseDateValue(post?.time_stamp || post?.post_date || post?.createdAt);
+
+const formatDate = (value) => {
+  const date = parseDateValue(value);
+
+  if (!date) {
+    return "Date unavailable";
+  }
+
+  return new Intl.DateTimeFormat("en", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
+};
+
+const getInitials = (user) => {
+  const first = user?.first_name?.trim()?.[0] || "";
+  const last = user?.last_name?.trim()?.[0] || "";
+  const email = user?.email?.trim()?.[0] || "";
+
+  return `${first}${last}`.toUpperCase() || email.toUpperCase() || "CB";
+};
+
+const getDisplayName = (user) => {
+  const fullName = `${user?.first_name || ""} ${user?.last_name || ""}`.trim();
+  return fullName || user?.email || "CodeBloggs user";
+};
+
+const getPostContent = (post) =>
+  post?.content || post?.message || post?.body || "This post has no content.";
+
+const getCommentContent = (comment) =>
+  comment?.content || comment?.message || comment?.body || "Comment unavailable.";
+
+const MAX_REPLY_DEPTH = 3;
+
+const Home = () => {
+  const { user: sessionUser } = useAuth();
+  const { isActive } = usePresence();
+  const [profile, setProfile] = useState(sessionUser);
+  const [posts, setPosts] = useState([]);
+  const [comments, setComments] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [replies, setReplies] = useState([]);
+  const [status, setStatus] = useState("loading");
+  const [error, setError] = useState("");
+  const [likingPostId, setLikingPostId] = useState("");
+  const [likingCommentId, setLikingCommentId] = useState("");
+  const [likingReplyId, setLikingReplyId] = useState("");
+  const [commentDrafts, setCommentDrafts] = useState({});
+  const [commentingPostId, setCommentingPostId] = useState("");
+  const [replyDrafts, setReplyDrafts] = useState({});
+  const [activeReplyTargetId, setActiveReplyTargetId] = useState("");
+  const [openCommentPostIds, setOpenCommentPostIds] = useState({});
+  const [openReplyParentIds, setOpenReplyParentIds] = useState({});
+  const [localReplies, setLocalReplies] = useState({});
+
+  const userId = getId(sessionUser?._id);
+  const isUserActive = isActive(userId);
+
+  useEffect(() => {
+    let isCurrent = true;
+
+    const loadHomeData = async () => {
+      if (!userId) {
+        setStatus("error");
+        setError("Unable to identify the logged-in user.");
+        return;
+      }
+
+      setStatus("loading");
+      setError("");
+
+      try {
+        const [profileResult, postsResult, commentsResult, usersResult, repliesResult] =
+          await Promise.all([
+            getUserById(userId),
+            getPosts(),
+            getComments(),
+            getUsers(),
+            getReplies(),
+          ]);
+
+        if (!isCurrent) {
+          return;
+        }
+
+        setProfile(profileResult.user || sessionUser);
+        setPosts(postsResult.posts);
+        setComments(commentsResult.comments);
+        setUsers(usersResult.users);
+        setReplies(repliesResult.replies);
+        setStatus("success");
+      } catch (loadError) {
+        if (!isCurrent) {
+          return;
+        }
+
+        setError(loadError.message || "Unable to load your home page.");
+        setStatus("error");
+      }
+    };
+
+    loadHomeData();
+    window.addEventListener("codebloggs:post-created", loadHomeData);
+
+    return () => {
+      isCurrent = false;
+      window.removeEventListener("codebloggs:post-created", loadHomeData);
+    };
+  }, [sessionUser, userId]);
+
+  const userPosts = useMemo(() => {
+    return posts
+      .filter((post) => getId(post.user_id) === userId)
+      .sort((a, b) => {
+        const dateA = getPostDate(a)?.getTime() || 0;
+        const dateB = getPostDate(b)?.getTime() || 0;
+        return dateB - dateA;
+      });
+  }, [posts, userId]);
+
+  const usersById = useMemo(() => {
+    return users.reduce((grouped, user) => {
+      grouped[getId(user._id)] = user;
+      return grouped;
+    }, {});
+  }, [users]);
+
+  const commentsByPostId = useMemo(() => {
+    return comments.reduce((grouped, comment) => {
+      const postId = getId(comment.post_id);
+
+      if (!grouped[postId]) {
+        grouped[postId] = [];
+      }
+
+      grouped[postId].push(comment);
+      return grouped;
+    }, {});
+  }, [comments]);
+
+  // Groups server replies by their immediate parent ID so renderReplies can
+  // look up children with a single key access.
+  const repliesByParentId = useMemo(() => {
+    return replies.reduce((grouped, reply) => {
+      const key = getId(reply.parent_id);
+
+      if (!grouped[key]) {
+        grouped[key] = [];
+      }
+
+      grouped[key].push(reply);
+      return grouped;
+    }, {});
+  }, [replies]);
+
+  const recentActivities = useMemo(() => {
+    const truncate = (str) => (str.length > 80 ? `${str.slice(0, 80)}…` : str);
+    const events = [];
+
+    if (userPosts.length > 0) {
+      const post = userPosts[0];
+      const content = getPostContent(post);
+      events.push({ type: "posted", date: getPostDate(post), preview: truncate(content) });
+    }
+
+    const userComments = comments
+      .filter((c) => getId(c.user_id) === userId)
+      .sort((a, b) => {
+        const tA = parseDateValue(a.createdAt || a.time_stamp)?.getTime() || 0;
+        const tB = parseDateValue(b.createdAt || b.time_stamp)?.getTime() || 0;
+        return tB - tA;
+      });
+    if (userComments.length > 0) {
+      const c = userComments[0];
+      const parentPost = posts.find((p) => getId(p._id) === getId(c.post_id));
+      const author = usersById[getId(parentPost?.user_id)];
+      const authorName = author ? getDisplayName(author) : "someone";
+      const content = getCommentContent(c);
+      events.push({
+        type: "commented",
+        date: parseDateValue(c.createdAt || c.time_stamp),
+        context: `on ${authorName}'s post`,
+        preview: truncate(content),
+      });
+    }
+
+    return events.sort((a, b) => (b.date?.getTime() || 0) - (a.date?.getTime() || 0)).slice(0, 2);
+  }, [userPosts, comments, posts, usersById, userId]);
+
+  const userCommentsCount = useMemo(
+    () => comments.filter((c) => getId(c.user_id) === userId).length,
+    [comments, userId]
+  );
+
+  const userLikesCount = useMemo(() => {
+    const postLikes = posts.filter((p) =>
+      hasLocalLike({ type: "post", userId, itemId: getId(p._id) })
+    ).length;
+    const commentLikes = comments.filter((c) =>
+      hasLocalLike({ type: "comment", userId, itemId: getId(c._id) })
+    ).length;
+    const replyLikes = replies.filter((r) =>
+      hasLocalLike({ type: "reply", userId, itemId: getId(r._id) })
+    ).length;
+    return postLikes + commentLikes + replyLikes;
+  }, [posts, comments, replies, userId]);
+
+  const getRepliesForParent = (parentId) => {
+    const serverReplies = (repliesByParentId[parentId] || []).map(normalizeReply);
+    const localOnlyReplies = localReplies[parentId] || [];
+    return [...serverReplies, ...localOnlyReplies];
+  };
+
+  const getNestedReplyCount = (parentId) =>
+    getRepliesForParent(parentId).reduce(
+      (total, reply) => total + 1 + getNestedReplyCount(reply.id),
+      0
+    );
+
+  const getPostCommentTotal = (postId, postComments) => {
+    const serverReplyCount = replies.filter((reply) => getId(reply.post_id) === postId).length;
+    const localReplyCount = Object.values(localReplies)
+      .flat()
+      .filter((reply) => reply.postId === postId).length;
+
+    return postComments.length + serverReplyCount + localReplyCount;
+  };
+
+  const formatCount = (count, singular, plural = `${singular}s`) =>
+    `${count} ${count === 1 ? singular : plural}`;
+
+  const handleLike = async (post) => {
+    const postId = getId(post._id);
+    const liked = hasLocalLike({ type: "post", userId, itemId: postId });
+    const likes = Number(post.likes || 0);
+
+    if (liked && likes <= 0) {
+      setLocalLike({ type: "post", userId, itemId: postId, liked: false });
+      return;
+    }
+
+    setLikingPostId(postId);
+    setError("");
+
+    try {
+      const likesDelta = liked ? -1 : 1;
+      const result = await updatePostLikes(postId, likesDelta);
+      const updatedPost =
+        result.post || { ...post, likes: Math.max(0, likes + likesDelta) };
+
+      setLocalLike({ type: "post", userId, itemId: postId, liked: !liked });
+
+      setPosts((currentPosts) =>
+        currentPosts.map((currentPost) =>
+          getId(currentPost._id) === postId ? updatedPost : currentPost
+        )
+      );
+    } catch (likeError) {
+      setError(likeError.message || "Unable to update this post's likes.");
+    } finally {
+      setLikingPostId("");
+    }
+  };
+
+  const handleCommentLike = async (comment) => {
+    const commentId = getId(comment._id);
+    const liked = hasLocalLike({ type: "comment", userId, itemId: commentId });
+    const likes = Number(comment.likes || 0);
+
+    if (liked && likes <= 0) {
+      setLocalLike({ type: "comment", userId, itemId: commentId, liked: false });
+      return;
+    }
+
+    setLikingCommentId(commentId);
+    setError("");
+
+    try {
+      const likesDelta = liked ? -1 : 1;
+      const result = await updateCommentLikes(commentId, likesDelta);
+      const updatedComment =
+        result.comment || { ...comment, likes: Math.max(0, likes + likesDelta) };
+
+      setLocalLike({ type: "comment", userId, itemId: commentId, liked: !liked });
+
+      setComments((currentComments) =>
+        currentComments.map((currentComment) =>
+          getId(currentComment._id) === commentId ? updatedComment : currentComment
+        )
+      );
+    } catch (likeError) {
+      setError(likeError.message || "Unable to update this comment's likes.");
+    } finally {
+      setLikingCommentId("");
+    }
+  };
+
+  const handleCommentDraftChange = (postId, value) => {
+    setCommentDrafts((currentDrafts) => ({
+      ...currentDrafts,
+      [postId]: value,
+    }));
+  };
+
+  const handleCommentSectionToggle = (postId) => {
+    setOpenCommentPostIds((currentPostIds) => ({
+      ...currentPostIds,
+      [postId]: !currentPostIds[postId],
+    }));
+  };
+
+  const handleCommentSubmit = async (event, postId) => {
+    event.preventDefault();
+
+    const content = commentDrafts[postId]?.trim();
+    if (!content) {
+      setError("Write a comment before posting it.");
+      return;
+    }
+
+    setCommentingPostId(postId);
+    setError("");
+
+    try {
+      const result = await createComment({ postId, content });
+
+      if (result.comment) {
+        setComments((currentComments) => [...currentComments, result.comment]);
+      } else {
+        const commentsResult = await getComments();
+        setComments(commentsResult.comments);
+      }
+
+      setCommentDrafts((currentDrafts) => ({
+        ...currentDrafts,
+        [postId]: "",
+      }));
+      setOpenCommentPostIds((currentPostIds) => ({
+        ...currentPostIds,
+        [postId]: true,
+      }));
+    } catch (commentError) {
+      setError(commentError.message || "Unable to add your comment.");
+    } finally {
+      setCommentingPostId("");
+    }
+  };
+
+  const handleReplyDraftChange = (parentId, value) => {
+    setReplyDrafts((currentDrafts) => ({
+      ...currentDrafts,
+      [parentId]: value,
+    }));
+  };
+
+  const handleReplyToggle = (parentId) => {
+    setActiveReplyTargetId((currentParentId) =>
+      currentParentId === parentId ? "" : parentId
+    );
+  };
+
+  const handleReplyThreadToggle = (parentId) => {
+    setOpenReplyParentIds((currentParentIds) => ({
+      ...currentParentIds,
+      [parentId]: !currentParentIds[parentId],
+    }));
+  };
+
+  // Converts a server Reply document to the shape renderReplies expects.
+  const normalizeReply = (reply) => {
+    const author = usersById[getId(reply.user_id)];
+    return {
+      id: getId(reply._id),
+      parentId: getId(reply.parent_id),
+      authorId: getId(reply.user_id),
+      authorName: getDisplayName(author),
+      authorInitials: getInitials(author),
+      content: reply.content,
+      timestamp: reply.time_stamp,
+      likes: reply.likes || 0,
+      likedByCurrentUser: hasLocalLike({ type: "reply", userId, itemId: getId(reply._id) }),
+      depth: reply.depth || 1,
+      isServerReply: true,
+    };
+  };
+
+  const handleReplySubmit = async (event, parentId, parentDepth, postId, rootCommentId) => {
+    event.preventDefault();
+
+    const content = replyDrafts[parentId]?.trim();
+    if (!content) {
+      setError("Write a reply before posting it.");
+      return;
+    }
+
+    // Determine whether the immediate parent is a Comment or another Reply.
+    const parentType = parentId === rootCommentId ? "Comment" : "Reply";
+    const depth = Math.min(parentDepth + 1, MAX_REPLY_DEPTH);
+
+    // Optimistic local entry so the UI responds immediately.
+    const localId = `local-reply-${parentId}-${Date.now()}`;
+    const author = profile || sessionUser;
+    const localReply = {
+      id: localId,
+      parentId,
+      author,
+      authorId: getId(author?._id) || userId,
+      authorName: getDisplayName(author),
+      authorInitials: getInitials(author),
+      content,
+      timestamp: new Date().toISOString(),
+      likes: 0,
+      likedByCurrentUser: false,
+      depth,
+      postId,
+      rootCommentId,
+      isServerReply: false,
+    };
+
+    setLocalReplies((curr) => ({
+      ...curr,
+      [parentId]: [...(curr[parentId] || []), localReply],
+    }));
+    setReplyDrafts((curr) => ({ ...curr, [parentId]: "" }));
+    setActiveReplyTargetId("");
+    setOpenCommentPostIds((curr) => ({ ...curr, [postId]: true }));
+    setOpenReplyParentIds((curr) => ({ ...curr, [parentId]: true }));
+    setError("");
+
+    try {
+      const result = await createReply({
+        parentId,
+        parentType,
+        rootCommentId,
+        postId,
+        content,
+        depth,
+      });
+
+      if (result.reply) {
+        setReplies((curr) => [...curr, result.reply]);
+        // Drop the optimistic entry now the real one is in `replies` state.
+        setLocalReplies((curr) => ({
+          ...curr,
+          [parentId]: (curr[parentId] || []).filter((r) => r.id !== localId),
+        }));
+      }
+    } catch (replyError) {
+      setError(replyError.message || "Unable to post your reply.");
+      setLocalReplies((curr) => ({
+        ...curr,
+        [parentId]: (curr[parentId] || []).filter((r) => r.id !== localId),
+      }));
+    }
+  };
+
+  const handleReplyLike = async (reply) => {
+    const replyLiked =
+      reply.likedByCurrentUser ||
+      hasLocalLike({ type: "reply", userId, itemId: reply.id });
+    const likesDelta = replyLiked ? -1 : 1;
+
+    setLocalLike({ type: "reply", userId, itemId: reply.id, liked: !replyLiked });
+
+    if (reply.isServerReply) {
+      setLikingReplyId(reply.id);
+      try {
+        const result = await updateReplyLikes(reply.id, likesDelta);
+        if (result.reply) {
+          setReplies((curr) =>
+            curr.map((r) => (getId(r._id) === reply.id ? result.reply : r))
+          );
+        }
+      } catch {
+        setLocalLike({ type: "reply", userId, itemId: reply.id, liked: replyLiked });
+      } finally {
+        setLikingReplyId("");
+      }
+    } else {
+      setLocalReplies((currentReplies) =>
+        Object.entries(currentReplies).reduce((nextReplies, [parentId, replyList]) => {
+          nextReplies[parentId] = replyList.map((r) =>
+            r.id === reply.id
+              ? {
+                  ...r,
+                  likes: Math.max(0, Number(r.likes || 0) + likesDelta),
+                  likedByCurrentUser: !replyLiked,
+                }
+              : r
+          );
+          return nextReplies;
+        }, {})
+      );
+    }
+  };
+
+  const renderReplyForm = (parentId, parentDepth, postId, rootCommentId) =>
+    activeReplyTargetId === parentId ? (
+      <Form
+        className="social-replies__form"
+        onSubmit={(event) => handleReplySubmit(event, parentId, parentDepth, postId, rootCommentId)}
+      >
+        <Form.Control
+          as="textarea"
+          aria-label="Add a reply"
+          onChange={(event) => handleReplyDraftChange(parentId, event.target.value)}
+          placeholder="Add a reply"
+          rows={2}
+          value={replyDrafts[parentId] || ""}
+        />
+        <Button
+          disabled={!replyDrafts[parentId]?.trim()}
+          size="sm"
+          type="submit"
+          variant="primary"
+        >
+          Reply
+        </Button>
+      </Form>
+    ) : null;
+
+  const renderReplyThreadToggle = (parentId) => {
+    const replyCount = getNestedReplyCount(parentId);
+
+    if (replyCount === 0) {
+      return null;
+    }
+
+    return (
+      <Button
+        className="social-replies__toggle"
+        onClick={() => handleReplyThreadToggle(parentId)}
+        size="sm"
+        type="button"
+        variant="link"
+      >
+        {openReplyParentIds[parentId]
+          ? "Hide replies"
+          : `View ${formatCount(replyCount, "reply", "replies")}`}
+      </Button>
+    );
+  };
+
+  const renderReplies = (parentId, parentDepth = 0, postId, rootCommentId) => {
+    const allReplies = getRepliesForParent(parentId);
+
+    if (allReplies.length === 0) {
+      return null;
+    }
+
+    if (!openReplyParentIds[parentId]) {
+      return null;
+    }
+
+    return (
+      <ul className="social-replies__list">
+        {allReplies.map((reply) => {
+          const replyLiked =
+            reply.likedByCurrentUser ||
+            hasLocalLike({ type: "reply", userId, itemId: reply.id });
+          const replyDepth = Math.min(reply.depth || parentDepth + 1, MAX_REPLY_DEPTH);
+
+          return (
+            <li
+              className={`social-replies__item social-replies__item--level-${replyDepth}`}
+              key={reply.id}
+            >
+              <div className="social-replies__meta">
+                <ProfileAvatar
+                  className="social-replies__avatar"
+                  fallbackInitials={reply.authorInitials}
+                  user={reply.author || { _id: reply.authorId }}
+                />
+                <div>
+                  <strong>{reply.authorName}</strong>
+                  <span>{formatDate(reply.timestamp)}</span>
+                </div>
+              </div>
+              <p>{reply.content}</p>
+              <div className="social-comment__actions">
+                <Button
+                  aria-label={replyLiked ? "Unlike" : "Like"}
+                  className="social-comment__action"
+                  disabled={likingReplyId === reply.id}
+                  onClick={() => handleReplyLike(reply)}
+                  size="sm"
+                  type="button"
+                  variant={replyLiked ? "primary" : "outline-primary"}
+                >
+                  {replyLiked ? (
+                    <FaThumbsUp aria-hidden="true" />
+                  ) : (
+                    <FaRegThumbsUp aria-hidden="true" />
+                  )}
+                  <span>{Number(reply.likes || 0)}</span>
+                </Button>
+                <Button
+                  className="social-comment__action"
+                  disabled={replyDepth >= MAX_REPLY_DEPTH}
+                  onClick={() => handleReplyToggle(reply.id)}
+                  size="sm"
+                  type="button"
+                  variant="outline-secondary"
+                >
+                  Reply
+                </Button>
+              </div>
+              {renderReplyForm(reply.id, replyDepth, postId, rootCommentId)}
+              {renderReplyThreadToggle(reply.id)}
+              {renderReplies(reply.id, replyDepth, postId, rootCommentId)}
+            </li>
+          );
+        })}
+      </ul>
+    );
+  };
+
+  const renderPost = (post) => {
+    const postId = getId(post._id);
+    const postComments = commentsByPostId[postId] || [];
+    const postCommentTotal = getPostCommentTotal(postId, postComments);
+    const isCommentSectionOpen = Boolean(openCommentPostIds[postId]);
+    const postLiked = hasLocalLike({ type: "post", userId, itemId: postId });
+
+    return (
+      <Card className="home-post" key={postId}>
+        <Card.Body>
+          <div className="home-post__topline">
+            <span>{formatDate(post.time_stamp || post.post_date || post.createdAt)}</span>
+          </div>
+          <p className="home-post__content">{getPostContent(post)}</p>
+          <div className="post-interactions__summary">
+            <span>{formatCount(Number(post.likes || 0), "like")}</span>
+            <button
+              className="post-interactions__count"
+              onClick={() => handleCommentSectionToggle(postId)}
+              type="button"
+            >
+              {formatCount(postCommentTotal, "comment")}
+            </button>
+          </div>
+          <div className="home-post__actions">
+            <Button
+              aria-label={postLiked ? "Unlike" : "Like"}
+              className={`home-post__like ${postLiked ? "home-post__like--active" : ""}`}
+              disabled={likingPostId === postId}
+              onClick={() => handleLike(post)}
+              size="sm"
+              type="button"
+              variant={postLiked ? "primary" : "outline-primary"}
+            >
+              {postLiked ? (
+                <FaThumbsUp aria-hidden="true" />
+              ) : (
+                <FaRegThumbsUp aria-hidden="true" />
+              )}
+            </Button>
+            <Button
+              className="home-post__comment"
+              onClick={() => handleCommentSectionToggle(postId)}
+              size="sm"
+              type="button"
+              variant="outline-secondary"
+            >
+              Comment
+            </Button>
+          </div>
+
+          {isCommentSectionOpen ? (
+            <div className="home-comments">
+              <h3>Comments</h3>
+              <Form
+                className="home-comments__form"
+                onSubmit={(event) => handleCommentSubmit(event, postId)}
+              >
+                <Form.Control
+                  as="textarea"
+                  aria-label="Add a comment"
+                  disabled={commentingPostId === postId}
+                  onChange={(event) => handleCommentDraftChange(postId, event.target.value)}
+                  placeholder="Add a comment"
+                  rows={2}
+                  value={commentDrafts[postId] || ""}
+                />
+                <Button
+                  disabled={commentingPostId === postId || !commentDrafts[postId]?.trim()}
+                  size="sm"
+                  type="submit"
+                  variant="primary"
+                >
+                  {commentingPostId === postId ? "Posting..." : "Comment"}
+                </Button>
+              </Form>
+              {postComments.length === 0 ? (
+                <p className="home-comments__empty">No comments yet.</p>
+              ) : (
+                <ul className="home-comments__list">
+                  {postComments.map((comment) => {
+                    const commentId = getId(comment._id);
+                    const commentLiked = hasLocalLike({
+                      type: "comment",
+                      userId,
+                      itemId: commentId,
+                    });
+                    return (
+                      <li className="home-comments__item" key={commentId}>
+                        <p>{getCommentContent(comment)}</p>
+                        <span>{formatDate(comment.time_stamp || comment.createdAt)}</span>
+                        <div className="social-comment__actions">
+                          <Button
+                            aria-label={commentLiked ? "Unlike" : "Like"}
+                            className="social-comment__action"
+                            disabled={likingCommentId === commentId}
+                            onClick={() => handleCommentLike(comment)}
+                            size="sm"
+                            type="button"
+                            variant={commentLiked ? "primary" : "outline-primary"}
+                          >
+                            {commentLiked ? (
+                              <FaThumbsUp aria-hidden="true" />
+                            ) : (
+                              <FaRegThumbsUp aria-hidden="true" />
+                            )}
+                            <span>{Number(comment.likes || 0)}</span>
+                          </Button>
+                          <Button
+                            className="social-comment__action"
+                            onClick={() => handleReplyToggle(commentId)}
+                            size="sm"
+                            type="button"
+                            variant="outline-secondary"
+                          >
+                            Reply
+                          </Button>
+                        </div>
+                        {renderReplyForm(commentId, 0, postId, commentId)}
+                        {renderReplyThreadToggle(commentId)}
+                        {renderReplies(commentId, 0, postId, commentId)}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+          ) : null}
+        </Card.Body>
+      </Card>
+    );
+  };
+
+  if (status === "loading") {
+    return (
+      <section className="home-page home-page--centered" aria-live="polite">
+        <Spinner animation="border" className="home-page__spinner" role="status" />
+        <span>Loading your home page...</span>
+      </section>
+    );
+  }
+
+  if (status === "error") {
+    return (
+      <AutoDismissAlert
+        variant="danger"
+        className="home-page__alert"
+      >
+        {error}
+      </AutoDismissAlert>
+    );
+  }
+
+  return (
+    <section className="home-page">
+      {error ? (
+        <AutoDismissAlert
+          variant="warning"
+          className="home-page__alert"
+          onClose={() => setError("")}
+        >
+          {error}
+        </AutoDismissAlert>
+      ) : null}
+
+      <Row className="g-4 align-items-start">
+        <Col lg={4}>
+          <div className="d-flex flex-column gap-3">
+            <Card className="home-profile" id="home-profile">
+              <Card.Body>
+                <div className="avatar-presence avatar-presence--stacked">
+                  <ProfileAvatar className="home-profile__avatar" user={profile} />
+                  <div className="home-profile__status">
+                    <span className="home-profile__status-label">
+                      STATUS: {isUserActive ? "Active" : "Offline"}
+                    </span>
+                    <StatusDot userId={userId} placement="inline" />
+                  </div>
+                </div>
+                <Card.Title as="h1" className="home-profile__name">
+                  {getDisplayName(profile)}
+                </Card.Title>
+                <div className="home-profile__meta">
+                  {profile?.occupation ? <span>{profile.occupation}</span> : null}
+                  {profile?.location ? <span>{profile.location}</span> : null}
+                  {profile?.email ? <span>{profile.email}</span> : null}
+                </div>
+                <Badge bg="secondary" className="home-profile__badge">
+                  {profile?.auth_level || "basic"} account
+                </Badge>
+              </Card.Body>
+            </Card>
+            <div className="home-stat-stack">
+              <Card className="home-stat home-stat--compact">
+                <Card.Body>
+                  <span className="home-stat__label">Your posts</span>
+                  <strong className="home-stat__value">{userPosts.length}</strong>
+                </Card.Body>
+              </Card>
+              <Card className="home-stat home-stat--compact">
+                <Card.Body>
+                  <span className="home-stat__label">Your comments</span>
+                  <strong className="home-stat__value">{userCommentsCount}</strong>
+                </Card.Body>
+              </Card>
+              <Card className="home-stat home-stat--compact">
+                <Card.Body>
+                  <span className="home-stat__label">Your likes</span>
+                  <strong className="home-stat__value">{userLikesCount}</strong>
+                </Card.Body>
+              </Card>
+            </div>
+          </div>
+        </Col>
+
+        <Col lg={8}>
+          <div className="d-flex flex-column gap-3">
+            <Card className="home-stat">
+              <Card.Body>
+                <span className="home-stat__label">Most recent activity</span>
+                {recentActivities.length > 0 ? (
+                  <ul className="home-activity__list">
+                    {recentActivities.map((activity, i) => (
+                      <li key={i} className="home-activity__item">
+                        <span className="home-activity__type">
+                          You {activity.type}{activity.context ? ` ${activity.context}` : ""}
+                        </span>
+                        <span className="home-activity__preview">"{activity.preview}"</span>
+                        <span className="home-activity__date">{formatDate(activity.date)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <span className="home-stat__label">No activity yet</span>
+                )}
+              </Card.Body>
+            </Card>
+
+            <div className="home-feed__header">
+              <h2>Your posts</h2>
+            </div>
+
+            {userPosts.length === 0 ? (
+              <Card className="home-empty">
+                <Card.Body>
+                  <Card.Title>No posts yet</Card.Title>
+                  <Card.Text>
+                    Your CodeBloggs posts will appear here after you publish them.
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            ) : (
+              renderPost(userPosts[0])
+            )}
+          </div>
+        </Col>
+      </Row>
+
+      {userPosts.length > 1 ? (
+        <div className="home-feed">
+          <div className="home-feed__list">
+            {userPosts.slice(1).map(renderPost)}
+          </div>
+        </div>
+      ) : null}
+    </section>
+  );
+};
+
+export default Home;
