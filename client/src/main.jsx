@@ -17,6 +17,7 @@ import Blogs from "./pages/Blogs";
 import Network from "./pages/Network";
 import Admin from "./pages/Admin";
 import UserManager from "./pages/UserManager";
+import EditUserPage from "./pages/EditUserPage";
 import AccountSettings from "./pages/AccountSettings";
 import NotFound from "./pages/NotFound";
 
@@ -55,16 +56,12 @@ const router = createBrowserRouter([
                       // /admin with no sub-path redirects to /admin/users.
                       { index: true, element: <Navigate to="/admin/users" replace /> },
                       { path: "users", element: <UserManager /> },
-                      // /admin/users/:id — placeholder until user-update.feature.md
-                      // is implemented. The route must exist so Edit links in
-                      // UserManager navigate without a 404.
+                      // /admin/users/:id — Edit User page; implemented in
+                      // user-update.feature.md. Protected by the same admin guard
+                      // as the parent route so non-admins are redirected to /home.
                       {
                         path: "users/:id",
-                        element: (
-                          <div className="p-3 text-muted">
-                            User Update — coming soon (user-update.feature.md).
-                          </div>
-                        ),
+                        element: <EditUserPage />,
                       },
                       // /admin/content — placeholder until content-manager.feature.md
                       // is implemented.

@@ -120,8 +120,9 @@ No component or reducer changes needed.
 
 ## Feature: User Update Screen
 
-**Frontend path:** `/admin/users` (modal overlay — no new route)  
-**Feature spec:** `ai/Module_10/features/frontend/user-update.feature.md`
+**Frontend path:** `/admin/users/:id` (full page — `EditUserPage` inside Admin Page Shell)  
+**Feature spec:** `ai/Module_10/features/frontend/user-update.feature.md`  
+**Status:** ✅ Frontend implemented — waiting on backend `PATCH /user/:id`
 
 ### Dependency 1 — Fetch Single User
 
@@ -129,7 +130,7 @@ No component or reducer changes needed.
 |---|---|
 | **Endpoint** | `GET /user/:id` |
 | **Status** | ✅ Exists from M9 — call directly |
-| **Used in** | `EditUserModal` — available as a fallback to refresh stale data; in most cases the selected user object passed as a prop from the User Manager table is sufficient |
+| **Used in** | `EditUserPage` — called only as a fallback when the user navigates directly to `/admin/users/:id` without going through the User Manager (where `fetchUsers` pre-populates the store). The store lookup via `state.users.users.find(u => u._id === id)` is the primary path. |
 | **Fallback** | None needed — endpoint is live |
 
 ---

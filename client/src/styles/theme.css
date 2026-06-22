@@ -1716,6 +1716,37 @@ select {
   opacity: 0.35;
 }
 
+/* ===== 13b. EDIT USER PAGE ===== */
+
+/* ==========================================================================
+   EditUserPage — /admin/users/:id
+   --------------------------------------------------------------------------
+   1. Container     .edit-user-page         top-level spacing
+   2. Back link     .edit-user-page__back-link
+   3. Heading       .edit-user-page__heading
+   ========================================================================== */
+
+.edit-user-page {
+  padding-top: 1.25rem;
+}
+
+.edit-user-page__back-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: var(--color-tropical-indigo);
+  text-decoration: none;
+}
+
+.edit-user-page__back-link:hover {
+  text-decoration: underline;
+  color: var(--color-electric-violet);
+}
+
+.edit-user-page__heading {
+  margin-bottom: 1.25rem;
+}
+
 /* ===== 14. POST MODAL ===== */
 .post-modal {
   position: fixed;

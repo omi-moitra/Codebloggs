@@ -7,12 +7,13 @@
 // 4. Pagination         slice sorted results; previous/next controls
 // 5. Results-per-page   dropdown: 10, 15, 20; resets to page 1 on change
 // 6. Delete flow        Delete button (IoTrashOutline) → ConfirmModal → dispatch deleteUserAction
-// 7. Edit flow          Edit button (FaRegEdit) → EditUserModal (stub; full form in user-update.feature.md)
+// 7. Edit flow          Edit button (FaRegEdit) → navigate to /admin/users/:id (EditUserPage)
 // 8. Icons              FaRegEdit (edit), IoTrashOutline (delete) from react-icons
 // =============================================================================
 
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Alert, Button, Form, Spinner, Table } from "react-bootstrap";
 import { BsCaretUpFill, BsFillCaretDownFill } from "react-icons/bs";
 import { FaRegEdit } from "react-icons/fa";
@@ -20,12 +21,12 @@ import { IoTrashOutline } from "react-icons/io5";
 import { TbCaretUpDownFilled } from "react-icons/tb";
 import { fetchUsers, deleteUserAction } from "../redux/actions/userActions";
 import ConfirmModal from "../components/ConfirmModal";
-import EditUserModal from "../components/EditUserModal";
 
 const PAGE_SIZE_OPTIONS = [10, 15, 20];
 
 const UserManager = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Pull user list and async state from the Redux store.
   const { users, loading, error: storeError } = useSelector((state) => state.users);
@@ -41,7 +42,6 @@ const UserManager = () => {
   const [userToDelete, setUserToDelete] = useState(null);
   const [deleteError, setDeleteError] = useState("");
   const [deleting, setDeleting] = useState(false);
-  const [selectedUserForEdit, setSelectedUserForEdit] = useState(null);
 
   // Fetch the full user list once when the component mounts. The thunk
   // updates the Redux store; re-renders happen via useSelector.
@@ -256,11 +256,13 @@ const UserManager = () => {
                 <td>{user.first_name}</td>
                 <td>{user.last_name}</td>
                 <td>
-                  {/* Edit opens the EditUserModal; full form implemented in user-update.feature.md. */}
+                  {/* Edit navigates to the full EditUserPage at /admin/users/:id.
+                      The user is already in the Redux store so EditUserPage can
+                      pre-populate without an extra network call. */}
                   <Button
                     variant="outline-primary"
                     size="sm"
-                    onClick={() => setSelectedUserForEdit(user)}
+                    onClick={() => navigate(`/admin/users/${user._id}`)}
                     aria-label={`Edit ${user.first_name} ${user.last_name}`}
                   >
                     <FaRegEdit />
@@ -353,13 +355,9 @@ const UserManager = () => {
         confirmLabel="Delete"
         confirmVariant="danger"
         loading={deleting}
+        loadingLabel="Deleting…"
       />
 
-      {/* Edit User modal — stub for user-update.feature.md; passes selected user data. */}
-      <EditUserModal
-        user={selectedUserForEdit}
-        onClose={() => setSelectedUserForEdit(null)}
-      />
     </div>
   );
 };
