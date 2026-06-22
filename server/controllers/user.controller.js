@@ -6,8 +6,14 @@
 
 import bcrypt from "bcrypt";
 import { validationResult } from "express-validator";
+import mongoose from "mongoose";
 
 import User from "../schemas/User.js";
+import Post from "../schemas/Post.js";
+import Comment from "../schemas/Comment.js";
+import Session from "../schemas/Session.js";
+import Reply from "../schemas/Reply.js";
+import ProfilePic from "../schemas/ProfilePic.js";
 
 // bcrypt cost factor. 10 is the project standard (balances security and speed).
 const SALT_ROUNDS = 10;
@@ -138,6 +144,76 @@ export async function getAllUsers(req, res) {
     });
   } catch (err) {
     console.error("Get all users error:", err);
+    return res.status(500).json({
+      status: "error",
+      data: {},
+      message: "Internal server error",
+    });
+  }
+}
+
+// DELETE /user/:id — Delete a user and clean up related data.
+export async function deleteUser(req, res) {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        status: "error",
+        data: {},
+        message: "Invalid user id",
+      });
+    }
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        data: {},
+        message: "User not found",
+      });
+    }
+
+    const userPosts = await Post.find({ user_id: id }).select("_id");
+    const postIds = userPosts.map(post => post._id);
+
+    const commentsToDelete = await Comment.find({
+      $or: [
+        { user_id: id },
+        { post_id: { $in: postIds } },
+      ],
+    }).select("_id");
+    const commentIds = commentsToDelete.map(comment => comment._id);
+
+    await Reply.deleteMany({
+      $or: [
+        { user_id: id },
+        { post_id: { $in: postIds } },
+        { root_comment_id: { $in: commentIds } },
+        { parent_type: "Comment", parent_id: { $in: commentIds } },
+      ],
+    });
+
+    await Comment.deleteMany({ _id: { $in: commentIds } });
+
+    await Post.updateMany(
+      {},
+      { $pull: { comments: { $in: commentIds } } }
+    );
+
+    await Post.deleteMany({ _id: { $in: postIds } });
+    await Session.deleteMany({ user: id });
+    await ProfilePic.deleteMany({ user_id: id });
+    await User.findByIdAndDelete(id);
+
+    return res.status(200).json({
+      status: "ok",
+      data: {},
+      message: "User deleted successfully",
+    });
+  } catch (err) {
+    console.error("Delete user error:", err);
     return res.status(500).json({
       status: "error",
       data: {},
