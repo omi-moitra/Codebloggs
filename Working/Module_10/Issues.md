@@ -22,6 +22,7 @@
 10. [Research.md Missing Third Requirement: Project Setup Instructions](#10-researchmd-missing-third-requirement-project-setup-instructions)
 11. [User Update "Return to Manager" Requirement with Modal Approach](#11-user-update-return-to-manager-requirement-with-modal-approach)
 12. [Content Manager: "Select All" Button (not "Clear")](#12-content-manager-select-all-button-not-clear)
+13. [Content Manager Date Filter: Client-Side vs. API Call](#13-content-manager-date-filter-client-side-vs-api-call)
 
 ---
 
@@ -353,4 +354,31 @@ Flagged on 2026-06-22.
 User Manager spec uses "Clear" ✅. Content Manager spec must use "Select All" — note this when writing `content-manager.feature.md`.
 
 **Lingering issues:**
-Ensure `content-manager.feature.md` uses "Select All" as the button label, not "Clear".
+✅ Resolved — `content-manager.feature.md` uses "Select All" as the button label.
+
+---
+
+## 13. Content Manager Date Filter: Client-Side vs. API Call
+
+**What the issue is:**
+`project-breakdown.md` sub-task reads: "Wire date filter to Redux action and API call." This wording implies the date filter triggers a new server request with date query parameters. However, `GET /posts` in the ai-spec has no documented query parameters, and no filtered post endpoint exists in the route map.
+
+**Where it came up:**
+- `project-breakdown.md` — Frontend > Story: Content Manager — List & Date Filtering > "Wire date filter to Redux action and API call"
+- `ai/Module_10/ai-spec.md` — Backend Routes > `GET /posts` (no query params listed)
+
+**Why it came up (sources of confusion):**
+The phrase "API call" in the sub-task may refer to the initial `fetchPosts` dispatch (which does make an API call) rather than a separate date-filtered request. The User Manager establishes the same pattern — name search is entirely client-side after the initial `GET /user` load.
+
+**Potential solutions:**
+- (a) Client-side filtering — filter the in-memory array after `GET /posts` loads (consistent with User Manager pattern; no backend changes needed)
+- (b) Server-side filtering — requires `GET /posts?start=&end=` query param support from the partner (not currently documented)
+
+**Discussion had with user:**
+Not yet discussed.
+
+**Decision made:**
+Option (a) — client-side filtering, consistent with the User Manager pattern. `content-manager.feature.md` implements the date filter on the in-memory Redux store array. No additional API call is made when the filter changes.
+
+**Lingering issues:**
+If the grading sheet specifically requires a server-side date filter endpoint, confirm with coach and coordinate with partner to add query param support to `GET /posts`.

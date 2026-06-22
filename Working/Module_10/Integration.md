@@ -182,8 +182,7 @@ No component or reducer changes needed — only the endpoint must exist and retu
 ## Feature: Content Manager
 
 **Frontend path:** `/admin/content`  
-**Feature spec:** `ai/Module_10/features/frontend/content-manager.feature.md` *(not yet written)*  
-**Status:** Placeholder — expand when spec is created
+**Feature spec:** `ai/Module_10/features/frontend/content-manager.feature.md`
 
 ### Dependency 1 — Fetch All Posts
 
@@ -191,7 +190,29 @@ No component or reducer changes needed — only the endpoint must exist and retu
 |---|---|
 | **Endpoint** | `GET /posts` |
 | **Status** | ✅ Exists from M9 — call directly |
-| **Fallback** | None needed |
+| **Redux action** | `fetchPosts` |
+| **Fallback** | None needed — endpoint is live |
+
+**Required response shape (confirm with partner):**
+```json
+[
+  {
+    "_id": "string",
+    "title": "string",
+    "content": "string",
+    "user_id": "string",
+    "first_name": "string",
+    "last_name": "string",
+    "time_stamp": "ISO 8601 string",
+    "likes": [],
+    "comments": []
+  }
+]
+```
+
+**⚠️ Critical — author name population:** Confirm with partner whether `GET /posts` returns `first_name` and `last_name` inline (populated via Mongoose `.populate()`), or only a `user_id`. If only `user_id` is returned, the Author column cannot be rendered without a separate lookup per post — this must be resolved before the Content Manager table can show author names. Display `user_id` as a fallback until confirmed.
+
+---
 
 ### Dependency 2 — Delete a Post
 
@@ -199,8 +220,26 @@ No component or reducer changes needed — only the endpoint must exist and retu
 |---|---|
 | **Endpoint** | `DELETE /posts/:id` |
 | **Status** | 🔴 New M10 endpoint — not yet delivered |
-| **Fallback** | Same pattern as Delete User: button and modal render; error caught gracefully; post NOT removed from store on error. |
-| **Backend contract** | TBD — expand when spec is written. Must cascade-delete all comments on the post. |
+| **Redux action** | `deletePost(id)` |
+| **Fallback** | The Delete button and confirmation modal render normally. On confirm, the Thunk fires the fetch. Until the endpoint exists, the fetch returns a 404 — the action catches the error, dispatches an error state, and the component shows a toast/alert: "Delete unavailable — backend update in progress." The post is NOT removed from the Redux store on error. |
+
+**Backend contract (what the partner must deliver):**
+```
+DELETE /posts/:id
+→ 200 OK  (or 204 No Content)
+→ Body: { message: "Post deleted" }  (or empty on 204)
+→ Side effects: all comments on this post must be deleted
+```
+
+**Integration swap (one-line change in the Thunk when endpoint is ready):**
+```js
+// Before (error state reached naturally because route doesn't exist):
+const res = await fetch(`/posts/${id}`, { method: 'DELETE' });
+
+// After (no change needed — same line, endpoint now exists):
+const res = await fetch(`/posts/${id}`, { method: 'DELETE' });
+```
+No component or reducer changes needed.
 
 ---
 
@@ -246,4 +285,8 @@ Use this checklist when the backend partner signals that a new M10 endpoint is r
 
 ### Content Manager
 
-- [ ] *(Fill in when `content-manager.feature.md` is written)*
+- [ ] Confirm `GET /posts` response shape — does it include `first_name` and `last_name` inline, or only `user_id`? If only `user_id`, coordinate with partner to populate author names (`.populate()` on the backend, or a separate lookup strategy)
+- [ ] Confirm `time_stamp` field name and format (ISO 8601 string expected) — update date filter comparison logic if format differs
+- [ ] Partner delivers `DELETE /posts/:id` with cascade (all comments on the post must be deleted)
+- [ ] Test delete with a real post: verify post disappears from the table and its comments are removed from MongoDB
+- [ ] Remove error-fallback path from `deletePost` Thunk (or leave it — it will simply never be reached once the endpoint exists)
