@@ -242,6 +242,103 @@ Stores comments associated with blog posts.
 * Clearly label Frontend work with **FE**.
 * Respect existing MERN architecture and coding conventions.
 * Explain generated changes briefly when appropriate.
+* All JavaScript must use **ES Module syntax (ESM6)** — do not use CommonJS (`require` / `module.exports`).
+
+---
+
+## Code Quality Requirements
+
+Every generated or modified file must contain:
+
+* A **comments-based Table of Contents** at the top of the file describing its sections at a glance (see style guide below)
+* Clear inline comments explaining important logic
+* Notes explaining implementation decisions
+* Warnings for known limitations using `// ⚠️`
+
+### Comments TOC
+
+Every file must open with a comment block that maps its contents — modelled on the style used in `client/src/styles/theme.css`:
+
+```javascript
+// =============================================================================
+// controllers/user.controller.js — User API handlers
+// -----------------------------------------------------------------------------
+// 1. getUsers          GET  /user         — retrieve all users
+// 2. getUserById       GET  /user/:id     — retrieve a single user
+// 3. updateUser        PATCH /user/:id    — update user fields
+// 4. deleteUser        DELETE /user/:id   — delete user + cascade posts/comments
+// =============================================================================
+```
+
+```css
+/* ==========================================================================
+   ComponentName — short description
+   --------------------------------------------------------------------------
+   1.  Variables & Layout      selectors
+   2.  States                  .component--modifier
+   3.  Responsive              @media (max-width: ...)
+   ========================================================================== */
+```
+
+### Inline Comment Style
+
+Comments must explain **why** a decision was made, not just what the code does. Model all comments after `server/controllers/comment.controller.js`:
+
+**Why-comments** — explain constraints, invariants, and non-obvious decisions:
+
+```javascript
+// user_id is always taken from the validated session (set by requireSession
+// middleware) — never from the request body, so clients cannot impersonate
+// another user.
+const user_id = req.user._id;
+
+// time_stamp is always generated server-side so clients cannot supply
+// backdated or future-dated values.
+const time_stamp = new Date().toISOString();
+```
+
+**`// ⚠️` warnings** — flag important constraints and cross-system invariants:
+
+```javascript
+// ⚠️ likes is always set to 0 server-side on create (never read from the body).
+
+// ⚠️ Two-way Post ↔ Comment link: the Comment stores post_id, AND the Post
+// stores the comment's _id in its comments[]. Both sides must stay in sync.
+await Post.findByIdAndUpdate(post_id, { $push: { comments: comment._id } });
+```
+
+### JavaScript Standard
+
+All JavaScript must use **ES Module syntax (ESM6)**. Do not use CommonJS.
+
+| Use | Avoid |
+|-----|-------|
+| `import x from 'y'` | `const x = require('y')` |
+| `export default x` | `module.exports = x` |
+| `export { x }` | `module.exports = { x }` |
+
+### Implementation Logs
+
+An implementation log must be created for every completed feature in:
+
+```
+Working/Module_10/Implementation_Logs/
+```
+
+Name each log with a `FE_` or `BE_` prefix to indicate which end it covers:
+
+```
+FE_<feature-name>.md
+BE_<feature-name>.md
+```
+
+Each log must summarize:
+
+* Files created
+* Files modified
+* Decisions made
+* Deviations from specification
+* Known issues
 
 ---
 
@@ -327,3 +424,6 @@ CLIENT_ORIGIN=
 * [ ] Frontend builds successfully
 * [ ] All required Module 10 requirements are satisfied
 * [ ] Final project merged into main branch
+* [ ] All generated/modified files include a comments-based TOC at the top
+* [ ] All generated/modified files include inline why-comments on important logic
+* [ ] Implementation log created for each completed feature (`FE_` or `BE_` prefix in `Working/Module_10/Implementation_Logs/`)
