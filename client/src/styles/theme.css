@@ -1649,8 +1649,18 @@ select {
   margin: 0;
 }
 
-.user-manager__search {
-  max-width: 32rem;
+/* Two-field search row: [First Name…] [Last Name…] [Clear] */
+.user-manager__search-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.user-manager__search-field {
+  flex: 1;
+  min-width: 10rem;
+  max-width: 16rem;
 }
 
 .user-manager__table {

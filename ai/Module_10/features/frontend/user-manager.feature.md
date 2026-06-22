@@ -23,7 +23,8 @@ Give administrators a protected admin section where they can view all registered
 - User Manager page at `/admin/users` — data table listing all users
 - Pagination — default 10 users per page with previous/next controls
 - Results-per-page dropdown — options: 10, 15, 20
-- Search input — filters the user list by first and/or last name
+- Search inputs — separate First Name and Last Name fields; filter the list independently or together as the admin types
+- Clear button — resets both search fields and restores the full user list
 - Alphabetical sort — sort table by first name or last name column header click
 - Delete button per row with a confirmation modal
 - Redux integration — fetch users, dispatch delete action, update store on success
@@ -42,10 +43,11 @@ Give administrators a protected admin section where they can view all registered
 
 - **Admin Route Guard** — redirect any non-admin user away from `/admin` and all sub-routes; check role from Redux auth state
 - **Admin Page Shell** — layout component containing the tab/link navigation between `/admin/users` (User Manager) and `/admin/content` (Content Manager)
-- **User Table** — displays all users with columns: First Name, Last Name, Edit (link to `/admin/users/:id`), Delete
+- **User Table** — displays all users with columns: First Name, Last Name, Edit (opens edit modal), Delete
 - **Pagination Controls** — previous/next page buttons; tracks current page in component state; defaults to page 1
 - **Results-Per-Page Dropdown** — lets admin choose 10, 15, or 20 users per page; resets to page 1 on change
-- **Search Input** — text field at the top of the table; filters displayed users by first name or last name on input change or submit
+- **Search Inputs** — two separate text fields (First Name, Last Name) at the top of the table; auto-filter the list client-side as the admin types in either or both fields
+- **Clear Button** — resets both search fields to empty and restores the full unfiltered user list; also resets the page back to 1
 - **Alphabetical Sort** — clicking First Name or Last Name column header sorts the visible list A→Z / Z→A (client-side)
 - **Delete Button** — per-row button that opens a confirmation modal before any destructive action
 - **Delete Confirmation Modal** — shows the user's name and asks admin to confirm; cancelling closes without action
@@ -60,14 +62,15 @@ Give administrators a protected admin section where they can view all registered
 3. Admin Page Shell renders with tab navigation; User Manager tab is active
 4. Component dispatches a Redux action that calls `GET /user` and stores the user list
 5. Table renders with the first 10 users (default page size)
-6. Admin types in the search field — list filters client-side by first/last name
+6. Admin types in the First Name or Last Name search field (or both) — list auto-filters client-side on every keystroke
+6a. Admin clicks Clear — both fields reset, full list reloads, page resets to 1
 7. Admin clicks a column header — list sorts alphabetically by that column (client-side)
 8. Admin changes results per page — table re-renders with the new page size, resets to page 1
 9. Admin uses previous/next controls to paginate through results
 10. Admin clicks "Delete" on a row — confirmation modal opens showing the user's name
 11. Admin confirms — Redux dispatches `DELETE /user/:id`; backend handles cascade deletion of their posts/comments
 12. User is removed from the Redux store and disappears from the table without a page reload
-13. Admin can click "Edit" on a row — navigates to `/admin/users/:id` (handled by `user-update.feature.md`)
+13. Admin can click "Edit" on a row — the Edit User modal opens pre-populated with that user's data (modal implemented in `user-update.feature.md`)
 
 ---
 
@@ -100,7 +103,7 @@ Give administrators a protected admin section where they can view all registered
 |  Home    |  [User Manager]   Content Manager                                                           |
 |          |  ─────────────────────────────────────────────────────────────────────────────────────────  |
 |  Blogs   |                                                                                              |
-|          |  Search: [ Search by first or last name...                              ]                   |
+|          |  First Name: [ Search...           ]  Last Name: [ Search...           ]  [Clear]        |
 |  Network |                                                                                              |
 |          |  +---------------------+---------------------+--------------+---------------------------+   |
 | [Admin ] |  | First Name ^       | Last Name           | Edit         | Delete                    |   |
@@ -139,7 +142,7 @@ First click on a column header → ascending (`^`). Second click → descending 
 No pagination controls are rendered when the filtered list is empty.
 
 ```
-|  Search: [ xyz                                                       ]               |
+|  First Name: [ xyz                   ]  Last Name: [                     ]  [Clear] |
 |                                                                                       |
 |  +---------------------+---------------------+--------------+------------------+    |
 |  | First Name ^       | Last Name           | Edit         | Delete           |    |
@@ -174,7 +177,9 @@ No pagination controls are rendered when the filtered list is empty.
 | UI Element | Bootstrap Component / Props |
 |---|---|
 | Tab navigation | `<Nav variant="tabs">` + `<Nav.Link as={Link} to="...">` per tab |
-| Search field | `<Form.Control type="text" placeholder="Search by first or last name..." />` |
+| First Name search field | `<Form.Control type="text" placeholder="First Name..." />` |
+| Last Name search field | `<Form.Control type="text" placeholder="Last Name..." />` |
+| Clear button | `<Button variant="outline-secondary" size="sm">Clear</Button>` — resets both fields and restores full list |
 | Table | `<Table striped bordered hover responsive>` |
 | Sort column headers | Clickable `<th style={{ cursor: 'pointer' }}>` — append `^` (ascending) or `v` (descending) to the active column label |
 | Row hover highlight | `<Table hover>` — Bootstrap's `.table-hover` applies a full-row background highlight on `mouseenter`; no custom CSS required |
@@ -191,7 +196,7 @@ No pagination controls are rendered when the filtered list is empty.
 ## Data Used or Modified
 
 - **User object read:** `_id`, `first_name`, `last_name`, `email`, `role`, `profile_image`
-- **Redux store state:** user list array, loading flag, current page number, page size, search query string
+- **Redux store state:** user list array, loading flag, current page number, page size, first name search string, last name search string
 - **On delete:** dispatch the DELETE action and remove the user from the Redux store on a successful response; cascade logic is handled entirely by the backend
 
 ---
@@ -215,13 +220,15 @@ No pagination controls are rendered when the filtered list is empty.
 - [ ] Table defaults to 10 results per page
 - [ ] Previous/next pagination controls work correctly
 - [ ] Results-per-page dropdown updates the table (10 / 15 / 20 options)
-- [ ] Typing in the search field filters the user list by first and/or last name
+- [ ] First Name and Last Name search fields are present and filter the list as the admin types
+- [ ] Typing in either field filters independently; both fields active together filter by both criteria
+- [ ] Clear button resets both search fields and restores the full user list
 - [ ] Clicking a column header sorts the table alphabetically by that column
 - [ ] Each row has a Delete button
 - [ ] Clicking Delete opens a confirmation modal showing the user's name
 - [ ] Cancelling the modal does not delete the user
 - [ ] Confirming the modal dispatches the delete action and removes the user from the table
-- [ ] "Edit" link per row navigates to `/admin/users/:id` (wired up, even if `user-update.feature.md` is not yet complete)
+- [ ] "Edit" button per row opens the Edit User modal pre-populated with that user's data
 - [ ] Tab navigation between User Manager and Content Manager renders correctly
 - [ ] All existing Module 9 functionality is unaffected
 - [ ] All files include a comments-based TOC and inline why-comments per ai-spec
@@ -237,6 +244,7 @@ No pagination controls are rendered when the filtered list is empty.
 - The delete action calls `DELETE /user/:id`. The frontend only needs to remove the user from the Redux store on a successful response. Do not write any cascade logic in React.
 - `ConfirmModal` should be a reusable component (not hard-coded into `UserManager`), as it will also be needed in the Content Manager.
 - Sorting is client-side only — sort the in-memory array before slicing for the current page.
-- Search should reset the page back to 1 when the query changes.
-- The "Edit" column link goes to `/admin/users/:id`. That route and its page are implemented in `user-update.feature.md` — this feature only needs to render the navigation link.
+- The search area has two separate controlled inputs (firstNameQuery, lastNameQuery). Filter logic: keep users where first_name includes firstNameQuery AND last_name includes lastNameQuery (case-insensitive). Either field empty means no filter on that field. Both empty = show all.
+- The Clear button sets both query strings to `""` and resets the page to 1.
+- The "Edit" button opens the Edit User modal — it is a modal overlay on the User Manager page, not a navigation to a separate route. The modal component is implemented in `user-update.feature.md` — this feature only needs to render the trigger button and pass the selected user's data to the modal.
 - See `Working/Module_10/Integration.md` for the backend contract each endpoint must fulfill and the graceful fallback for endpoints not yet delivered.

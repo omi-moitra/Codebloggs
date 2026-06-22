@@ -16,8 +16,12 @@
 4. [Feature File Naming Conflicts: ai-spec vs project-breakdown](#4-feature-file-naming-conflicts-ai-spec-vs-project-breakdown)
 5. [schema-usage and server-configuration Feature Files: In ai-spec, Not in project-breakdown](#5-schema-usage-and-server-configuration-feature-files-in-ai-spec-not-in-project-breakdown)
 6. [Route Path Inconsistency: /user (ai-spec) vs /api/users (project-breakdown)](#6-route-path-inconsistency-user-ai-spec-vs-apiusers-project-breakdown)
-7. [Skeleton Loaders: Listed as Both Core Requirement and Extra Mile](#7-skeleton-loaders-listed-as-both-core-requirement-and-extra-mile)
+7. [Skeleton Loaders: Core vs Extra Mile — Now Resolved](#7-skeleton-loaders-core-vs-extra-mile--now-resolved)
 8. [ai-spec Does Not Reflect Frontend-Only Responsibility Split](#8-ai-spec-does-not-reflect-frontend-only-responsibility-split)
+9. [Feature File Paths Don't Match Grading Sheet](#9-feature-file-paths-dont-match-grading-sheet)
+10. [Research.md Missing Third Requirement: Project Setup Instructions](#10-researchmd-missing-third-requirement-project-setup-instructions)
+11. [User Update "Return to Manager" Requirement with Modal Approach](#11-user-update-return-to-manager-requirement-with-modal-approach)
+12. [Content Manager: "Select All" Button (not "Clear")](#12-content-manager-select-all-button-not-clear)
 
 ---
 
@@ -67,13 +71,13 @@ The M10_Slides.txt uses ambiguous language: "When clicking on a User, this shoul
 - (b) In-page modal — simpler; matches project-breakdown task language
 
 **Discussion had with user:**
-Not yet discussed. Flagged for user decision.
+User confirmed modal approach on 2026-06-22.
 
 **Decision made:**
-Pending user input. `user-manager.feature.md` treats Edit as out-of-scope (handled by `user-update.feature.md`), which assumes option (a). If option (b) is chosen, `user-update.feature.md` should become a modal component spec instead.
+Option (b) — in-page modal. The Edit User UI is a modal overlay that opens from the User Manager table row. There is no `/admin/users/:id` route. `user-update.feature.md` describes the modal component. `user-manager.feature.md` has been updated to reflect this: Edit column opens the modal; the selected user's data is passed as a prop.
 
 **Lingering issues:**
-Must be confirmed before `user-update.feature.md` is written.
+The `/admin/users/:id` route listed in ai-spec.md Pages/Screens is now obsolete — it should be removed from the ai-spec to avoid confusing the AI into creating an unused route.
 
 ---
 
@@ -197,30 +201,25 @@ Coordinate with partner: is the Express route `/user/:id` or `/api/users/:id`? U
 
 ---
 
-## 7. Skeleton Loaders: Listed as Both Core Requirement and Extra Mile
+## 7. Skeleton Loaders: Core vs Extra Mile — Now Resolved
 
 **What the issue is:**
-Skeleton loaders appear in `project-breakdown.md` as a core frontend story AND in the Extra Miles table with a note about a potential extra-mile variant.
+Skeleton loaders appeared in `project-breakdown.md` as both a core requirement and an extra mile, with the distinction between them unexplained.
 
 **Where it came up:**
 - `project-breakdown.md` — Frontend > Story: Skeleton Loaders (Reactive Design) — core
-- `project-breakdown.md` — Extra Miles table — also listed, with note about variant
+- `project-breakdown.md` — Extra Miles table — also listed, with a note about a variant
 
 **Why it came up (sources of confusion):**
-The grading sheet CSV appears to have both a required-tier and an extra-mile entry for skeleton loaders. The distinction between them is not explained anywhere.
-
-**Potential solutions:**
-- (a) Implement core behavior (loading states in User Manager and Content Manager tables); treat extra-mile variant as out of scope until clarified
-- (b) Ask instructor what the extra-mile variant involves
-
-**Discussion had with user:**
-Not yet discussed.
+The grading sheet was not read in full when the project-breakdown was written, so the extra-mile variant was unknown.
 
 **Decision made:**
-Treating skeleton loaders as a standard core requirement only. The extra-mile variant is out of scope until clarified.
+Resolved by reading the full grading sheet CSV on 2026-06-22. The distinction is now clear:
+- **Core requirement** (`reactive-design.feature.md`): skeleton loaders in User Manager and Content Manager during loading operations
+- **Extra mile**: *"Implement skeleton loaders for key views (e.g., posts, user cards) to indicate loading states across the app"* — broader coverage across the whole application beyond the admin section
 
 **Lingering issues:**
-Ask instructor or coach: what is the extra-mile skeleton loader variant?
+None. Core scope is confirmed. Extra mile is clearly defined if pursued later.
 
 ---
 
@@ -248,3 +247,110 @@ Option (a) — add a single clarifying rule to ai-spec.md "Rules for the AI". Al
 
 **Lingering issues:**
 The ai-spec update should be done before the next AI coding session. All future frontend feature specs must include the "frontend-only" note in their "Notes for the AI" section.
+
+---
+
+## 9. Feature File Paths Don't Match Grading Sheet
+
+**What the issue is:**
+The grading sheet specifies all feature files at `./ai/features/<name>.feature.md` and the global spec at `./ai/ai-spec.md`. Our files are at `./ai/Module_10/features/frontend/`, `./ai/Module_10/features/backend/`, and `./ai/Module_10/ai-spec.md`. If the grader checks the expected paths, the files will not be found.
+
+**Where it came up:**
+- `FSD Grading Sheets (Shared) - m10.csv` — every AI Feature Specification line item specifies `./ai/features/<name>.feature.md` and `./ai/ai-spec.md`
+- Our actual file locations: `./ai/Module_10/features/frontend/`, `./ai/Module_10/features/backend/`, `./ai/Module_10/ai-spec.md`
+
+**Why it came up (sources of confusion):**
+The ai-spec.md organizes files by module and by FE/BE layer (a reasonable convention for a multi-module project). The grading sheet expects a flat `./ai/features/` structure without module subdirectories. The project-breakdown flagged this as "Discrepancy #7" but marked it as "no true conflict" — that assessment was made before the grading sheet was read in full.
+
+**Potential solutions:**
+- (a) Move all files to match the grading sheet paths (`./ai/features/`, `./ai/ai-spec.md`) — lowest grading risk; requires moving existing files and updating all internal references
+- (b) Keep current structure and add symlinks or copies at the grading sheet paths
+- (c) Keep current structure and hope the grader accepts it — highest risk
+
+**Discussion had with user:**
+Flagged on 2026-06-22 after reading the full grading sheet CSV.
+
+**Decision made:**
+Pending user decision. This is the highest-priority structural issue — it affects every feature spec file in the project.
+
+**Lingering issues:**
+Decide before writing more feature specs. If moving to `./ai/features/`, all existing files (`ai-spec.md`, `user-manager.feature.md`) need to be moved and all cross-references updated.
+
+---
+
+## 10. Research.md Missing Third Requirement: Project Setup Instructions
+
+**What the issue is:**
+The grading sheet has three Research.md line items. The project-breakdown only captured two of them. The missing one is: *"Add a short section explaining how to set up and run the project (installation, environment variables, start commands, etc.)."*
+
+**Where it came up:**
+- `FSD Grading Sheets (Shared) - m10.csv` — Technical Requirements > "Resarch.md - Project Setup Instructions" (note: "Resarch" is a typo in the grading sheet; the file is Research.md)
+- `project-breakdown.md` — Documentation > Research.md story (only lists reactive vs responsive and threshold justification)
+
+**Why it came up (sources of confusion):**
+The project-breakdown was built before the grading sheet was read in full. The third Research.md requirement was missed.
+
+**Potential solutions:**
+Add a "Project Setup" section to Research.md covering: installation steps, environment variables, and start commands for both client and server.
+
+**Discussion had with user:**
+Flagged on 2026-06-22 after reading the full grading sheet CSV.
+
+**Decision made:**
+Add to Research.md scope. Low effort — this content is largely a summary of what the README.md already covers.
+
+**Lingering issues:**
+None. Update the project-breakdown Research.md story to include this third requirement when next editing that document.
+
+---
+
+## 11. User Update "Return to Manager" Requirement with Modal Approach
+
+**What the issue is:**
+The grading sheet requires: *"A working Return link (or button) must redirect back to the User Manager page without applying any updates."* This language describes a page-navigation pattern. Since we chose a modal (Issue #2), there is no route navigation to "redirect back" from — closing the modal inherently returns the admin to the User Manager.
+
+**Where it came up:**
+- `FSD Grading Sheets (Shared) - m10.csv` — Feature: Frontend user update section > "User Update - Return to Manager Button"
+- `Working/Module_10/Issues.md` — Issue #2 (modal decision confirmed 2026-06-22)
+
+**Why it came up (sources of confusion):**
+The grading sheet was written assuming a page-based edit flow. The modal decision was made after the grading sheet requirement was established.
+
+**Potential solutions:**
+- (a) Include a "Cancel" or "Return to User Manager" button inside the modal that closes it without saving — this satisfies the intent of the requirement in a modal context
+- (b) Label the button explicitly "Return to User Manager" to match grading sheet language exactly
+
+**Discussion had with user:**
+Flagged on 2026-06-22.
+
+**Decision made:**
+The modal will include a clearly labelled **"Return to User Manager"** button (or "Cancel — Return to User Manager") that closes the modal without saving. This satisfies the grading sheet requirement while fitting the modal pattern.
+
+**Lingering issues:**
+Make sure `user-update.feature.md` includes this button in its Sub-Requirements and Acceptance Criteria with the explicit label.
+
+---
+
+## 12. Content Manager: "Select All" Button (not "Clear")
+
+**What the issue is:**
+The grading sheet requires a **"Select All"** button for the Content Manager: *"A Select All button retrieves all posts regardless of filters."* This is functionally similar to the "Clear" button in the User Manager (resets filters and shows everything) but uses a different name. The two features must use the correct button label for each.
+
+**Where it came up:**
+- `FSD Grading Sheets (Shared) - m10.csv` — Feature: Frontend content manager section > "Content Manager - Select All Button"
+- `user-manager.feature.md` uses "Clear" (correct for User Manager)
+
+**Why it came up (sources of confusion):**
+Both buttons reset filters and restore the full list, but the grading sheet uses different terminology for each panel. "Clear" for User Manager; "Select All" for Content Manager.
+
+**Potential solutions:**
+Use the exact names from the grading sheet: "Clear" in User Manager, "Select All" in Content Manager.
+
+**Discussion had with user:**
+Flagged on 2026-06-22.
+
+**Decision made:**
+User Manager spec uses "Clear" ✅. Content Manager spec must use "Select All" — note this when writing `content-manager.feature.md`.
+
+**Lingering issues:**
+Ensure `content-manager.feature.md` uses "Select All" as the button label, not "Clear".

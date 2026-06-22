@@ -2,24 +2,25 @@
 // pages/UserManager.jsx — Admin User Manager table
 // -----------------------------------------------------------------------------
 // 1. Data fetching      dispatch fetchUsers() on mount via Redux Thunk
-// 2. Search             client-side filter by first_name or last_name
+// 2. Search             two fields (firstNameSearch / lastNameSearch); AND filter; Clear button
 // 3. Sort               client-side sort by column header click (asc / desc)
 // 4. Pagination         slice sorted results; previous/next controls
 // 5. Results-per-page   dropdown: 10, 15, 20; resets to page 1 on change
 // 6. Delete flow        Delete button (IoTrashOutline) → ConfirmModal → dispatch deleteUserAction
-// 7. Icons              FaRegEdit (edit), IoTrashOutline (delete) from react-icons
+// 7. Edit flow          Edit button (FaRegEdit) → EditUserModal (stub; full form in user-update.feature.md)
+// 8. Icons              FaRegEdit (edit), IoTrashOutline (delete) from react-icons
 // =============================================================================
 
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { Alert, Button, Form, InputGroup, Spinner, Table } from "react-bootstrap";
+import { Alert, Button, Form, Spinner, Table } from "react-bootstrap";
 import { BsCaretUpFill, BsFillCaretDownFill } from "react-icons/bs";
 import { FaRegEdit } from "react-icons/fa";
 import { IoTrashOutline } from "react-icons/io5";
 import { TbCaretUpDownFilled } from "react-icons/tb";
 import { fetchUsers, deleteUserAction } from "../redux/actions/userActions";
 import ConfirmModal from "../components/ConfirmModal";
+import EditUserModal from "../components/EditUserModal";
 
 const PAGE_SIZE_OPTIONS = [10, 15, 20];
 
@@ -31,7 +32,8 @@ const UserManager = () => {
 
   // Local UI state — none of this belongs in Redux because it only affects
   // this component and does not need to survive navigation.
-  const [search, setSearch] = useState("");
+  const [firstNameSearch, setFirstNameSearch] = useState("");
+  const [lastNameSearch, setLastNameSearch] = useState("");
   const [sortField, setSortField] = useState("first_name");
   const [sortDir, setSortDir] = useState("asc");
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,6 +41,7 @@ const UserManager = () => {
   const [userToDelete, setUserToDelete] = useState(null);
   const [deleteError, setDeleteError] = useState("");
   const [deleting, setDeleting] = useState(false);
+  const [selectedUserForEdit, setSelectedUserForEdit] = useState(null);
 
   // Fetch the full user list once when the component mounts. The thunk
   // updates the Redux store; re-renders happen via useSelector.
@@ -47,17 +50,18 @@ const UserManager = () => {
   }, [dispatch]);
 
   // --- Client-side filter ---
-  // Filter by search term against first_name and last_name. Recompute only
-  // when the users array or search string changes.
+  // Filter by first name AND last name independently. An empty field skips
+  // that dimension so partial searches work as expected.
   const filtered = useMemo(() => {
-    const q = search.toLowerCase().trim();
-    if (!q) return users;
+    const fn = firstNameSearch.toLowerCase().trim();
+    const ln = lastNameSearch.toLowerCase().trim();
+    if (!fn && !ln) return users;
     return users.filter(
       (u) =>
-        u.first_name?.toLowerCase().includes(q) ||
-        u.last_name?.toLowerCase().includes(q)
+        (!fn || u.first_name?.toLowerCase().includes(fn)) &&
+        (!ln || u.last_name?.toLowerCase().includes(ln))
     );
-  }, [users, search]);
+  }, [users, firstNameSearch, lastNameSearch]);
 
   // --- Client-side sort ---
   // Sort the filtered list by the active column. Spread into a new array so
@@ -88,10 +92,22 @@ const UserManager = () => {
     }
   };
 
-  // Reset to page 1 whenever the search query changes so the admin always
+  // Reset to page 1 whenever a search field changes so the admin always
   // sees the first matching results, not a potentially empty page.
-  const handleSearchChange = (e) => {
-    setSearch(e.target.value);
+  const handleFirstNameSearch = (e) => {
+    setFirstNameSearch(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleLastNameSearch = (e) => {
+    setLastNameSearch(e.target.value);
+    setCurrentPage(1);
+  };
+
+  // Clear both search fields and reset to page 1 so the full unfiltered list reloads.
+  const handleClear = () => {
+    setFirstNameSearch("");
+    setLastNameSearch("");
     setCurrentPage(1);
   };
 
@@ -166,18 +182,34 @@ const UserManager = () => {
         </Alert>
       )}
 
-      {/* Search input — "Search:" prefix matches the spec layout; filters
-          the list client-side on every keystroke. */}
-      <InputGroup className="user-manager__search">
-        <InputGroup.Text>Search</InputGroup.Text>
+      {/* Two separate search fields (First Name + Last Name) + Clear button.
+          Both fields filter the list independently via AND logic on every keystroke. */}
+      <div className="user-manager__search-row">
         <Form.Control
           type="text"
-          placeholder="Search by first or last name…"
-          value={search}
-          onChange={handleSearchChange}
-          aria-label="Search users by name"
+          placeholder="First Name…"
+          value={firstNameSearch}
+          onChange={handleFirstNameSearch}
+          aria-label="Filter by first name"
+          className="user-manager__search-field"
         />
-      </InputGroup>
+        <Form.Control
+          type="text"
+          placeholder="Last Name…"
+          value={lastNameSearch}
+          onChange={handleLastNameSearch}
+          aria-label="Filter by last name"
+          className="user-manager__search-field"
+        />
+        <Button
+          variant="outline-secondary"
+          size="sm"
+          onClick={handleClear}
+          disabled={!firstNameSearch && !lastNameSearch}
+        >
+          Clear
+        </Button>
+      </div>
 
       {/* User table — striped + hover are applied via Bootstrap props. */}
       <Table
@@ -224,15 +256,11 @@ const UserManager = () => {
                 <td>{user.first_name}</td>
                 <td>{user.last_name}</td>
                 <td>
-                  {/* Edit navigates to /admin/users/:id (User Update page).
-                      Icon-only button — FaRegEdit is the pencil-in-a-box icon
-                      from Font Awesome 5 regular, matching the spec Bootstrap
-                      Component Map. */}
+                  {/* Edit opens the EditUserModal; full form implemented in user-update.feature.md. */}
                   <Button
-                    as={Link}
-                    to={`/admin/users/${user._id}`}
                     variant="outline-primary"
                     size="sm"
+                    onClick={() => setSelectedUserForEdit(user)}
                     aria-label={`Edit ${user.first_name} ${user.last_name}`}
                   >
                     <FaRegEdit />
@@ -325,6 +353,12 @@ const UserManager = () => {
         confirmLabel="Delete"
         confirmVariant="danger"
         loading={deleting}
+      />
+
+      {/* Edit User modal — stub for user-update.feature.md; passes selected user data. */}
+      <EditUserModal
+        user={selectedUserForEdit}
+        onClose={() => setSelectedUserForEdit(null)}
       />
     </div>
   );
