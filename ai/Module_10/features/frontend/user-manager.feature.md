@@ -105,11 +105,11 @@ Give administrators a protected admin section where they can view all registered
 |          |  +---------------------+---------------------+--------------+---------------------------+   |
 | [Admin ] |  | First Name ^       | Last Name           | Edit         | Delete                    |   |
 |          |  +---------------------+---------------------+--------------+---------------------------+   |
-|          |  | Alice               | Adams               | [Edit]       | [Delete]                  |   |
-|          |  | Bob                 | Baker               | [Edit]       | [Delete]                  |   |
-|          |  | Carol               | Chen                | [Edit]       | [Delete]                  |   |
-|          |  | David               | Diaz                | [Edit]       | [Delete]                  |   |
-|          |  | Eve                 | Evans               | [Edit]       | [Delete]                  |   |
+|          |  | Alice               | Adams               | [✎]         | [🗑]                  |   |
+|          |  | Bob                 | Baker               | [✎]         | [🗑]                  |   |
+|          |  | Carol               | Chen                | [✎]         | [🗑]                  |   |
+|          |  | David               | Diaz                | [✎]         | [🗑]                  |   |
+|          |  | Eve                 | Evans               | [✎]         | [🗑]                  |   |
 |          |  +---------------------+---------------------+--------------+---------------------------+   |
 |          |                                                                                              |
 |          |  [← Prev]   Page 1 of 3   Show: [10 ▼]   [Next →]                                         |
@@ -129,9 +129,9 @@ First click on a column header → ascending (`^`). Second click → descending 
 +---------------------+---------------------+--------------+---------------------------+
 | First Name          | Last Name v         | Edit         | Delete                    |
 +---------------------+---------------------+--------------+---------------------------+
-| Eve                 | Evans               | [Edit]       | [Delete]                  |
-| David               | Diaz                | [Edit]       | [Delete]                  |
-| Carol               | Chen                | [Edit]       | [Delete]                  |
+| Eve                 | Evans               | [✎]         | [🗑]                  |
+| David               | Diaz                | [✎]         | [🗑]                  |
+| Carol               | Chen                | [✎]         | [🗑]                  |
 ```
 
 ### Screen 3 — Empty search state
@@ -161,7 +161,7 @@ No pagination controls are rendered when the filtered list is empty.
                     |  This action cannot be undone.                   |
                     |                                                  |
                     +--------------------------------------------------+
-                    |                       [Cancel]   [Delete]        |
+                    |                       [Cancel]   [🗑]        |
                     +--------------------------------------------------+
 ```
 
@@ -178,8 +178,8 @@ No pagination controls are rendered when the filtered list is empty.
 | Table | `<Table striped bordered hover responsive>` |
 | Sort column headers | Clickable `<th style={{ cursor: 'pointer' }}>` — append `^` (ascending) or `v` (descending) to the active column label |
 | Row hover highlight | `<Table hover>` — Bootstrap's `.table-hover` applies a full-row background highlight on `mouseenter`; no custom CSS required |
-| Edit button | `<Button variant="outline-primary" size="sm">Edit</Button>` |
-| Delete button | `<Button variant="outline-danger" size="sm">Delete</Button>` |
+| Edit button | `<Button variant="outline-primary" size="sm"><FaRegEdit /></Button>` — import from `react-icons/fa` |
+| Delete button | `<Button variant="outline-danger" size="sm"><IoTrashOutline /></Button>` — import from `react-icons/io5` |
 | Previous / Next | `<Button variant="outline-secondary" size="sm">` |
 | Results-per-page | `<Form.Select size="sm">` with options 10, 15, 20 |
 | Confirmation modal | `<Modal centered>` + `<Modal.Header closeButton>` + `<Modal.Body>` + `<Modal.Footer>` |

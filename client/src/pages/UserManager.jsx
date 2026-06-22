@@ -6,13 +6,18 @@
 // 3. Sort               client-side sort by column header click (asc / desc)
 // 4. Pagination         slice sorted results; previous/next controls
 // 5. Results-per-page   dropdown: 10, 15, 20; resets to page 1 on change
-// 6. Delete flow        Delete button → ConfirmModal → dispatch deleteUserAction
+// 6. Delete flow        Delete button (IoTrashOutline) → ConfirmModal → dispatch deleteUserAction
+// 7. Icons              FaRegEdit (edit), IoTrashOutline (delete) from react-icons
 // =============================================================================
 
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Alert, Button, Form, Spinner, Table } from "react-bootstrap";
+import { Alert, Button, Form, InputGroup, Spinner, Table } from "react-bootstrap";
+import { BsCaretUpFill, BsFillCaretDownFill } from "react-icons/bs";
+import { FaRegEdit } from "react-icons/fa";
+import { IoTrashOutline } from "react-icons/io5";
+import { TbCaretUpDownFilled } from "react-icons/tb";
 import { fetchUsers, deleteUserAction } from "../redux/actions/userActions";
 import ConfirmModal from "../components/ConfirmModal";
 
@@ -118,10 +123,14 @@ const UserManager = () => {
     }
   };
 
-  // Append the sort arrow to the active column header label.
+  // Returns the appropriate sort icon for a column header.
+  // Unsorted columns get a neutral double-caret; the active column gets the
+  // directional caret that matches the current sort direction.
   const sortIndicator = (field) => {
-    if (sortField !== field) return "";
-    return sortDir === "asc" ? " ^" : " v";
+    if (sortField !== field) return <TbCaretUpDownFilled className="user-manager__sort-icon user-manager__sort-icon--inactive" />;
+    return sortDir === "asc"
+      ? <BsCaretUpFill className="user-manager__sort-icon" />
+      : <BsFillCaretDownFill className="user-manager__sort-icon" />;
   };
 
   // Full-page spinner only on the initial load when the list is empty.
@@ -157,15 +166,18 @@ const UserManager = () => {
         </Alert>
       )}
 
-      {/* Search input — filters the list client-side on every keystroke. */}
-      <Form.Control
-        type="text"
-        placeholder="Search by first or last name…"
-        value={search}
-        onChange={handleSearchChange}
-        className="user-manager__search"
-        aria-label="Search users"
-      />
+      {/* Search input — "Search:" prefix matches the spec layout; filters
+          the list client-side on every keystroke. */}
+      <InputGroup className="user-manager__search">
+        <InputGroup.Text>Search</InputGroup.Text>
+        <Form.Control
+          type="text"
+          placeholder="Search by first or last name…"
+          value={search}
+          onChange={handleSearchChange}
+          aria-label="Search users by name"
+        />
+      </InputGroup>
 
       {/* User table — striped + hover are applied via Bootstrap props. */}
       <Table
@@ -182,14 +194,18 @@ const UserManager = () => {
               onClick={() => handleSort("first_name")}
               aria-sort={sortField === "first_name" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}
             >
-              First Name{sortIndicator("first_name")}
+              <span className="user-manager__col-header">
+                First Name {sortIndicator("first_name")}
+              </span>
             </th>
             <th
               style={{ cursor: "pointer" }}
               onClick={() => handleSort("last_name")}
               aria-sort={sortField === "last_name" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}
             >
-              Last Name{sortIndicator("last_name")}
+              <span className="user-manager__col-header">
+                Last Name {sortIndicator("last_name")}
+              </span>
             </th>
             <th>Edit</th>
             <th>Delete</th>
@@ -208,25 +224,31 @@ const UserManager = () => {
                 <td>{user.first_name}</td>
                 <td>{user.last_name}</td>
                 <td>
-                  {/* Edit link goes to /admin/users/:id — the User Update page
-                      implemented in user-update.feature.md. The route is wired
-                      up here even though the page is a placeholder for now. */}
+                  {/* Edit navigates to /admin/users/:id (User Update page).
+                      Icon-only button — FaRegEdit is the pencil-in-a-box icon
+                      from Font Awesome 5 regular, matching the spec Bootstrap
+                      Component Map. */}
                   <Button
                     as={Link}
                     to={`/admin/users/${user._id}`}
                     variant="outline-primary"
                     size="sm"
+                    aria-label={`Edit ${user.first_name} ${user.last_name}`}
                   >
-                    Edit
+                    <FaRegEdit />
                   </Button>
                 </td>
                 <td>
+                  {/* Icon-only delete button — IoTrashOutline from Ionicons 5
+                      matches the spec. The aria-label names the user so
+                      screen readers still convey the action. */}
                   <Button
                     variant="outline-danger"
                     size="sm"
                     onClick={() => setUserToDelete(user)}
+                    aria-label={`Delete ${user.first_name} ${user.last_name}`}
                   >
-                    Delete
+                    <IoTrashOutline />
                   </Button>
                 </td>
               </tr>
@@ -278,14 +300,25 @@ const UserManager = () => {
         </div>
       )}
 
-      {/* Delete confirmation modal — reusable component shared with Content Manager. */}
+      {/* Delete confirmation modal — reusable component shared with Content Manager.
+          Body is JSX so the user's name and the warning can sit in separate
+          paragraphs, matching the two-paragraph layout in the spec. */}
       <ConfirmModal
         show={!!userToDelete}
         title="Delete User"
         body={
-          userToDelete
-            ? `Are you sure you want to delete ${userToDelete.first_name} ${userToDelete.last_name}? This action cannot be undone.`
-            : ""
+          userToDelete ? (
+            <>
+              <p>
+                Are you sure you want to delete{" "}
+                <strong>
+                  {userToDelete.first_name} {userToDelete.last_name}
+                </strong>
+                ?
+              </p>
+              <p className="mb-0">This action cannot be undone.</p>
+            </>
+          ) : null
         }
         onCancel={() => setUserToDelete(null)}
         onConfirm={handleDeleteConfirm}

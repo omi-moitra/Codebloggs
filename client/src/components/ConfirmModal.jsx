@@ -49,7 +49,9 @@ const ConfirmModal = ({
 ConfirmModal.propTypes = {
   show: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
-  body: PropTypes.string.isRequired,
+  // node instead of string — allows callers to pass multi-paragraph JSX
+  // (e.g., name on one line + "This action cannot be undone." below).
+  body: PropTypes.node.isRequired,
   onCancel: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired,
   confirmLabel: PropTypes.string,

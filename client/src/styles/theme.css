@@ -1655,6 +1655,11 @@ select {
 
 .user-manager__table {
   margin: 0;
+  /* Override Bootstrap's default gray table-hover color with the same
+     periwinkle used on sidebar nav link hovers (--color-periwinkle: #B1ADFF).
+     Full opacity would overwhelm table text, so 20% gives a clear tint while
+     keeping the row readable over both plain and striped backgrounds. */
+  --bs-table-hover-bg: rgba(177, 173, 255, 0.2);
 }
 
 .user-manager__empty {
@@ -1686,6 +1691,19 @@ select {
 .user-manager__page-size {
   width: auto;
   min-width: 5rem;
+}
+
+/* Flex wrapper so the sort icon sits on the same baseline as the column label. */
+.user-manager__col-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* Mute the double-caret on unsorted columns so the active column's icon
+   reads as the only directional signal. */
+.user-manager__sort-icon--inactive {
+  opacity: 0.35;
 }
 
 /* ===== 14. POST MODAL ===== */

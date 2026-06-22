@@ -18,8 +18,10 @@ const Admin = () => {
       <Nav variant="tabs" className="admin-shell__tabs">
         <Nav.Item>
           {/* NavLink automatically adds the "active" class when /admin/users
-              is the current route, which Bootstrap's .nav-tabs styles pick up. */}
-          <Nav.Link as={NavLink} to="/admin/users" end className="admin-shell__tab-link">
+              is the current route, which Bootstrap's .nav-tabs styles pick up.
+              No `end` prop — the tab stays active on /admin/users/:id (User
+              Update) so the admin always knows which section they're in. */}
+          <Nav.Link as={NavLink} to="/admin/users" className="admin-shell__tab-link">
             User Manager
           </Nav.Link>
         </Nav.Item>
