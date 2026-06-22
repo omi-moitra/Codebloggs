@@ -146,3 +146,6 @@ vite.config.ts.timestamp-*
 
 Additional files to ignore can be added below this line
 Secret
+
+.ds_store
+.DS_Store
