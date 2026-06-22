@@ -182,7 +182,8 @@ No component or reducer changes needed — only the endpoint must exist and retu
 ## Feature: Content Manager
 
 **Frontend path:** `/admin/content`  
-**Feature spec:** `ai/Module_10/features/frontend/content-manager.feature.md`
+**Feature spec:** `ai/Module_10/features/frontend/content-manager.feature.md`  
+**Status:** ✅ Frontend implemented — waiting on backend `DELETE /posts/:id`
 
 ### Dependency 1 — Fetch All Posts
 

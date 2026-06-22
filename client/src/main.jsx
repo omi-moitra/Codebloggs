@@ -18,6 +18,7 @@ import Network from "./pages/Network";
 import Admin from "./pages/Admin";
 import UserManager from "./pages/UserManager";
 import EditUserPage from "./pages/EditUserPage";
+import ContentManager from "./pages/ContentManager";
 import AccountSettings from "./pages/AccountSettings";
 import NotFound from "./pages/NotFound";
 
@@ -63,15 +64,11 @@ const router = createBrowserRouter([
                         path: "users/:id",
                         element: <EditUserPage />,
                       },
-                      // /admin/content — placeholder until content-manager.feature.md
-                      // is implemented.
+                      // /admin/content — Content Manager page; implemented in
+                      // content-manager.feature.md.
                       {
                         path: "content",
-                        element: (
-                          <div className="p-3 text-muted">
-                            Content Manager — coming soon (content-manager.feature.md).
-                          </div>
-                        ),
+                        element: <ContentManager />,
                       },
                     ],
                   },

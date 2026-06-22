@@ -1747,6 +1747,88 @@ select {
   margin-bottom: 1.25rem;
 }
 
+/* ===== 13c. CONTENT MANAGER ===== */
+
+/* ==========================================================================
+   ContentManager — /admin/content
+   --------------------------------------------------------------------------
+   1. Container     .content-manager         outer wrapper
+   2. Loading       .content-manager__loading
+   3. Alert         .content-manager__alert
+   4. Filter row    .content-manager__filter-row, __filter-label, __date-input
+   5. Table         .content-manager__table, __empty
+   6. Pagination    .content-manager__pagination, __page-info,
+                    __page-label, __page-size
+   ========================================================================== */
+
+.content-manager {
+  padding: 0;
+}
+
+.content-manager__loading {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+  color: var(--color-dim-gray);
+}
+
+.content-manager__alert {
+  margin-bottom: 1rem;
+}
+
+.content-manager__filter-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.content-manager__filter-label {
+  font-size: 0.875rem;
+  color: var(--color-dim-gray);
+  white-space: nowrap;
+}
+
+.content-manager__date-input {
+  width: auto;
+  max-width: 10rem;
+}
+
+.content-manager__table {
+  font-size: 0.9rem;
+}
+
+.content-manager__empty {
+  color: var(--color-dim-gray);
+  font-style: italic;
+  padding: 1.25rem;
+}
+
+.content-manager__pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.content-manager__page-info {
+  font-size: 0.875rem;
+  color: var(--color-dim-gray);
+  margin: 0 0.25rem;
+}
+
+.content-manager__page-label {
+  font-size: 0.875rem;
+  color: var(--color-dim-gray);
+}
+
+.content-manager__page-size {
+  width: auto;
+  min-width: 4.5rem;
+}
+
 /* ===== 14. POST MODAL ===== */
 .post-modal {
   position: fixed;

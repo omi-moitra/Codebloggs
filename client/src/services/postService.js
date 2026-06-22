@@ -37,3 +37,14 @@ export const updatePostLikes = async (postId, likes) => {
     message: payload?.message || "Post updated successfully.",
   };
 };
+
+// ⚠️ DELETE /posts/:id is a new M10 endpoint. The backend handles all cascade
+// deletion (comments on the post) — the frontend only removes the post from
+// the Redux store on success. No cascade logic lives here.
+export const deletePost = async (postId) => {
+  const payload = await request(`/posts/${postId}`, { method: "DELETE" });
+
+  return {
+    message: payload?.message || "Post deleted successfully.",
+  };
+};
