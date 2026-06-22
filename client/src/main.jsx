@@ -16,6 +16,7 @@ import Register from "./pages/Register";
 import Blogs from "./pages/Blogs";
 import Network from "./pages/Network";
 import Admin from "./pages/Admin";
+import UserManager from "./pages/UserManager";
 import AccountSettings from "./pages/AccountSettings";
 import NotFound from "./pages/NotFound";
 
@@ -42,9 +43,41 @@ const router = createBrowserRouter([
               { path: "network", element: <Network /> },
               { path: "settings", element: <AccountSettings /> },
               {
+                // ⚠️ Admin routes are double-guarded: the outer RequireAuth
+                // checks authentication; this inner RequireAuth checks for the
+                // admin role (auth_level === "admin"). Non-admins are sent to /home.
                 element: <RequireAuth requireAdmin redirectTo="/home" />,
                 children: [
-                  { path: "admin", element: <Admin /> },
+                  {
+                    path: "admin",
+                    element: <Admin />,  // AdminShell — renders tabs + <Outlet>
+                    children: [
+                      // /admin with no sub-path redirects to /admin/users.
+                      { index: true, element: <Navigate to="/admin/users" replace /> },
+                      { path: "users", element: <UserManager /> },
+                      // /admin/users/:id — placeholder until user-update.feature.md
+                      // is implemented. The route must exist so Edit links in
+                      // UserManager navigate without a 404.
+                      {
+                        path: "users/:id",
+                        element: (
+                          <div className="p-3 text-muted">
+                            User Update — coming soon (user-update.feature.md).
+                          </div>
+                        ),
+                      },
+                      // /admin/content — placeholder until content-manager.feature.md
+                      // is implemented.
+                      {
+                        path: "content",
+                        element: (
+                          <div className="p-3 text-muted">
+                            Content Manager — coming soon (content-manager.feature.md).
+                          </div>
+                        ),
+                      },
+                    ],
+                  },
                 ],
               },
             ],
