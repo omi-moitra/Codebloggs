@@ -1,5 +1,17 @@
+// =============================================================================
+// MainLayout.jsx — Authenticated app shell
+// -----------------------------------------------------------------------------
+// 1. State            isPostModalOpen, feedback banner
+// 2. Handlers         handlePostCreated, handleAccountSettings
+// 3. Layout           app-shell → Header → app-layout (Bootstrap grid)
+//    - Sidebar col    Col lg={2} d-none d-lg-block — hidden below 992px
+//    - Content col    Col lg={10} xs={12} — expands to full width below 992px
+// 4. Modals           PostModal (global; triggered from Header Post button)
+// =============================================================================
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Col, Container, Row } from "react-bootstrap";
 import AutoDismissAlert from "../components/AutoDismissAlert";
 import Header from "../components/Header";
 import PostModal from "../components/PostModal";
@@ -44,10 +56,23 @@ const MainLayout = () => {
             {feedback.message}
           </AutoDismissAlert>
         ) : null}
-        <div className="app-layout">
-          <Sidebar />
-          <MainContent />
-        </div>
+
+        {/* Bootstrap grid layout:
+            - Sidebar col (lg=2) is hidden below the lg breakpoint (992px) via
+              d-none d-lg-block; the Header's hamburger toggle shows the nav instead.
+            - Content col (lg=10 / xs=12) expands to full width automatically when
+              the sidebar col is hidden — no explicit CSS override needed. */}
+        <Container fluid className="app-layout p-0">
+          <Row className="g-0">
+            <Col lg={2} className="d-none d-lg-block">
+              <Sidebar />
+            </Col>
+            <Col lg={10} xs={12}>
+              <MainContent />
+            </Col>
+          </Row>
+        </Container>
+
         <PostModal
           isOpen={isPostModalOpen}
           onClose={() => setIsPostModalOpen(false)}
