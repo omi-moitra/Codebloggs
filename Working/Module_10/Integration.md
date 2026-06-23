@@ -256,9 +256,17 @@ No new backend dependencies. Skeleton loaders are triggered by existing Redux `L
 ## Feature: Responsive Navbar
 
 **Frontend path:** All pages  
-**Feature spec:** `ai/Module_10/features/frontend/responsive-design.feature.md` *(not yet written)*
+**Feature spec:** `ai/Module_10/features/frontend/responsive-design.feature.md`
 
-No backend dependencies. CSS media queries only. No integration concerns.
+✅ **Implemented.** No backend dependencies. Pure CSS and Bootstrap component layout changes.
+
+**Files modified:**
+- `client/src/components/Header.jsx` — hamburger toggle, collapsible nav dropdown, Bootstrap visibility classes
+- `client/src/layout/MainLayout.jsx` — Bootstrap grid (Container/Row/Col) replacing flat flex div
+- `client/src/styles/theme.css` — hamburger/dropdown styles, section 15/16 responsive rules
+- `README.md` — Responsive Design section with breakpoints table
+
+No orphaned tasks — this feature has no counterpart backend work.
 
 ---
 
