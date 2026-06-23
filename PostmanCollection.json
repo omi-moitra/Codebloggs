@@ -10,19 +10,19 @@
       "key": "base_url",
       "value": "http://localhost:5050",
       "type": "string",
-      "description": "Base URL of the CodeBloggs API. Update if your server runs on a different host or port."
+      "description": "Base URL for the CodeBloggs backend API."
     },
     {
       "key": "user_id",
-      "value": "",
+      "value": "000000000000000000000000",
       "type": "string",
-      "description": "Auto-populated by POST /user. Used in GET /user/:id and GET /profile-pic/:userId."
+      "description": "MongoDB user _id used by Module 10 PATCH /user/:id and DELETE /user/:id requests. Existing POST /user can overwrite this automatically."
     },
     {
       "key": "post_id",
-      "value": "",
+      "value": "000000000000000000000000",
       "type": "string",
-      "description": "Auto-populated by POST /posts. Used in PATCH /posts/:id, POST /comments, POST /replies, and GET /replies."
+      "description": "MongoDB post _id used by Module 10 DELETE /posts/:id requests. Existing POST /posts can overwrite this automatically."
     },
     {
       "key": "comment_id",
@@ -848,6 +848,394 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Module 10 Backend",
+      "description": "Module 10 backend endpoints completed so far. Uses collection variables {{base_url}}, {{user_id}}, and {{post_id}}. Run supporting Module 9 create/login requests first when a happy-path request needs real data.",
+      "item": [
+        {
+          "name": "User Endpoint",
+          "item": [
+            {
+              "name": "PATCH /user/:id - Happy Path",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/user/{{user_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "user",
+                    "{{user_id}}"
+                  ]
+                },
+                "description": "Module 10 backend endpoint: PATCH {{base_url}}/user/{{user_id}}\n\nPurpose: update allowed fields on an existing user.\n\nRequired headers:\nContent-Type: application/json\n\nAllowed body fields:\nfirst_name, last_name, birthday, email, password, status, location, occupation, auth_level\n\nPassword behavior:\n- Non-empty password values are hashed before saving.\n- Missing or empty password values do not overwrite the current password.\n- Password is never returned in the response.\n\nExample success response, 200:\n{\n  \"status\": \"ok\",\n  \"data\": { \"user\": { \"_id\": \"{{user_id}}\", \"first_name\": \"Module\", \"last_name\": \"Ten\" } },\n  \"message\": \"User updated successfully\"\n}\n\nExample error responses:\n400 malformed id: { \"status\": \"error\", \"data\": {}, \"message\": \"Invalid user id\" }\n404 missing user: { \"status\": \"error\", \"data\": {}, \"message\": \"User not found\" }\n409 duplicate email: { \"status\": \"error\", \"data\": {}, \"message\": \"Email already in use\" }\n\nSetup: run an existing supporting request such as User / Create User first, or set collection variable user_id to a throwaway user id.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"Module\",\n  \"last_name\": \"Ten\",\n  \"location\": \"Tampa, FL\",\n  \"occupation\": \"Admin Tester\",\n  \"status\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                      "pm.test('User updated and password omitted', () => {",
+                      "  const body = pm.response.json();",
+                      "  pm.expect(body.status).to.equal('ok');",
+                      "  pm.expect(body.message).to.equal('User updated successfully');",
+                      "  pm.expect(body.data).to.have.property('user');",
+                      "  pm.expect(body.data.user).to.not.have.property('password');",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "PATCH /user/:id - Malformed ID",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/user/not-a-valid-id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "user",
+                    "not-a-valid-id"
+                  ]
+                },
+                "description": "Module 10 error scenario for PATCH /user/:id. Expected 400 with message Invalid user id.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"Bad\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 400 Bad Request', () => pm.response.to.have.status(400));",
+                      "pm.test('Invalid user id message', () => {",
+                      "  const body = pm.response.json();",
+                      "  pm.expect(body.status).to.equal('error');",
+                      "  pm.expect(body.message).to.equal('Invalid user id');",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "PATCH /user/:id - Nonexistent ID",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/user/507f1f77bcf86cd799439011",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "user",
+                    "507f1f77bcf86cd799439011"
+                  ]
+                },
+                "description": "Module 10 error scenario for PATCH /user/:id. Expected 404 with message User not found.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"Missing\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 404 Not Found', () => pm.response.to.have.status(404));",
+                      "pm.test('User not found message', () => {",
+                      "  const body = pm.response.json();",
+                      "  pm.expect(body.status).to.equal('error');",
+                      "  pm.expect(body.message).to.equal('User not found');",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "DELETE /user/:id - Happy Path",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/user/{{user_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "user",
+                    "{{user_id}}"
+                  ]
+                },
+                "description": "Module 10 backend endpoint: DELETE {{base_url}}/user/{{user_id}}\n\nPurpose: delete a user and cascade cleanup related backend records.\n\nRequired headers: none.\nRequired body: none.\n\nCascade cleanup:\n- posts written by the deleted user\n- comments written by the deleted user\n- comments on deleted user's posts\n- related replies\n- sessions for the deleted user\n- profile picture records for the deleted user\n- deleted comment ids pulled from remaining Post.comments[] arrays\n\nExample success response, 200:\n{ \"status\": \"ok\", \"data\": {}, \"message\": \"User deleted successfully\" }\n\nExample error responses:\n400 malformed id: { \"status\": \"error\", \"data\": {}, \"message\": \"Invalid user id\" }\n404 missing user: { \"status\": \"error\", \"data\": {}, \"message\": \"User not found\" }\n\nSafe testing: use only throwaway users. This request permanently deletes the selected user and related records."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                      "pm.test('User deleted successfully', () => {",
+                      "  const body = pm.response.json();",
+                      "  pm.expect(body.status).to.equal('ok');",
+                      "  pm.expect(body.data).to.deep.equal({});",
+                      "  pm.expect(body.message).to.equal('User deleted successfully');",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "DELETE /user/:id - Malformed ID",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/user/not-a-valid-id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "user",
+                    "not-a-valid-id"
+                  ]
+                },
+                "description": "Module 10 error scenario for DELETE /user/:id. Expected 400 with message Invalid user id."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 400 Bad Request', () => pm.response.to.have.status(400));",
+                      "pm.test('Invalid user id message', () => {",
+                      "  const body = pm.response.json();",
+                      "  pm.expect(body.status).to.equal('error');",
+                      "  pm.expect(body.message).to.equal('Invalid user id');",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "DELETE /user/:id - Nonexistent ID",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/user/507f1f77bcf86cd799439011",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "user",
+                    "507f1f77bcf86cd799439011"
+                  ]
+                },
+                "description": "Module 10 error scenario for DELETE /user/:id. Expected 404 with message User not found."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 404 Not Found', () => pm.response.to.have.status(404));",
+                      "pm.test('User not found message', () => {",
+                      "  const body = pm.response.json();",
+                      "  pm.expect(body.status).to.equal('error');",
+                      "  pm.expect(body.message).to.equal('User not found');",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Post Endpoint",
+          "item": [
+            {
+              "name": "DELETE /posts/:id - Happy Path",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/posts/{{post_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "posts",
+                    "{{post_id}}"
+                  ]
+                },
+                "description": "Module 10 backend endpoint: DELETE {{base_url}}/posts/{{post_id}}\n\nPurpose: delete a post and cascade cleanup related comments/replies.\n\nRequired headers: none.\nRequired body: none.\n\nCascade cleanup:\n- comments where Comment.post_id equals the post id\n- replies where Reply.post_id equals the post id\n- replies where Reply.root_comment_id is one of the deleted comment ids\n- replies where Reply.parent_id is one of the deleted comment ids\n\nExample success response, 200:\n{ \"status\": \"ok\", \"data\": {}, \"message\": \"Post deleted successfully\" }\n\nExample error responses:\n400 malformed id: { \"status\": \"error\", \"data\": {}, \"message\": \"Invalid post id\" }\n404 missing post: { \"status\": \"error\", \"data\": {}, \"message\": \"Post not found\" }\n\nSetup: run an existing supporting request such as Posts / Create Post first, or set collection variable post_id to a throwaway post id."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                      "pm.test('Post deleted successfully', () => {",
+                      "  const body = pm.response.json();",
+                      "  pm.expect(body.status).to.equal('ok');",
+                      "  pm.expect(body.data).to.deep.equal({});",
+                      "  pm.expect(body.message).to.equal('Post deleted successfully');",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "DELETE /posts/:id - Malformed ID",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/posts/not-a-valid-id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "posts",
+                    "not-a-valid-id"
+                  ]
+                },
+                "description": "Module 10 error scenario for DELETE /posts/:id. Expected 400 with message Invalid post id."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 400 Bad Request', () => pm.response.to.have.status(400));",
+                      "pm.test('Invalid post id message', () => {",
+                      "  const body = pm.response.json();",
+                      "  pm.expect(body.status).to.equal('error');",
+                      "  pm.expect(body.message).to.equal('Invalid post id');",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "DELETE /posts/:id - Nonexistent ID",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/posts/507f1f77bcf86cd799439011",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "posts",
+                    "507f1f77bcf86cd799439011"
+                  ]
+                },
+                "description": "Module 10 error scenario for DELETE /posts/:id. Expected 404 with message Post not found."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 404 Not Found', () => pm.response.to.have.status(404));",
+                      "pm.test('Post not found message', () => {",
+                      "  const body = pm.response.json();",
+                      "  pm.expect(body.status).to.equal('error');",
+                      "  pm.expect(body.message).to.equal('Post not found');",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5050",
+      "type": "string",
+      "description": "Base URL for the CodeBloggs backend API."
+    },
+    {
+      "key": "user_id",
+      "value": "000000000000000000000000",
+      "type": "string",
+      "description": "MongoDB user _id used by Module 10 PATCH /user/:id and DELETE /user/:id requests. Existing POST /user can overwrite this automatically."
+    },
+    {
+      "key": "post_id",
+      "value": "000000000000000000000000",
+      "type": "string",
+      "description": "MongoDB post _id used by Module 10 DELETE /posts/:id requests. Existing POST /posts can overwrite this automatically."
     }
   ]
 }
