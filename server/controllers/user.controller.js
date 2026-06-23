@@ -152,6 +152,84 @@ export async function getAllUsers(req, res) {
   }
 }
 
+// PATCH /user/:id — Update allowed user fields by MongoDB _id.
+export async function updateUser(req, res) {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        status: "error",
+        data: {},
+        message: "Invalid user id",
+      });
+    }
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        data: {},
+        message: "User not found",
+      });
+    }
+
+    const allowedFields = [
+      "first_name",
+      "last_name",
+      "birthday",
+      "email",
+      "status",
+      "location",
+      "occupation",
+      "auth_level",
+    ];
+
+    allowedFields.forEach(field => {
+      if (req.body[field] !== undefined) {
+        user[field] = req.body[field];
+      }
+    });
+
+    if (req.body.password !== undefined && req.body.password !== "") {
+      user.password = await bcrypt.hash(req.body.password, SALT_ROUNDS);
+    }
+
+    await user.save();
+
+    // Never return the password hash in API responses.
+    const safeUser = user.toObject();
+    delete safeUser.password;
+
+    return res.status(200).json({
+      status: "ok",
+      data: { user: safeUser },
+      message: "User updated successfully",
+    });
+  } catch (err) {
+    if (err.name === "ValidationError") {
+      const message = Object.values(err.errors).map(e => e.message).join(". ");
+      return res.status(400).json({ status: "error", data: {}, message });
+    }
+
+    if (err.code === 11000) {
+      return res.status(409).json({
+        status: "error",
+        data: {},
+        message: "Email already in use",
+      });
+    }
+
+    console.error("Update user error:", err);
+    return res.status(500).json({
+      status: "error",
+      data: {},
+      message: "Internal server error",
+    });
+  }
+}
+
 // DELETE /user/:id — Delete a user and clean up related data.
 export async function deleteUser(req, res) {
   try {
@@ -186,14 +264,33 @@ export async function deleteUser(req, res) {
     }).select("_id");
     const commentIds = commentsToDelete.map(comment => comment._id);
 
-    await Reply.deleteMany({
+    const repliesToDelete = await Reply.find({
       $or: [
         { user_id: id },
         { post_id: { $in: postIds } },
         { root_comment_id: { $in: commentIds } },
         { parent_type: "Comment", parent_id: { $in: commentIds } },
       ],
-    });
+    }).select("_id");
+    const replyIdStrings = new Set(repliesToDelete.map(reply => reply._id.toString()));
+    let parentReplyIds = repliesToDelete.map(reply => reply._id);
+
+    // Include child replies so no reply points at a deleted parent reply.
+    while (parentReplyIds.length > 0) {
+      const childReplies = await Reply.find({
+        parent_type: "Reply",
+        parent_id: { $in: parentReplyIds },
+      }).select("_id");
+
+      const newChildIds = childReplies
+        .filter(reply => !replyIdStrings.has(reply._id.toString()))
+        .map(reply => reply._id);
+
+      newChildIds.forEach(replyId => replyIdStrings.add(replyId.toString()));
+      parentReplyIds = newChildIds;
+    }
+
+    await Reply.deleteMany({ _id: { $in: Array.from(replyIdStrings) } });
 
     await Comment.deleteMany({ _id: { $in: commentIds } });
 
