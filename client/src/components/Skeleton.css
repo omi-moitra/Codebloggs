@@ -6,6 +6,15 @@
    3. @keyframes            skeleton-pulse — opacity cycles 0.4 → 1.0 → 0.4
    ========================================================================== */
 
+/* Table cell that wraps a skeleton bar — explicit height matches real rows.
+   Real rows are driven by size="sm" Bootstrap buttons (~31px) plus cell
+   padding (2 × 0.5rem = 1rem), totalling ≈ 3rem. Setting the same height
+   here prevents layout shift when skeleton is replaced by real data. */
+.skeleton-cell {
+  height: 3rem;
+  vertical-align: middle;
+}
+
 /* Base skeleton bar — used inside table cells.
    Width is 75% so it doesn't span the full cell edge-to-edge,
    giving a more realistic "text chunk" appearance. */

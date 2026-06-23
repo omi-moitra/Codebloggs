@@ -5,19 +5,23 @@
 // 2. Date filter      From/To date inputs; client-side filter on post time_stamp;
 //                     either field can be used independently; disabled while loading
 // 3. Select All       clears both date inputs; restores full post list; resets page 1
-// 4. Pagination       slice filtered results; previous/next controls; hidden while loading
-// 5. Results-per-page dropdown: 10, 15, 20; resets to page 1 on change
-// 6. Skeleton loaders SkeletonTable replaces <tbody> when state.posts.loading is true
+// 4. Sort             click Author or Date column header to sort asc/desc;
+//                     default: Date descending (newest first)
+// 5. Pagination       slice sorted+filtered results; previous/next controls; hidden while loading
+// 6. Results-per-page dropdown: 10, 15, 20; resets to page 1 on change
+// 7. Skeleton loaders SkeletonTable replaces <tbody> when state.posts.loading is true
 //                     (initial fetch AND delete in flight)
-// 7. Delete flow      Delete button (IoTrashOutline) → ConfirmModal → dispatch deletePostAction
-// 8. Author column    cross-references state.users.users by post.user_id (same pattern as Blogs/Home)
-// 9. Post column      post.title if present; otherwise truncated content (40 chars)
+// 8. Delete flow      Delete button (IoTrashOutline) → ConfirmModal → dispatch deletePostAction
+// 9. Author column    cross-references state.users.users by post.user_id (same pattern as Blogs/Home)
+// 10. Post column     post.title if present; otherwise truncated content (40 chars)
 // =============================================================================
 
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Alert, Button, Form, Table } from "react-bootstrap";
+import { BsCaretUpFill, BsFillCaretDownFill } from "react-icons/bs";
 import { IoTrashOutline } from "react-icons/io5";
+import { TbCaretUpDownFilled } from "react-icons/tb";
 import { fetchPosts, deletePostAction } from "../redux/actions/postActions";
 import { fetchUsers } from "../redux/actions/userActions";
 import ConfirmModal from "../components/ConfirmModal";
@@ -92,6 +96,11 @@ const ContentManager = () => {
   const [deleteError, setDeleteError] = useState("");
   const [deleting, setDeleting] = useState(false);
 
+  // Sort state — "author" sorts by resolved author name; "time_stamp" sorts by date.
+  // Default to newest-first so admins see the most recent content immediately.
+  const [sortField, setSortField] = useState("time_stamp");
+  const [sortDir, setSortDir] = useState("desc");
+
   // Fetch posts on mount. Also fetch users if the store is empty — this handles
   // direct navigation to /admin/content without going through the User Manager
   // (which would have already dispatched fetchUsers and populated state.users.users).
@@ -126,11 +135,54 @@ const ContentManager = () => {
     }, {});
   }, [users]);
 
+  // --- Client-side sort ---
+  // "author" is a derived value (resolved from usersById), so it's handled as
+  // a special case rather than a direct post field lookup.
+  // "time_stamp" is an ISO string — lexicographic comparison is accurate for
+  // ISO 8601 dates, so no Date conversion is needed here.
+  const sorted = useMemo(() => {
+    return [...filtered].sort((a, b) => {
+      const aVal =
+        sortField === "author"
+          ? getAuthorLabel(a, usersById).toLowerCase()
+          : (a[sortField] || "").toLowerCase();
+      const bVal =
+        sortField === "author"
+          ? getAuthorLabel(b, usersById).toLowerCase()
+          : (b[sortField] || "").toLowerCase();
+      if (aVal < bVal) return sortDir === "asc" ? -1 : 1;
+      if (aVal > bVal) return sortDir === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [filtered, sortField, sortDir, usersById]);
+
+  // Toggle sort: click the active column → flip direction; click a new column → asc.
+  // Sorting resets to page 1 so the admin always sees the top of the new order.
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortField(field);
+      setSortDir("asc");
+    }
+    setCurrentPage(1);
+  };
+
+  // Returns the appropriate sort icon for a column header.
+  // Reuses the same .user-manager__sort-icon CSS classes to stay visually consistent.
+  const sortIndicator = (field) => {
+    if (sortField !== field)
+      return <TbCaretUpDownFilled className="user-manager__sort-icon user-manager__sort-icon--inactive" />;
+    return sortDir === "asc"
+      ? <BsCaretUpFill className="user-manager__sort-icon" />
+      : <BsFillCaretDownFill className="user-manager__sort-icon" />;
+  };
+
   // --- Pagination math ---
-  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const totalPages = Math.max(1, Math.ceil(sorted.length / pageSize));
   // Clamp page so it never exceeds totalPages after a filter narrows results.
   const page = Math.min(currentPage, totalPages);
-  const pageSlice = filtered.slice((page - 1) * pageSize, page * pageSize);
+  const pageSlice = sorted.slice((page - 1) * pageSize, page * pageSize);
 
   // "Select All" clears both date inputs and restores the full post list.
   // The button label must be "Select All" — the grading sheet checks this
@@ -247,9 +299,28 @@ const ContentManager = () => {
       >
         <thead>
           <tr>
-            <th>Author</th>
+            {/* Author and Date headers are clickable — click once for asc,
+                again to flip to desc. The Date column is pre-sorted desc
+                (newest first) on initial load. */}
+            <th
+              style={{ cursor: "pointer" }}
+              onClick={() => handleSort("author")}
+              aria-sort={sortField === "author" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}
+            >
+              <span className="user-manager__col-header">
+                Author {sortIndicator("author")}
+              </span>
+            </th>
             <th>Post</th>
-            <th>Date</th>
+            <th
+              style={{ cursor: "pointer" }}
+              onClick={() => handleSort("time_stamp")}
+              aria-sort={sortField === "time_stamp" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}
+            >
+              <span className="user-manager__col-header">
+                Date {sortIndicator("time_stamp")}
+              </span>
+            </th>
             <th>Delete</th>
           </tr>
         </thead>
@@ -294,7 +365,7 @@ const ContentManager = () => {
 
       {/* Pagination controls — hidden while loading (skeleton state) and when
           the filtered list is empty. Spec: controls reappear once data loads. */}
-      {filtered.length > 0 && !loading && (
+      {sorted.length > 0 && !loading && (
         <div className="content-manager__pagination">
           <Button
             variant="outline-secondary"

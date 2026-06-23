@@ -7,10 +7,11 @@
 
 // SkeletonRow is intentionally generic — it knows nothing about users or posts.
 // The parent passes `cols` to match the column count of any table it sits inside.
+// .skeleton-cell sets the <td> height to match real rows driven by sm buttons.
 const SkeletonRow = ({ cols }) => (
   <tr>
     {Array.from({ length: cols }, (_, i) => (
-      <td key={i}>
+      <td key={i} className="skeleton-cell">
         <div className="skeleton-bar" />
       </td>
     ))}
