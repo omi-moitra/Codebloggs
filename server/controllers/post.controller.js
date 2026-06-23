@@ -3,7 +3,11 @@
 // Create posts, update a post (primarily its like count), and read the full
 // feed. All responses follow the project contract { status, data, message }.
 
+import mongoose from "mongoose";
+
 import Post from "../schemas/Post.js";
+import Comment from "../schemas/Comment.js";
+import Reply from "../schemas/Reply.js";
 
 // POST /posts — Create a new post.
 export async function createPost(req, res) {
@@ -121,6 +125,58 @@ export async function getAllPosts(req, res) {
     });
   } catch (err) {
     console.error("Get all posts error:", err);
+    return res.status(500).json({
+      status: "error",
+      data: {},
+      message: "Internal server error",
+    });
+  }
+}
+
+// DELETE /posts/:id — Delete a post and clean up related comments/replies.
+export async function deletePost(req, res) {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        status: "error",
+        data: {},
+        message: "Invalid post id",
+      });
+    }
+
+    const post = await Post.findById(id);
+
+    if (!post) {
+      return res.status(404).json({
+        status: "error",
+        data: {},
+        message: "Post not found",
+      });
+    }
+
+    const commentsToDelete = await Comment.find({ post_id: id }).select("_id");
+    const commentIds = commentsToDelete.map(comment => comment._id);
+
+    await Reply.deleteMany({
+      $or: [
+        { post_id: id },
+        { root_comment_id: { $in: commentIds } },
+        { parent_id: { $in: commentIds } },
+      ],
+    });
+
+    await Comment.deleteMany({ post_id: id });
+    await Post.findByIdAndDelete(id);
+
+    return res.status(200).json({
+      status: "ok",
+      data: {},
+      message: "Post deleted successfully",
+    });
+  } catch (err) {
+    console.error("Delete post error:", err);
     return res.status(500).json({
       status: "error",
       data: {},

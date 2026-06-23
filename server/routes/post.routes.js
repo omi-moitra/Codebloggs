@@ -9,6 +9,7 @@ import {
   createPost,
   updatePost,
   getAllPosts,
+  deletePost,
 } from "../controllers/post.controller.js";
 import { requireSession } from "../middleware/requireSession.js";
 
@@ -22,5 +23,8 @@ router.get("/", getAllPosts);
 
 // PATCH /posts/:id  → update a post by id (primarily likes)
 router.patch("/:id", updatePost);
+
+// DELETE /posts/:id → delete a post and related comments/replies
+router.delete("/:id", deletePost);
 
 export default router;
