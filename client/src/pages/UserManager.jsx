@@ -4,6 +4,7 @@
 // 1. Data fetching      dispatch fetchUsers() on mount via Redux Thunk
 // 2. Search             two fields (firstNameSearch / lastNameSearch); AND filter; Clear button
 //                       inputs are disabled while loading — no interaction against empty array
+// 2b. Location filter   dropdown populated with unique locations from the user list; AND-ed with name search
 // 3. Sort               client-side sort by column header click (asc / desc)
 // 4. Pagination         slice sorted results; previous/next controls; hidden while loading
 // 5. Results-per-page   dropdown: 10, 15, 20; resets to page 1 on change
@@ -12,6 +13,8 @@
 // 7. Delete flow        Delete button (IoTrashOutline) → ConfirmModal → dispatch deleteUserAction
 // 8. Edit flow          Edit button (FaRegEdit) → navigate to /admin/users/:id (EditUserPage)
 // 9. Icons              FaRegEdit (edit), IoTrashOutline (delete) from react-icons
+// 10. Location col      displays user.location; Edit + Delete share one unlabelled Actions column
+//                       action buttons are opacity:0 at rest and revealed on row hover (CSS only)
 // =============================================================================
 
 import { useEffect, useMemo, useState } from "react";
@@ -43,6 +46,7 @@ const UserManager = () => {
   const [sortDir, setSortDir] = useState("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [locationFilter, setLocationFilter] = useState(""); // "" = All Locations
   const [userToDelete, setUserToDelete] = useState(null);
   const [deleteError, setDeleteError] = useState("");
   const [deleting, setDeleting] = useState(false);
@@ -59,13 +63,16 @@ const UserManager = () => {
   const filtered = useMemo(() => {
     const fn = firstNameSearch.toLowerCase().trim();
     const ln = lastNameSearch.toLowerCase().trim();
-    if (!fn && !ln) return users;
+    if (!fn && !ln && !locationFilter) return users;
     return users.filter(
       (u) =>
         (!fn || u.first_name?.toLowerCase().includes(fn)) &&
-        (!ln || u.last_name?.toLowerCase().includes(ln))
+        (!ln || u.last_name?.toLowerCase().includes(ln)) &&
+        // Exact match on location — the dropdown value is always the full
+        // stored string, so partial matching is not needed here.
+        (!locationFilter || u.location === locationFilter)
     );
-  }, [users, firstNameSearch, lastNameSearch]);
+  }, [users, firstNameSearch, lastNameSearch, locationFilter]);
 
   // --- Client-side sort ---
   // Sort the filtered list by the active column. Spread into a new array so
@@ -79,6 +86,14 @@ const UserManager = () => {
       return 0;
     });
   }, [filtered, sortField, sortDir]);
+
+  // --- Location dropdown options ---
+  // Build unique sorted location values from the full user list. Empty/null
+  // values are excluded so the dropdown only shows real locations.
+  const locationOptions = useMemo(() => {
+    const unique = [...new Set(users.map((u) => u.location).filter(Boolean))].sort();
+    return unique;
+  }, [users]);
 
   // --- Pagination math ---
   const totalPages = Math.max(1, Math.ceil(sorted.length / pageSize));
@@ -108,10 +123,11 @@ const UserManager = () => {
     setCurrentPage(1);
   };
 
-  // Clear both search fields and reset to page 1 so the full unfiltered list reloads.
+  // Clear all filters (name fields + location dropdown) and reset to page 1.
   const handleClear = () => {
     setFirstNameSearch("");
     setLastNameSearch("");
+    setLocationFilter("");
     setCurrentPage(1);
   };
 
@@ -198,11 +214,26 @@ const UserManager = () => {
           className="user-manager__search-field"
           disabled={loading}
         />
+        {/* Location dropdown — options are derived from the live user list so
+            only real locations appear. Selecting one AND-filters with the name
+            fields. "All Locations" (value="") clears the location dimension. */}
+        <Form.Select
+          value={locationFilter}
+          onChange={(e) => { setLocationFilter(e.target.value); setCurrentPage(1); }}
+          aria-label="Filter by location"
+          disabled={loading}
+          className="user-manager__search-field"
+        >
+          <option value="">All Locations</option>
+          {locationOptions.map((loc) => (
+            <option key={loc} value={loc}>{loc}</option>
+          ))}
+        </Form.Select>
         <Button
           variant="outline-secondary"
           size="sm"
           onClick={handleClear}
-          disabled={loading || (!firstNameSearch && !lastNameSearch)}
+          disabled={loading || (!firstNameSearch && !lastNameSearch && !locationFilter)}
         >
           Clear
         </Button>
@@ -236,8 +267,9 @@ const UserManager = () => {
                 Last Name {sortIndicator("last_name")}
               </span>
             </th>
-            <th>Edit</th>
-            <th>Delete</th>
+            <th>Location</th>
+            {/* Actions column: no label — buttons are revealed only on row hover */}
+            <th />
           </tr>
         </thead>
         {/* Skeleton replaces the <tbody> while loading is true (initial fetch
@@ -258,10 +290,13 @@ const UserManager = () => {
                 <tr key={user._id}>
                   <td>{user.first_name}</td>
                   <td>{user.last_name}</td>
-                  <td>
-                    {/* Edit navigates to the full EditUserPage at /admin/users/:id.
-                        The user is already in the Redux store so EditUserPage can
-                        pre-populate without an extra network call. */}
+                  {/* Show an em dash when location is empty/null so the cell
+                      is never blank and stays visually consistent. */}
+                  <td>{user.location || "—"}</td>
+                  {/* Edit + Delete share one unlabelled cell. Buttons are
+                      opacity:0 at rest and revealed on row hover via CSS —
+                      no JS state change needed. */}
+                  <td className="user-manager__actions-cell">
                     <Button
                       variant="outline-primary"
                       size="sm"
@@ -270,11 +305,6 @@ const UserManager = () => {
                     >
                       <FaRegEdit />
                     </Button>
-                  </td>
-                  <td>
-                    {/* Icon-only delete button — IoTrashOutline from Ionicons 5
-                        matches the spec. The aria-label names the user so
-                        screen readers still convey the action. */}
                     <Button
                       variant="outline-danger"
                       size="sm"

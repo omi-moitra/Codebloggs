@@ -1703,6 +1703,35 @@ select {
   min-width: 5rem;
 }
 
+/* Actions cell: flex so Edit and Delete sit side-by-side with a small gap. */
+.user-manager__actions-cell {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+/* Buttons are invisible at rest — opacity keeps them in the layout so the
+   column width stays stable and doesn't reflow when a row is hovered. */
+.user-manager__actions-cell .btn {
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+/* Reveal buttons when the containing row is hovered. Pure CSS — no JS state. */
+.user-manager__table tbody tr:hover .user-manager__actions-cell .btn {
+  opacity: 1;
+}
+
+/* Remove the separator between Location (col 3) and the Actions column (col 4).
+   With border-collapse both sides of the joint must be zeroed — clearing only
+   one side leaves the other side's 1px border still visible. */
+.user-manager__table > :not(caption) > * > *:nth-child(3) {
+  border-right: 0;
+}
+.user-manager__table > :not(caption) > * > *:nth-child(4) {
+  border-left: 0;
+}
+
 /* Flex wrapper so the sort icon sits on the same baseline as the column label. */
 .user-manager__col-header {
   display: inline-flex;
