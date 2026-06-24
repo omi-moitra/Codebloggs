@@ -736,6 +736,7 @@ const Home = () => {
                 <ul className="home-comments__list">
                   {postComments.map((comment) => {
                     const commentId = getId(comment._id);
+                    const commentAuthor = usersById[getId(comment.user_id)];
                     const commentLiked = hasLocalLike({
                       type: "comment",
                       userId,
@@ -743,8 +744,18 @@ const Home = () => {
                     });
                     return (
                       <li className="home-comments__item" key={commentId}>
+                        <div className="home-comments__meta">
+                          <ProfileAvatar
+                            className="home-comments__avatar"
+                            fallbackInitials={getInitials(commentAuthor)}
+                            user={commentAuthor || { _id: getId(comment.user_id) }}
+                          />
+                          <div className="home-comments__identity">
+                            <strong>{getDisplayName(commentAuthor)}</strong>
+                            <span>{formatDate(comment.time_stamp || comment.createdAt)}</span>
+                          </div>
+                        </div>
                         <p>{getCommentContent(comment)}</p>
-                        <span>{formatDate(comment.time_stamp || comment.createdAt)}</span>
                         <div className="social-comment__actions">
                           <Button
                             aria-label={commentLiked ? "Unlike" : "Like"}
