@@ -569,6 +569,8 @@ select {
 
 /* ===== 7. PUBLIC / AUTH PAGES ===== */
 .public-page {
+  position: relative;
+  z-index: 3;
   min-height: 100vh;
   display: grid;
   place-items: center;
@@ -583,7 +585,14 @@ select {
 .auth-card {
   position: relative;
   isolation: isolate;
+  --bs-card-bg: rgba(255, 255, 255, 0.85);
+  background-color: rgba(255, 255, 255, 0.85) !important;
   box-shadow: 0 0.75rem 1.75rem var(--color-shadow);
+}
+
+[data-theme="dark"] .auth-card {
+  --bs-card-bg: rgba(18, 17, 28, 0.85);
+  background-color: rgba(18, 17, 28, 0.85) !important;
 }
 
 .auth-card::before {
@@ -1817,17 +1826,6 @@ select {
   align-items: center;
 }
 
-/* Buttons are invisible at rest — opacity keeps them in the layout so the
-   column width stays stable and doesn't reflow when a row is hovered. */
-.user-manager__actions-cell .btn {
-  opacity: 0;
-  transition: opacity 150ms ease;
-}
-
-/* Reveal buttons when the containing row is hovered. Pure CSS — no JS state. */
-.user-manager__table tbody tr:hover .user-manager__actions-cell .btn {
-  opacity: 1;
-}
 
 /* Remove the separator between Location (col 3) and the Actions column (col 4).
    With border-collapse both sides of the joint must be zeroed — clearing only
