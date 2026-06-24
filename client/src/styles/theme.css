@@ -109,7 +109,10 @@ body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background-color: var(--color-background);
   color: var(--color-text);
-  cursor: url('/NObackgroundcursor.png') 0 0, auto;
+}
+
+* {
+  cursor: url('/Handholdingquill.png') 10 52, auto !important;
 }
 
 a {
