@@ -109,6 +109,7 @@ body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background-color: var(--color-background);
   color: var(--color-text);
+  cursor: url('/NObackgroundcursor.png') 0 0, auto;
 }
 
 a {
@@ -123,8 +124,41 @@ select {
 }
 
 .app-shell {
+  position: relative;
+  z-index: 2;
   min-height: 100vh;
-  background: var(--color-background);
+  background: transparent;
+}
+
+/* Full-viewport animated mesh gradient — sits behind the BulgeGrid canvas */
+.mesh-gradient-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--mesh-a1), rgba(192, 188, 255, 0.20) 0%, transparent 60%),
+    linear-gradient(var(--mesh-a2), rgba(106, 92, 255, 0.16) 0%, transparent 60%),
+    linear-gradient(var(--mesh-a3), rgba(91, 77, 255, 0.14) 0%, transparent 57%),
+    linear-gradient(calc(var(--mesh-a1) + 75deg), rgba(192, 188, 255, 0.11) 0%, transparent 64%),
+    linear-gradient(calc(var(--mesh-a2) + 75deg), rgba(91, 77, 255, 0.10) 0%, transparent 64%);
+  filter: blur(90px);
+  animation: mesh-morph 14s ease-in-out infinite;
+  will-change: filter;
+}
+
+[data-theme="dark"] .mesh-gradient-bg {
+  background:
+    linear-gradient(var(--mesh-a1), rgba(177, 173, 255, 0.14) 0%, transparent 60%),
+    linear-gradient(var(--mesh-a2), rgba(106, 92, 255, 0.18) 0%, transparent 60%),
+    linear-gradient(var(--mesh-a3), rgba(91, 77, 255, 0.16) 0%, transparent 57%),
+    linear-gradient(calc(var(--mesh-a1) + 75deg), rgba(153, 147, 255, 0.10) 0%, transparent 64%),
+    linear-gradient(calc(var(--mesh-a2) + 75deg), rgba(91, 77, 255, 0.12) 0%, transparent 64%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  canvas[aria-hidden="true"] { display: none; }
+  .mesh-gradient-bg { animation: none; }
 }
 
 /* ===== 2. HEADER & NAVIGATION ===== */
