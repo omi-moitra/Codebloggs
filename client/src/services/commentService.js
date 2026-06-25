@@ -39,3 +39,13 @@ export const updateCommentLikes = async (commentId, likes) => {
     message: payload?.message || "Comment updated successfully.",
   };
 };
+
+export const deleteComment = async (commentId) => {
+  const payload = await request(`/comments/${commentId}`, {
+    method: "DELETE",
+  });
+
+  return {
+    message: payload?.message || "Comment deleted successfully.",
+  };
+};

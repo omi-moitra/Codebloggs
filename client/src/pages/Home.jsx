@@ -1,13 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Badge, Button, Card, Col, Form, Row, Spinner } from "react-bootstrap";
-import { FaRegThumbsUp, FaThumbsUp } from "react-icons/fa";
+import { FaRegThumbsUp, FaRegTrashAlt, FaThumbsUp } from "react-icons/fa";
 import AutoDismissAlert from "../components/AutoDismissAlert";
 import ProfileAvatar from "../components/ProfileAvatar";
 import StatusDot from "../components/StatusDot";
 import { useAuth } from "../context/AuthContext";
 import { usePresence } from "../context/PresenceContext";
-import { createComment, getComments, updateCommentLikes } from "../services/commentService";
+import {
+  createComment,
+  deleteComment,
+  getComments,
+  updateCommentLikes,
+} from "../services/commentService";
 import { getPosts, updatePostLikes } from "../services/postService";
 import { createReply, getReplies, updateReplyLikes } from "../services/replyService";
 import { hasLocalLike, setLocalLike } from "../services/socialInteractionService";
@@ -88,6 +93,7 @@ const Home = () => {
   const [likingPostId, setLikingPostId] = useState("");
   const [likingCommentId, setLikingCommentId] = useState("");
   const [likingReplyId, setLikingReplyId] = useState("");
+  const [deletingCommentId, setDeletingCommentId] = useState("");
   const [commentDrafts, setCommentDrafts] = useState({});
   const [commentingPostId, setCommentingPostId] = useState("");
   const [replyDrafts, setReplyDrafts] = useState({});
@@ -149,7 +155,7 @@ const Home = () => {
       isCurrent = false;
       window.removeEventListener("codebloggs:post-created", loadHomeData);
     };
-  }, [sessionUser, userId]);
+  }, [dispatch, sessionUser, userId]);
 
   const userPosts = useMemo(() => {
     return posts
@@ -379,6 +385,57 @@ const Home = () => {
       setError(commentError.message || "Unable to add your comment.");
     } finally {
       setCommentingPostId("");
+    }
+  };
+
+  const handleCommentDelete = async (comment) => {
+    const commentId = getId(comment._id);
+    if (!commentId) {
+      return;
+    }
+
+    setDeletingCommentId(commentId);
+    setError("");
+
+    try {
+      await deleteComment(commentId);
+      setComments((currentComments) =>
+        currentComments.filter((currentComment) => getId(currentComment._id) !== commentId)
+      );
+      setReplies((currentReplies) =>
+        currentReplies.filter(
+          (reply) =>
+            getId(reply.root_comment_id) !== commentId &&
+            getId(reply.parent_id) !== commentId
+        )
+      );
+      setLocalReplies((currentReplies) =>
+        Object.entries(currentReplies).reduce((nextReplies, [parentId, replyList]) => {
+          if (parentId !== commentId) {
+            const keptReplies = replyList.filter(
+              (reply) => reply.rootCommentId !== commentId && reply.parentId !== commentId
+            );
+
+            if (keptReplies.length > 0) {
+              nextReplies[parentId] = keptReplies;
+            }
+          }
+
+          return nextReplies;
+        }, {})
+      );
+      setOpenReplyParentIds((currentParentIds) => {
+        const nextParentIds = { ...currentParentIds };
+        delete nextParentIds[commentId];
+        return nextParentIds;
+      });
+      setActiveReplyTargetId((currentParentId) =>
+        currentParentId === commentId ? "" : currentParentId
+      );
+    } catch (deleteError) {
+      setError(deleteError.message || "Unable to delete this comment.");
+    } finally {
+      setDeletingCommentId("");
     }
   };
 
@@ -739,6 +796,7 @@ const Home = () => {
                       userId,
                       itemId: commentId,
                     });
+                    const canDeleteComment = getId(comment.user_id) === userId;
                     return (
                       <li className="home-comments__item" key={commentId}>
                         <div className="home-comments__meta">
@@ -779,6 +837,22 @@ const Home = () => {
                           >
                             Reply
                           </Button>
+                          {canDeleteComment ? (
+                            <Button
+                              aria-label="Delete comment"
+                              className="social-comment__action social-comment__action--danger"
+                              disabled={deletingCommentId === commentId}
+                              onClick={() => handleCommentDelete(comment)}
+                              size="sm"
+                              type="button"
+                              variant="outline-danger"
+                            >
+                              <FaRegTrashAlt aria-hidden="true" />
+                              <span>
+                                {deletingCommentId === commentId ? "Deleting..." : "Delete"}
+                              </span>
+                            </Button>
+                          ) : null}
                         </div>
                         {renderReplyForm(commentId, 0, postId, commentId)}
                         {renderReplyThreadToggle(commentId)}
@@ -889,7 +963,9 @@ const Home = () => {
                         <span className="home-activity__type">
                           You {activity.type}{activity.context ? ` ${activity.context}` : ""}
                         </span>
-                        <span className="home-activity__preview">"{activity.preview}"</span>
+                        <span className="home-activity__preview">
+                          &quot;{activity.preview}&quot;
+                        </span>
                         <span className="home-activity__date">{formatDate(activity.date)}</span>
                       </li>
                     ))}
