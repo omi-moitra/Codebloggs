@@ -150,6 +150,21 @@ const Blogs = () => {
     };
   }, [dispatch]);
 
+  useEffect(() => {
+    if (status !== "success") return;
+    const hash = window.location.hash;
+    if (!hash) return;
+    const timer = setTimeout(() => {
+      const el = document.querySelector(hash);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        el.classList.add("blogs-post--highlighted");
+        setTimeout(() => el.classList.remove("blogs-post--highlighted"), 2000);
+      }
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [status]);
+
   const repliesByParentId = useMemo(() => {
     return replies.reduce((grouped, reply) => {
       const key = getId(reply.parent_id);
@@ -782,7 +797,7 @@ const Blogs = () => {
             const postLiked = hasLocalLike({ type: "post", userId, itemId: postId });
 
             return (
-              <Card className="blogs-post" key={postId}>
+              <Card className="blogs-post" id={`post-${postId}`} key={postId}>
                 <Card.Body>
                   <div className="blogs-post__author">
                     <div className="avatar-presence">

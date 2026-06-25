@@ -1245,6 +1245,15 @@ select {
   border-radius: 0.5rem;
 }
 
+.blogs-post--highlighted {
+  animation: post-highlight-pulse 2s ease-out forwards;
+}
+
+@keyframes post-highlight-pulse {
+  0%   { box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.45); }
+  100% { box-shadow: none; }
+}
+
 .blogs-empty .card-title {
   color: var(--color-heading);
   font-weight: 800;
@@ -2032,6 +2041,13 @@ select {
 
 /* Action cell: no special alignment so the button sits flush-left like the post delete button */
 .content-manager__action-cell { white-space: nowrap; }
+
+.content-manager__preview-avatar {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: 0 0 1.5rem;
+  font-size: 0.5rem;
+}
 
 .content-manager__table .content-manager__no-comments-cell {
   font-size: 0.875rem;

@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Alert, Button, Form, Table } from "react-bootstrap";
+import { Alert, Button, Form, Overlay, Popover, Table } from "react-bootstrap";
 import { BsCaretUpFill, BsFillCaretDownFill, BsChevronRight } from "react-icons/bs";
-import { IoTrashOutline } from "react-icons/io5";
+import { IoEyeOutline, IoTrashOutline } from "react-icons/io5";
 import { TbCaretUpDownFilled } from "react-icons/tb";
 import { fetchPosts, deletePostAction } from "../redux/actions/postActions";
 import { fetchUsers } from "../redux/actions/userActions";
@@ -10,6 +10,7 @@ import { selectUsersById } from "../redux/selectors/userSelectors";
 import { getComments, deleteComment } from "../services/commentService";
 import { getReplies, deleteReply } from "../services/replyService";
 import ConfirmModal from "../components/ConfirmModal";
+import ProfileAvatar from "../components/ProfileAvatar";
 import SkeletonTable from "../components/SkeletonTable";
 
 const PAGE_SIZE_OPTIONS = [10, 15, 20];
@@ -33,6 +34,13 @@ const getId = (value) => {
 const getDisplayName = (user) => {
   const fullName = `${user?.first_name || ""} ${user?.last_name || ""}`.trim();
   return fullName || user?.email || "CodeBloggs user";
+};
+
+const getInitials = (user) => {
+  const first = user?.first_name?.trim()?.[0] || "";
+  const last = user?.last_name?.trim()?.[0] || "";
+  const email = user?.email?.trim()?.[0] || "";
+  return `${first}${last}`.toUpperCase() || email.toUpperCase() || "CB";
 };
 
 const getAuthorLabel = (post, usersById) => {
@@ -66,6 +74,8 @@ const ContentManager = () => {
 
   const [sortField, setSortField] = useState("time_stamp");
   const [sortDir, setSortDir] = useState("desc");
+
+  const [previewState, setPreviewState] = useState(null);
 
   const [expandedPostIds, setExpandedPostIds] = useState(new Set());
   const [comments, setComments] = useState([]);
@@ -304,7 +314,7 @@ const ContentManager = () => {
                 Date {sortIndicator("time_stamp")}
               </span>
             </th>
-            <th>Delete</th>
+            <th>Actions</th>
           </tr>
         </thead>
         {loading ? (
@@ -338,14 +348,31 @@ const ContentManager = () => {
                       </td>
                       <td>{formatDate(post.time_stamp)}</td>
                       <td onClick={(e) => e.stopPropagation()}>
-                        <Button
-                          variant="outline-danger"
-                          size="sm"
-                          onClick={() => setPostToDelete(post)}
-                          aria-label={`Delete post: ${getPostLabel(post)}`}
-                        >
-                          <IoTrashOutline />
-                        </Button>
+                        <div className="d-flex gap-1">
+                          <Button
+                            variant="outline-secondary"
+                            size="sm"
+                            aria-label={`Preview post: ${getPostLabel(post)}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setPreviewState((prev) =>
+                                prev?.post._id === post._id
+                                  ? null
+                                  : { post, el: e.currentTarget }
+                              );
+                            }}
+                          >
+                            <IoEyeOutline />
+                          </Button>
+                          <Button
+                            variant="outline-danger"
+                            size="sm"
+                            onClick={() => setPostToDelete(post)}
+                            aria-label={`Delete post: ${getPostLabel(post)}`}
+                          >
+                            <IoTrashOutline />
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                     {isExpanded && (
@@ -447,6 +474,51 @@ const ContentManager = () => {
           </Button>
         </div>
       )}
+
+      <Overlay
+        show={Boolean(previewState)}
+        target={previewState?.el}
+        placement="left"
+        rootClose
+        onHide={() => setPreviewState(null)}
+      >
+        <Popover id="post-preview-popover" style={{ maxWidth: "300px" }}>
+          <Popover.Header as="h6">Post Preview</Popover.Header>
+          <Popover.Body>
+            {previewState && (() => {
+              const author = usersById[getId(previewState.post.user_id)];
+              return (
+              <>
+                <div className="d-flex align-items-center gap-2 mb-3">
+                  <ProfileAvatar
+                    user={author}
+                    fallbackInitials={getInitials(author)}
+                    className="content-manager__preview-avatar"
+                  />
+                  <div>
+                    <p className="mb-0 fw-semibold small">{getDisplayName(author)}</p>
+                    <p className="mb-0 text-muted small">{formatDate(previewState.post.time_stamp)}</p>
+                  </div>
+                </div>
+                <p className="mb-3" style={{ maxHeight: "10rem", overflowY: "auto" }}>
+                  {previewState.post.content || previewState.post.title || "(no content)"}
+                </p>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  className="w-100"
+                  onClick={() =>
+                    window.open(`/blogs#post-${previewState.post._id}`, "_blank")
+                  }
+                >
+                  Open this post in a new tab
+                </Button>
+              </>
+              );
+            })()}
+          </Popover.Body>
+        </Popover>
+      </Overlay>
 
       <ConfirmModal
         show={!!postToDelete}
