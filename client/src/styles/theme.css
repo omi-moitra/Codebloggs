@@ -1870,16 +1870,6 @@ select {
   opacity: 0.35;
 }
 
-/* Hoverable name span that triggers the preview popover. */
-.user-manager__name-trigger {
-  cursor: pointer;
-  text-decoration: underline dotted;
-  text-underline-offset: 2px;
-}
-
-.user-manager__name-trigger:hover {
-  text-decoration-style: solid;
-}
 
 /* ===== 13a-ii. USER PREVIEW POPOVER ===== */
 

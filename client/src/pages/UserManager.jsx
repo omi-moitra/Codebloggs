@@ -224,32 +224,8 @@ const UserManager = () => {
             ) : (
               pageSlice.map((user) => (
                 <tr key={user._id}>
-                  <td>
-                    <OverlayTrigger
-                      delay={{ hide: 150, show: 300 }}
-                      overlay={<UserPreviewPopover user={user} />}
-                      placement="right"
-                      rootClose
-                      trigger={["hover", "focus", "click"]}
-                    >
-                      <span className="user-manager__name-trigger">
-                        {user.first_name}
-                      </span>
-                    </OverlayTrigger>
-                  </td>
-                  <td>
-                    <OverlayTrigger
-                      delay={{ hide: 150, show: 300 }}
-                      overlay={<UserPreviewPopover user={user} />}
-                      placement="right"
-                      rootClose
-                      trigger={["hover", "focus", "click"]}
-                    >
-                      <span className="user-manager__name-trigger">
-                        {user.last_name}
-                      </span>
-                    </OverlayTrigger>
-                  </td>
+                  <td>{user.first_name}</td>
+                  <td>{user.last_name}</td>
                   <td>{user.location || "—"}</td>
                   <td className="user-manager__actions-cell">
                     <Button
