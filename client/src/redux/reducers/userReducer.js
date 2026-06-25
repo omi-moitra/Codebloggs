@@ -59,8 +59,7 @@ const userReducer = (state = initialState, action) => {
       return { ...state, loading: false, error: action.payload };
 
     // ⚠️ Only update the user in the store on a successful PATCH response.
-    // On failure the original user object is preserved — the admin sees no
-    // phantom changes and can retry after the backend endpoint is delivered.
+    // On failure the original user object is preserved — the admin sees no phantom changes.
     case UPDATE_USER_SUCCESS:
       return {
         ...state,
