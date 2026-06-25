@@ -1,14 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Alert, Button, Form, Table } from "react-bootstrap";
-import { BsCaretUpFill, BsFillCaretDownFill } from "react-icons/bs";
+import { Alert, Button, Form, OverlayTrigger, Table } from "react-bootstrap";
+import { BsCaretUpFill, BsEye, BsFillCaretDownFill } from "react-icons/bs";
 import { FaRegEdit } from "react-icons/fa";
 import { IoTrashOutline } from "react-icons/io5";
 import { TbCaretUpDownFilled } from "react-icons/tb";
 import { fetchUsers, deleteUserAction } from "../redux/actions/userActions";
 import ConfirmModal from "../components/ConfirmModal";
 import SkeletonTable from "../components/SkeletonTable";
+import UserPreviewPopover from "../components/UserPreviewPopover";
 
 const PAGE_SIZE_OPTIONS = [10, 15, 20];
 
@@ -223,8 +224,32 @@ const UserManager = () => {
             ) : (
               pageSlice.map((user) => (
                 <tr key={user._id}>
-                  <td>{user.first_name}</td>
-                  <td>{user.last_name}</td>
+                  <td>
+                    <OverlayTrigger
+                      delay={{ hide: 150, show: 300 }}
+                      overlay={<UserPreviewPopover user={user} />}
+                      placement="right"
+                      rootClose
+                      trigger={["hover", "focus", "click"]}
+                    >
+                      <span className="user-manager__name-trigger">
+                        {user.first_name}
+                      </span>
+                    </OverlayTrigger>
+                  </td>
+                  <td>
+                    <OverlayTrigger
+                      delay={{ hide: 150, show: 300 }}
+                      overlay={<UserPreviewPopover user={user} />}
+                      placement="right"
+                      rootClose
+                      trigger={["hover", "focus", "click"]}
+                    >
+                      <span className="user-manager__name-trigger">
+                        {user.last_name}
+                      </span>
+                    </OverlayTrigger>
+                  </td>
                   <td>{user.location || "—"}</td>
                   <td className="user-manager__actions-cell">
                     <Button
@@ -235,6 +260,20 @@ const UserManager = () => {
                     >
                       <FaRegEdit />
                     </Button>
+                    <OverlayTrigger
+                      overlay={<UserPreviewPopover user={user} />}
+                      placement="left"
+                      rootClose
+                      trigger="click"
+                    >
+                      <Button
+                        aria-label={`Preview ${user.first_name} ${user.last_name}`}
+                        size="sm"
+                        variant="outline-secondary"
+                      >
+                        <BsEye />
+                      </Button>
+                    </OverlayTrigger>
                     <Button
                       variant="outline-danger"
                       size="sm"

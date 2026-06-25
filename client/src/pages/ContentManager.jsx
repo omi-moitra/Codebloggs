@@ -91,7 +91,7 @@ const ContentManager = () => {
       setComments(cr.comments);
       setReplies(rr.replies);
     });
-  }, [dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dispatch]);
 
   const commentsByPostId = useMemo(() =>
     comments.reduce((acc, c) => {

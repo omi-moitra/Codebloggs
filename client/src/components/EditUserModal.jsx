@@ -6,6 +6,7 @@
 // 3. Cancel        "Return to User Manager" closes without side effects
 // =============================================================================
 
+import PropTypes from "prop-types";
 import { Button, Modal } from "react-bootstrap";
 
 // Stub rendered by UserManager when the admin clicks Edit on a row.
@@ -37,6 +38,11 @@ const EditUserModal = ({ user, onClose }) => {
       </Modal.Footer>
     </Modal>
   );
+};
+
+EditUserModal.propTypes = {
+  user: PropTypes.object,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default EditUserModal;

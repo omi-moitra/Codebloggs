@@ -29,3 +29,7 @@ cypress.json
 *.njsproj
 *.sln
 *.sw?
+
+
+package-lock.json
+client/package-lock.json

@@ -18,4 +18,8 @@ const SkeletonRow = ({ cols }) => (
   </tr>
 );
 
+import PropTypes from "prop-types";
+
+SkeletonRow.propTypes = { cols: PropTypes.number.isRequired };
+
 export default SkeletonRow;

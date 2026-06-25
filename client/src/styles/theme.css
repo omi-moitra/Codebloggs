@@ -1843,6 +1843,7 @@ select {
   display: flex;
   gap: 0.4rem;
   align-items: center;
+  justify-content: flex-end;
 }
 
 
@@ -1867,6 +1868,39 @@ select {
    reads as the only directional signal. */
 .user-manager__sort-icon--inactive {
   opacity: 0.35;
+}
+
+/* Hoverable name span that triggers the preview popover. */
+.user-manager__name-trigger {
+  cursor: pointer;
+  text-decoration: underline dotted;
+  text-underline-offset: 2px;
+}
+
+.user-manager__name-trigger:hover {
+  text-decoration-style: solid;
+}
+
+/* ===== 13a-ii. USER PREVIEW POPOVER ===== */
+
+.user-preview-popover__body {
+  min-width: 220px;
+}
+
+.user-preview-popover__avatar {
+  width: 4rem;
+  height: 4rem;
+  font-size: 1.25rem;
+}
+
+.user-preview-popover__name {
+  font-weight: 600;
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.user-preview-popover__meta {
+  font-size: 0.8rem;
 }
 
 /* ===== 13b. EDIT USER PAGE ===== */
@@ -2054,6 +2088,33 @@ select {
   font-style: italic;
   color: var(--color-dim-gray, #5F5E6B);
   background: rgba(64, 62, 107, 0.04);
+}
+
+/* ===== 13d. USER PROFILE PAGE ===== */
+
+/* ==========================================================================
+   UserProfilePage — /users/:id
+   --------------------------------------------------------------------------
+   1. Container     .user-profile-page          outer wrapper (centered column)
+   2. Centered      .user-profile-page--centered  loading / error state
+   ========================================================================== */
+
+.user-profile-page {
+  max-width: 480px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.user-profile-page--centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 200px;
+  max-width: 480px;
+  margin: 2rem auto;
+  padding: 0 1rem;
 }
 
 /* ===== 14. POST MODAL ===== */

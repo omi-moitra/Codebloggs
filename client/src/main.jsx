@@ -20,6 +20,7 @@ import UserManager from "./pages/UserManager";
 import EditUserPage from "./pages/EditUserPage";
 import ContentManager from "./pages/ContentManager";
 import AccountSettings from "./pages/AccountSettings";
+import UserProfilePage from "./pages/UserProfilePage";
 import NotFound from "./pages/NotFound";
 
 const router = createBrowserRouter([
@@ -72,6 +73,9 @@ const router = createBrowserRouter([
                       },
                     ],
                   },
+                  // /users/:id — Read-only profile view for any user. Admin-only;
+                  // opened in a new tab from the UserManager preview popover.
+                  { path: "users/:id", element: <UserProfilePage /> },
                 ],
               },
             ],

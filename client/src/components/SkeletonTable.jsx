@@ -23,4 +23,11 @@ const SkeletonTable = ({ rows = 10, cols }) => (
   </tbody>
 );
 
+import PropTypes from "prop-types";
+
+SkeletonTable.propTypes = {
+  rows: PropTypes.number,
+  cols: PropTypes.number.isRequired,
+};
+
 export default SkeletonTable;
