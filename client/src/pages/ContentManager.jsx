@@ -296,7 +296,7 @@ const ContentManager = () => {
         <thead>
           <tr>
             <th
-              style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer", width: "14%" }}
               onClick={() => handleSort("author")}
               aria-sort={sortField === "author" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}
             >
@@ -304,9 +304,9 @@ const ContentManager = () => {
                 Author {sortIndicator("author")}
               </span>
             </th>
-            <th>Post</th>
+            <th style={{ width: "67%" }}>Post</th>
             <th
-              style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer", width: "12%" }}
               onClick={() => handleSort("time_stamp")}
               aria-sort={sortField === "time_stamp" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}
             >
@@ -314,11 +314,15 @@ const ContentManager = () => {
                 Date {sortIndicator("time_stamp")}
               </span>
             </th>
-            <th>Actions</th>
+            <th style={{ width: "7%" }}>Actions</th>
           </tr>
         </thead>
         {loading ? (
-          <SkeletonTable rows={pageSize} cols={4} />
+          <SkeletonTable
+            rows={pageSize}
+            cols={4}
+            colWidths={["55%", "80%", "40%", "30%"]}
+          />
         ) : (
           <tbody>
             {pageSlice.length === 0 ? (

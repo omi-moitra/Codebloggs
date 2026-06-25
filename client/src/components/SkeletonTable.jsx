@@ -15,10 +15,10 @@ import SkeletonRow from "./SkeletonRow";
 // a value still get a full-height placeholder matching the default page size.
 // Callers should pass the current `pageSize` so the skeleton matches
 // the exact vertical footprint of a real data page — prevents layout shift.
-const SkeletonTable = ({ rows = 10, cols }) => (
+const SkeletonTable = ({ rows = 10, cols, colWidths }) => (
   <tbody>
     {Array.from({ length: rows }, (_, i) => (
-      <SkeletonRow key={i} cols={cols} />
+      <SkeletonRow key={i} cols={cols} colWidths={colWidths} />
     ))}
   </tbody>
 );
@@ -28,6 +28,7 @@ import PropTypes from "prop-types";
 SkeletonTable.propTypes = {
   rows: PropTypes.number,
   cols: PropTypes.number.isRequired,
+  colWidths: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default SkeletonTable;
