@@ -7,6 +7,7 @@ import express from "express";
 
 import {
   createReply,
+  deleteReply,
   updateReply,
   getRepliesByPost,
 } from "../controllers/reply.controller.js";
@@ -22,5 +23,8 @@ router.get("/", getRepliesByPost);
 
 // PUT  /replies/:id  → increment/decrement like count
 router.put("/:id", updateReply);
+
+// DELETE /replies/:id  → admin deletes a reply and related child replies
+router.delete("/:id", requireSession, deleteReply);
 
 export default router;
