@@ -4,9 +4,14 @@ import { Button, Card, Form, Spinner } from "react-bootstrap";
 import AutoDismissAlert from "../components/AutoDismissAlert";
 import ProfileAvatar from "../components/ProfileAvatar";
 import StatusDot from "../components/StatusDot";
-import { FaRegThumbsUp, FaThumbsUp } from "react-icons/fa";
+import { FaRegThumbsUp, FaRegTrashAlt, FaThumbsUp } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
-import { createComment, getComments, updateCommentLikes } from "../services/commentService";
+import {
+  createComment,
+  deleteComment,
+  getComments,
+  updateCommentLikes,
+} from "../services/commentService";
 import { getPosts, updatePostLikes } from "../services/postService";
 import { createReply, getReplies, updateReplyLikes } from "../services/replyService";
 import { hasLocalLike, setLocalLike } from "../services/socialInteractionService";
@@ -83,6 +88,7 @@ const Blogs = () => {
   const [likingPostId, setLikingPostId] = useState("");
   const [likingCommentId, setLikingCommentId] = useState("");
   const [likingReplyId, setLikingReplyId] = useState("");
+  const [deletingCommentId, setDeletingCommentId] = useState("");
   const [commentDrafts, setCommentDrafts] = useState({});
   const [commentingPostId, setCommentingPostId] = useState("");
   const [replyDrafts, setReplyDrafts] = useState({});
@@ -135,7 +141,7 @@ const Blogs = () => {
       isCurrent = false;
       window.removeEventListener("codebloggs:post-created", loadBlogsData);
     };
-  }, []);
+  }, [dispatch]);
 
   const repliesByParentId = useMemo(() => {
     return replies.reduce((grouped, reply) => {
@@ -309,6 +315,57 @@ const Blogs = () => {
       setError(commentError.message || "Unable to add your comment.");
     } finally {
       setCommentingPostId("");
+    }
+  };
+
+  const handleCommentDelete = async (comment) => {
+    const commentId = getId(comment._id);
+    if (!commentId) {
+      return;
+    }
+
+    setDeletingCommentId(commentId);
+    setError("");
+
+    try {
+      await deleteComment(commentId);
+      setComments((currentComments) =>
+        currentComments.filter((currentComment) => getId(currentComment._id) !== commentId)
+      );
+      setReplies((currentReplies) =>
+        currentReplies.filter(
+          (reply) =>
+            getId(reply.root_comment_id) !== commentId &&
+            getId(reply.parent_id) !== commentId
+        )
+      );
+      setLocalReplies((currentReplies) =>
+        Object.entries(currentReplies).reduce((nextReplies, [parentId, replyList]) => {
+          if (parentId !== commentId) {
+            const keptReplies = replyList.filter(
+              (reply) => reply.rootCommentId !== commentId && reply.parentId !== commentId
+            );
+
+            if (keptReplies.length > 0) {
+              nextReplies[parentId] = keptReplies;
+            }
+          }
+
+          return nextReplies;
+        }, {})
+      );
+      setOpenReplyParentIds((currentParentIds) => {
+        const nextParentIds = { ...currentParentIds };
+        delete nextParentIds[commentId];
+        return nextParentIds;
+      });
+      setActiveReplyTargetId((currentParentId) =>
+        currentParentId === commentId ? "" : currentParentId
+      );
+    } catch (deleteError) {
+      setError(deleteError.message || "Unable to delete this comment.");
+    } finally {
+      setDeletingCommentId("");
     }
   };
 
@@ -732,6 +789,7 @@ const Blogs = () => {
                               userId,
                               itemId: commentId,
                             });
+                            const canDeleteComment = getId(comment.user_id) === userId;
                             return (
                               <li className="blogs-comments__item" key={commentId}>
                                 <div className="blogs-comments__meta">
@@ -774,6 +832,24 @@ const Blogs = () => {
                                   >
                                     Reply
                                   </Button>
+                                  {canDeleteComment ? (
+                                    <Button
+                                      aria-label="Delete comment"
+                                      className="social-comment__action social-comment__action--danger"
+                                      disabled={deletingCommentId === commentId}
+                                      onClick={() => handleCommentDelete(comment)}
+                                      size="sm"
+                                      type="button"
+                                      variant="outline-danger"
+                                    >
+                                      <FaRegTrashAlt aria-hidden="true" />
+                                      <span>
+                                        {deletingCommentId === commentId
+                                          ? "Deleting..."
+                                          : "Delete"}
+                                      </span>
+                                    </Button>
+                                  ) : null}
                                 </div>
 
                                 {renderReplyForm(commentId, 0, postId, commentId)}
