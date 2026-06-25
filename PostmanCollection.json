@@ -2,39 +2,225 @@
   "info": {
     "_postman_id": "cb1e2f3a-4d5b-6c7e-8f9a-0b1c2d3e4f5a",
     "name": "CodeBloggs Module 10 Backend",
-    "description": "## CodeBloggs Module 10 Backend Collection\n\nThis collection preserves the working Module 9 backend requests and adds the completed Module 10 backend requests.\n\n### Local Setup\n1. Start MongoDB access and the backend server.\n2. Confirm the server is running at `{{base_url}}`. Default: `http://localhost:5050`.\n3. Run setup requests in order when testing happy paths: Create User, Login, Create Post, Create Comment, Create Reply.\n4. Use only throwaway records for destructive Module 10 delete requests.\n\n### Variables\n- `base_url`: backend base URL\n- `user_id`: populated by Create User or manually set to a throwaway user id\n- `post_id`: populated by Create Post or manually set to a throwaway post id\n- `comment_id`: populated by Create Comment or manually set to a throwaway comment id\n- `reply_id`: populated by Create Reply or manually set to a throwaway reply id\n\n### Module 10 Requests\nThe `Module 10 Backend` folder contains happy-path, malformed-id, and nonexistent-id scenarios for all completed Module 10 backend endpoints.",
+    "description": "## CodeBloggs Module 10 Backend Collection\n\nThis collection preserves the working Module 9 backend requests and adds the completed Module 10 backend requests. Requests are parameterized with Postman variables and are intended to run with the companion `CodeBloggs Module 10 Backend Environment.postman_environment.json` environment.\n\n### Local Setup\n1. Start MongoDB access and the backend server.\n2. Select the CodeBloggs Module 10 Backend Environment in Postman.\n3. Confirm `base_url` points to the backend in the selected environment.\n4. Run setup requests in order when testing happy paths: Create User, Login, Create Post, Create Comment, Create Reply.\n5. Use only throwaway records for destructive Module 10 delete requests.\n\n### Automatic Variable Chaining\n- Create User saves `user_id`.\n- Login saves `user_id`, `session_token`, and `session_id` when available from the response/cookie jar.\n- Create Post saves `post_id`.\n- Create Comment saves `comment_id`.\n- Create Reply saves `reply_id`.\n\n### Module 10 Requests\nThe `Module 10 Backend` folder contains happy-path, malformed-id, and nonexistent-id scenarios for all completed Module 10 backend endpoints.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
     {
       "key": "base_url",
-      "value": "http://localhost:5050",
+      "value": "",
       "type": "string",
-      "description": "Base URL for the local CodeBloggs backend API."
+      "description": "Backend base URL."
     },
     {
       "key": "user_id",
-      "value": "000000000000000000000000",
+      "value": "",
       "type": "string",
-      "description": "MongoDB user _id. Create User can overwrite this for happy-path user tests."
+      "description": "MongoDB user _id captured by Create User or Login."
     },
     {
       "key": "post_id",
-      "value": "000000000000000000000000",
+      "value": "",
       "type": "string",
-      "description": "MongoDB post _id. Create Post can overwrite this for happy-path post tests."
+      "description": "MongoDB post _id captured by Create Post."
     },
     {
       "key": "comment_id",
-      "value": "000000000000000000000000",
+      "value": "",
       "type": "string",
-      "description": "MongoDB comment _id. Create Comment can overwrite this for happy-path comment tests."
+      "description": "MongoDB comment _id captured by Create Comment."
     },
     {
       "key": "reply_id",
-      "value": "000000000000000000000000",
+      "value": "",
       "type": "string",
-      "description": "MongoDB reply _id. Create Reply can overwrite this for happy-path reply tests."
+      "description": "MongoDB reply _id captured by Create Reply."
+    },
+    {
+      "key": "profile_picture_id",
+      "value": "",
+      "type": "string",
+      "description": "Reserved for APIs that return a profile picture document id."
+    },
+    {
+      "key": "session_id",
+      "value": "",
+      "type": "string",
+      "description": "Session id captured from the session_token cookie after Login."
+    },
+    {
+      "key": "session_token",
+      "value": "",
+      "type": "string",
+      "description": "Cookie token captured after Login."
+    },
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string",
+      "description": "Reserved for JWT auth if the API adds it later."
+    },
+    {
+      "key": "email",
+      "value": "",
+      "type": "string",
+      "description": "Test user email. Use a unique value when rerunning registration."
+    },
+    {
+      "key": "password",
+      "value": "",
+      "type": "string",
+      "description": "Test user password."
+    },
+    {
+      "key": "first_name",
+      "value": "",
+      "type": "string",
+      "description": "Registration first name."
+    },
+    {
+      "key": "last_name",
+      "value": "",
+      "type": "string",
+      "description": "Registration last name."
+    },
+    {
+      "key": "birthday",
+      "value": "",
+      "type": "string",
+      "description": "Registration birthday."
+    },
+    {
+      "key": "location",
+      "value": "",
+      "type": "string",
+      "description": "Test user location."
+    },
+    {
+      "key": "occupation",
+      "value": "",
+      "type": "string",
+      "description": "Test user occupation."
+    },
+    {
+      "key": "status",
+      "value": "",
+      "type": "string",
+      "description": "Boolean user status value used in update requests."
+    },
+    {
+      "key": "auth_level",
+      "value": "",
+      "type": "string",
+      "description": "User auth level used when needed."
+    },
+    {
+      "key": "updated_first_name",
+      "value": "",
+      "type": "string",
+      "description": "User update first name."
+    },
+    {
+      "key": "updated_last_name",
+      "value": "",
+      "type": "string",
+      "description": "User update last name."
+    },
+    {
+      "key": "updated_location",
+      "value": "",
+      "type": "string",
+      "description": "User update location."
+    },
+    {
+      "key": "updated_occupation",
+      "value": "",
+      "type": "string",
+      "description": "User update occupation."
+    },
+    {
+      "key": "post_content",
+      "value": "",
+      "type": "string",
+      "description": "Create Post content."
+    },
+    {
+      "key": "comment_content",
+      "value": "",
+      "type": "string",
+      "description": "Create Comment content."
+    },
+    {
+      "key": "updated_comment_content",
+      "value": "",
+      "type": "string",
+      "description": "Update Comment content."
+    },
+    {
+      "key": "reply_content",
+      "value": "",
+      "type": "string",
+      "description": "Create Reply content."
+    },
+    {
+      "key": "parent_type",
+      "value": "",
+      "type": "string",
+      "description": "Reply parent type."
+    },
+    {
+      "key": "reply_depth",
+      "value": "",
+      "type": "string",
+      "description": "Reply nesting depth."
+    },
+    {
+      "key": "likes_delta",
+      "value": "",
+      "type": "string",
+      "description": "Amount to increment likes by."
+    },
+    {
+      "key": "malformed_id",
+      "value": "",
+      "type": "string",
+      "description": "Reusable malformed MongoDB id for error tests."
+    },
+    {
+      "key": "nonexistent_user_id",
+      "value": "",
+      "type": "string",
+      "description": "Valid ObjectId that should not match a user."
+    },
+    {
+      "key": "nonexistent_post_id",
+      "value": "",
+      "type": "string",
+      "description": "Valid ObjectId that should not match a post."
+    },
+    {
+      "key": "nonexistent_comment_id",
+      "value": "",
+      "type": "string",
+      "description": "Valid ObjectId that should not match a comment."
+    },
+    {
+      "key": "page",
+      "value": "",
+      "type": "string",
+      "description": "Reusable page query parameter."
+    },
+    {
+      "key": "limit",
+      "value": "",
+      "type": "string",
+      "description": "Reusable limit query parameter."
+    },
+    {
+      "key": "sort",
+      "value": "",
+      "type": "string",
+      "description": "Reusable sort query parameter."
     }
   ],
   "item": [
@@ -64,7 +250,7 @@
             "description": "Endpoint: POST /user\n\nSetup instructions:\nNo prior request required. Use a unique email each time if the database already has this user.\n\nRequired variables:\n- base_url\n\nRequired headers:\nContent-Type: application/json\n\nRequired body:\nJSON user registration fields: first_name, last_name, email, password, birthday, optional location, optional occupation.\n\nExpected success response:\n{ status: \"ok\", data: { user }, message: \"Registration successful. Please log in.\" }\n\nExpected error responses:\n400 validation/missing fields, 409 duplicate email, 500 unexpected server error.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"first_name\": \"Jane\",\n  \"last_name\": \"Doe\",\n  \"email\": \"jane.doe@example.com\",\n  \"password\": \"Password123\",\n  \"birthday\": \"1995-06-15\",\n  \"location\": \"Tampa, FL\",\n  \"occupation\": \"Software Developer\"\n}",
+              "raw": "{\n  \"first_name\": \"{{first_name}}\",\n  \"last_name\": \"{{last_name}}\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"birthday\": \"{{birthday}}\",\n  \"location\": \"{{location}}\",\n  \"occupation\": \"{{occupation}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -78,12 +264,22 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Status code is 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                  "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                  "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                  "pm.test('Response envelope is valid', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('status');",
+                  "  pm.expect(body).to.have.property('data');",
+                  "  pm.expect(body).to.have.property('message');",
+                  "});",
                   "pm.test('Captures user_id and omits password', () => {",
                   "  const body = pm.response.json();",
                   "  pm.expect(body.status).to.equal('ok');",
                   "  pm.expect(body.data.user).to.not.have.property('password');",
-                  "  pm.collectionVariables.set('user_id', body.data.user._id);",
+                  "  pm.expect(body.data.user._id).to.be.a('string');",
+                  "  pm.environment.set('user_id', body.data.user._id);",
                   "});"
                 ]
               }
@@ -112,7 +308,16 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                  "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                  "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                  "pm.test('Response envelope is valid', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('status');",
+                  "  pm.expect(body).to.have.property('data');",
+                  "  pm.expect(body).to.have.property('message');",
+                  "});",
                   "pm.test('Returns users array without passwords', () => {",
                   "  const body = pm.response.json();",
                   "  pm.expect(body.data.users).to.be.an('array');",
@@ -146,7 +351,16 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                  "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                  "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                  "pm.test('Response envelope is valid', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('status');",
+                  "  pm.expect(body).to.have.property('data');",
+                  "  pm.expect(body).to.have.property('message');",
+                  "});",
                   "pm.test('Returns user without password', () => {",
                   "  const body = pm.response.json();",
                   "  pm.expect(body.data.user).to.not.have.property('password');",
@@ -184,7 +398,7 @@
             "description": "Endpoint: POST /session\n\nSetup instructions:\nRun Create User first or use credentials for an existing user.\n\nRequired variables:\n- base_url\n\nRequired headers:\nContent-Type: application/json\n\nRequired body:\nJSON with email and password.\n\nExpected success response:\n{ status: \"ok\", data: { user }, message: \"Login successful\" } and HTTP-only session_token cookie.\n\nExpected error responses:\n401 invalid email/password, 500 unexpected server error.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"jane.doe@example.com\",\n  \"password\": \"Password123\"\n}",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -198,11 +412,30 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                  "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                  "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                  "pm.test('Response envelope is valid', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('status');",
+                  "  pm.expect(body).to.have.property('data');",
+                  "  pm.expect(body).to.have.property('message');",
+                  "});",
                   "pm.test('Message is Login successful', () => {",
                   "  const body = pm.response.json();",
                   "  pm.expect(body.status).to.equal('ok');",
                   "  pm.expect(body.message).to.equal('Login successful');",
+                  "  pm.expect(body.data.user).to.not.have.property('password');",
+                  "  if (body.data.user && body.data.user._id) pm.environment.set('user_id', body.data.user._id);",
+                  "});",
+                  "pm.test('Captures session token cookie when available', () => {",
+                  "  const token = pm.cookies.get('session_token');",
+                  "  if (token) {",
+                  "    pm.environment.set('session_token', token);",
+                  "    pm.environment.set('session_id', token);",
+                  "  }",
+                  "  pm.expect(pm.cookies.has('session_token')).to.be.true;",
                   "});"
                 ]
               }
@@ -232,7 +465,16 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                  "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                  "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                  "pm.test('Response envelope is valid', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('status');",
+                  "  pm.expect(body).to.have.property('data');",
+                  "  pm.expect(body).to.have.property('message');",
+                  "});",
                   "pm.test('Message is Session is valid', () => {",
                   "  const body = pm.response.json();",
                   "  pm.expect(body.status).to.equal('ok');",
@@ -265,7 +507,16 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                  "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                  "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                  "pm.test('Response envelope is valid', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('status');",
+                  "  pm.expect(body).to.have.property('data');",
+                  "  pm.expect(body).to.have.property('message');",
+                  "});",
                   "pm.test('Message is Logged out successfully', () => {",
                   "  const body = pm.response.json();",
                   "  pm.expect(body.status).to.equal('ok');",
@@ -304,7 +555,16 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                  "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                  "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                  "pm.test('Response envelope is valid', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('status');",
+                  "  pm.expect(body).to.have.property('data');",
+                  "  pm.expect(body).to.have.property('message');",
+                  "});",
                   "pm.test('Returns activeUserIds array', () => {",
                   "  const body = pm.response.json();",
                   "  pm.expect(body.data.activeUserIds).to.be.an('array');",
@@ -342,7 +602,7 @@
             "description": "Endpoint: POST /posts\n\nSetup instructions:\nRun Login first. user_id is taken from the session cookie.\n\nRequired variables:\n- base_url\n\nRequired headers:\nContent-Type: application/json\n\nRequired body:\nJSON with content.\n\nExpected success response:\n{ status: \"ok\", data: { post }, message: \"Post created successfully\" }\n\nExpected error responses:\n400 invalid post data, 401 unauthorized, 500 unexpected server error.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"content\": \"Hello from CodeBloggs Postman.\"\n}",
+              "raw": "{\n  \"content\": \"{{post_content}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -356,10 +616,20 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Status code is 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                  "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                  "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                  "pm.test('Response envelope is valid', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('status');",
+                  "  pm.expect(body).to.have.property('data');",
+                  "  pm.expect(body).to.have.property('message');",
+                  "});",
                   "pm.test('Captures post_id', () => {",
                   "  const body = pm.response.json();",
-                  "  pm.collectionVariables.set('post_id', body.data.post._id);",
+                  "  pm.expect(body.data.post._id).to.be.a('string');",
+                  "  pm.environment.set('post_id', body.data.post._id);",
                   "});"
                 ]
               }
@@ -388,7 +658,16 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                  "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                  "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                  "pm.test('Response envelope is valid', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('status');",
+                  "  pm.expect(body).to.have.property('data');",
+                  "  pm.expect(body).to.have.property('message');",
+                  "});",
                   "pm.test('Returns posts array', () => {",
                   "  const body = pm.response.json();",
                   "  pm.expect(body.data.posts).to.be.an('array');",
@@ -421,7 +700,7 @@
             "description": "Endpoint: PATCH /posts/:id\n\nSetup instructions:\nRun Create Post first or set post_id to an existing post.\n\nRequired variables:\n- base_url\n- post_id\n\nRequired headers:\nContent-Type: application/json\n\nRequired body:\nJSON with likes increment, for example { \"likes\": 1 }.\n\nExpected success response:\n{ status: \"ok\", data: { post }, message: \"Post updated successfully\" }\n\nExpected error responses:\n400 invalid post data, 404 post not found, 500 unexpected server error.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"likes\": 1\n}",
+              "raw": "{\n  \"likes\": {{likes_delta}}\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -435,7 +714,16 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                  "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                  "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                  "pm.test('Response envelope is valid', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('status');",
+                  "  pm.expect(body).to.have.property('data');",
+                  "  pm.expect(body).to.have.property('message');",
+                  "});",
                   "pm.test('Message is Post updated successfully', () => {",
                   "  const body = pm.response.json();",
                   "  pm.expect(body.status).to.equal('ok');",
@@ -474,7 +762,7 @@
             "description": "Endpoint: POST /comments\n\nSetup instructions:\nRun Login and Create Post first. user_id is taken from session cookie.\n\nRequired variables:\n- base_url\n- post_id\n\nRequired headers:\nContent-Type: application/json\n\nRequired body:\nJSON with post_id and content.\n\nExpected success response:\n{ status: \"ok\", data: { comment }, message: \"Comment added successfully\" }\n\nExpected error responses:\n400 invalid comment data, 401 unauthorized, 404 post not found, 500 unexpected server error.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"post_id\": \"{{post_id}}\",\n  \"content\": \"This is a Postman test comment.\"\n}",
+              "raw": "{\n  \"post_id\": \"{{post_id}}\",\n  \"content\": \"{{comment_content}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -488,10 +776,20 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Status code is 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                  "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                  "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                  "pm.test('Response envelope is valid', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('status');",
+                  "  pm.expect(body).to.have.property('data');",
+                  "  pm.expect(body).to.have.property('message');",
+                  "});",
                   "pm.test('Captures comment_id', () => {",
                   "  const body = pm.response.json();",
-                  "  pm.collectionVariables.set('comment_id', body.data.comment._id);",
+                  "  pm.expect(body.data.comment._id).to.be.a('string');",
+                  "  pm.environment.set('comment_id', body.data.comment._id);",
                   "});"
                 ]
               }
@@ -520,7 +818,16 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                  "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                  "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                  "pm.test('Response envelope is valid', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('status');",
+                  "  pm.expect(body).to.have.property('data');",
+                  "  pm.expect(body).to.have.property('message');",
+                  "});",
                   "pm.test('Returns comments array', () => {",
                   "  const body = pm.response.json();",
                   "  pm.expect(body.data.comments).to.be.an('array');",
@@ -553,7 +860,7 @@
             "description": "Endpoint: PATCH /comments/:id\n\nSetup instructions:\nRun Create Comment first or set comment_id to an existing comment.\n\nRequired variables:\n- base_url\n- comment_id\n\nRequired headers:\nContent-Type: application/json\n\nRequired body:\nJSON with content and/or likes increment.\n\nExpected success response:\n{ status: \"ok\", data: { comment }, message: \"Comment updated successfully\" }\n\nExpected error responses:\n400 invalid comment data, 404 comment not found, 500 unexpected server error.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"content\": \"Updated Postman comment.\",\n  \"likes\": 1\n}",
+              "raw": "{\n  \"content\": \"{{updated_comment_content}}\",\n  \"likes\": {{likes_delta}}\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -567,7 +874,16 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                  "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                  "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                  "pm.test('Response envelope is valid', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('status');",
+                  "  pm.expect(body).to.have.property('data');",
+                  "  pm.expect(body).to.have.property('message');",
+                  "});",
                   "pm.test('Message is Comment updated successfully', () => {",
                   "  const body = pm.response.json();",
                   "  pm.expect(body.status).to.equal('ok');",
@@ -606,7 +922,7 @@
             "description": "Endpoint: POST /replies\n\nSetup instructions:\nRun Login, Create Post, and Create Comment first.\n\nRequired variables:\n- base_url\n- post_id\n- comment_id\n\nRequired headers:\nContent-Type: application/json\n\nRequired body:\nJSON with parent_id, parent_type, root_comment_id, post_id, content, and depth.\n\nExpected success response:\n{ status: \"ok\", data: { reply }, message: \"Reply added successfully\" }\n\nExpected error responses:\n400 invalid reply data, 401 unauthorized, 404 parent not found, 500 unexpected server error.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"parent_id\": \"{{comment_id}}\",\n  \"parent_type\": \"Comment\",\n  \"root_comment_id\": \"{{comment_id}}\",\n  \"post_id\": \"{{post_id}}\",\n  \"content\": \"This is a Postman test reply.\",\n  \"depth\": 1\n}",
+              "raw": "{\n  \"parent_id\": \"{{comment_id}}\",\n  \"parent_type\": \"{{parent_type}}\",\n  \"root_comment_id\": \"{{comment_id}}\",\n  \"post_id\": \"{{post_id}}\",\n  \"content\": \"{{reply_content}}\",\n  \"depth\": {{reply_depth}}\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -620,10 +936,20 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Status code is 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                  "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                  "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                  "pm.test('Response envelope is valid', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('status');",
+                  "  pm.expect(body).to.have.property('data');",
+                  "  pm.expect(body).to.have.property('message');",
+                  "});",
                   "pm.test('Captures reply_id', () => {",
                   "  const body = pm.response.json();",
-                  "  pm.collectionVariables.set('reply_id', body.data.reply._id);",
+                  "  pm.expect(body.data.reply._id).to.be.a('string');",
+                  "  pm.environment.set('reply_id', body.data.reply._id);",
                   "});"
                 ]
               }
@@ -658,7 +984,16 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                  "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                  "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                  "pm.test('Response envelope is valid', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('status');",
+                  "  pm.expect(body).to.have.property('data');",
+                  "  pm.expect(body).to.have.property('message');",
+                  "});",
                   "pm.test('Returns replies array', () => {",
                   "  const body = pm.response.json();",
                   "  pm.expect(body.data.replies).to.be.an('array');",
@@ -691,7 +1026,7 @@
             "description": "Endpoint: PUT /replies/:id\n\nSetup instructions:\nRun Create Reply first or set reply_id to an existing reply.\n\nRequired variables:\n- base_url\n- reply_id\n\nRequired headers:\nContent-Type: application/json\n\nRequired body:\nJSON with likes increment.\n\nExpected success response:\n{ status: \"ok\", data: { reply }, message: \"Reply updated successfully\" }\n\nExpected error responses:\n400 invalid reply data, 404 reply not found, 500 unexpected server error.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"likes\": 1\n}",
+              "raw": "{\n  \"likes\": {{likes_delta}}\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -705,7 +1040,16 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                  "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                  "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                  "pm.test('Response envelope is valid', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('status');",
+                  "  pm.expect(body).to.have.property('data');",
+                  "  pm.expect(body).to.have.property('message');",
+                  "});",
                   "pm.test('Message is Reply updated successfully', () => {",
                   "  const body = pm.response.json();",
                   "  pm.expect(body.status).to.equal('ok');",
@@ -755,7 +1099,16 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                  "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                  "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                  "pm.test('Response envelope is valid', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('status');",
+                  "  pm.expect(body).to.have.property('data');",
+                  "  pm.expect(body).to.have.property('message');",
+                  "});",
                   "pm.test('Message is Profile picture uploaded successfully.', () => {",
                   "  const body = pm.response.json();",
                   "  pm.expect(body.status).to.equal('ok');",
@@ -789,7 +1142,10 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                  "pm.test('Content-Type is an image', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.match(/^image\\/(jpeg|png)/));",
+                  "pm.test('Response body is not empty', () => pm.expect(pm.response.text()).to.not.equal(''));"
                 ]
               }
             }
@@ -827,7 +1183,7 @@
                 "description": "Endpoint: PATCH /user/:id\n\nSetup instructions:\nRun Create User first or set user_id to a throwaway existing user. This request updates allowed user fields only.\n\nRequired variables:\n- base_url\n- user_id\n\nRequired headers:\nContent-Type: application/json\n\nRequired body:\nJSON with any allowed fields: first_name, last_name, birthday, email, password, status, location, occupation, auth_level. Non-empty password values are hashed. Empty/missing password does not overwrite existing password.\n\nExpected success response:\n{ status: \"ok\", data: { user }, message: \"User updated successfully\" } and user does not include password.\n\nExpected error responses:\n400 invalid user id or validation error, 404 user not found, 409 duplicate email, 500 unexpected server error.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"first_name\": \"Module\",\n  \"last_name\": \"Ten\",\n  \"location\": \"Tampa, FL\",\n  \"occupation\": \"Admin Tester\",\n  \"status\": true\n}",
+                  "raw": "{\n  \"first_name\": \"{{updated_first_name}}\",\n  \"last_name\": \"{{updated_last_name}}\",\n  \"location\": \"{{updated_location}}\",\n  \"occupation\": \"{{updated_occupation}}\",\n  \"status\": {{status}}\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -841,7 +1197,16 @@
                   "script": {
                     "type": "text/javascript",
                     "exec": [
-                      "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                      "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                      "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                      "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                      "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                      "pm.test('Response envelope is valid', () => {",
+                      "  const body = pm.response.json();",
+                      "  pm.expect(body).to.have.property('status');",
+                      "  pm.expect(body).to.have.property('data');",
+                      "  pm.expect(body).to.have.property('message');",
+                      "});",
                       "pm.test('Password is not returned', () => {",
                       "  const body = pm.response.json();",
                       "  pm.expect(body.status).to.equal('ok');",
@@ -864,19 +1229,19 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/user/not-a-valid-id",
+                  "raw": "{{base_url}}/user/{{malformed_id}}",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
                     "user",
-                    "not-a-valid-id"
+                    "{{malformed_id}}"
                   ]
                 },
                 "description": "Endpoint: PATCH /user/:id\n\nSetup instructions:\nRun Create User first or set user_id to a throwaway existing user. This request updates allowed user fields only.\n\nRequired variables:\n- base_url\n- user_id\n\nRequired headers:\nContent-Type: application/json\n\nRequired body:\nJSON with any allowed fields: first_name, last_name, birthday, email, password, status, location, occupation, auth_level. Non-empty password values are hashed. Empty/missing password does not overwrite existing password.\n\nExpected success response:\n{ status: \"ok\", data: { user }, message: \"User updated successfully\" } and user does not include password.\n\nExpected error responses:\n400 invalid user id or validation error, 404 user not found, 409 duplicate email, 500 unexpected server error.\n\nScenario: malformed MongoDB id. Expected status: 400.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"first_name\": \"Bad\"\n}",
+                  "raw": "{\n  \"first_name\": \"{{updated_first_name}}\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -890,7 +1255,16 @@
                   "script": {
                     "type": "text/javascript",
                     "exec": [
-                      "pm.test('Status 400', () => pm.response.to.have.status(400));",
+                      "pm.test('Status code is 400', () => pm.response.to.have.status(400));",
+                      "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                      "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                      "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                      "pm.test('Error response envelope is valid', () => {",
+                      "  const body = pm.response.json();",
+                      "  pm.expect(body.status).to.equal('error');",
+                      "  pm.expect(body).to.have.property('data');",
+                      "  pm.expect(body).to.have.property('message').that.is.a('string').and.is.not.empty;",
+                      "});",
                       "pm.test('Error message is Invalid user id', () => {",
                       "  const body = pm.response.json();",
                       "  pm.expect(body.status).to.equal('error');",
@@ -912,19 +1286,19 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/user/507f1f77bcf86cd799439011",
+                  "raw": "{{base_url}}/user/{{nonexistent_user_id}}",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
                     "user",
-                    "507f1f77bcf86cd799439011"
+                    "{{nonexistent_user_id}}"
                   ]
                 },
                 "description": "Endpoint: PATCH /user/:id\n\nSetup instructions:\nRun Create User first or set user_id to a throwaway existing user. This request updates allowed user fields only.\n\nRequired variables:\n- base_url\n- user_id\n\nRequired headers:\nContent-Type: application/json\n\nRequired body:\nJSON with any allowed fields: first_name, last_name, birthday, email, password, status, location, occupation, auth_level. Non-empty password values are hashed. Empty/missing password does not overwrite existing password.\n\nExpected success response:\n{ status: \"ok\", data: { user }, message: \"User updated successfully\" } and user does not include password.\n\nExpected error responses:\n400 invalid user id or validation error, 404 user not found, 409 duplicate email, 500 unexpected server error.\n\nScenario: valid ObjectId format but no matching user. Expected status: 404.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"first_name\": \"Missing\"\n}",
+                  "raw": "{\n  \"first_name\": \"{{updated_first_name}}\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -938,7 +1312,16 @@
                   "script": {
                     "type": "text/javascript",
                     "exec": [
-                      "pm.test('Status 404', () => pm.response.to.have.status(404));",
+                      "pm.test('Status code is 404', () => pm.response.to.have.status(404));",
+                      "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                      "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                      "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                      "pm.test('Error response envelope is valid', () => {",
+                      "  const body = pm.response.json();",
+                      "  pm.expect(body.status).to.equal('error');",
+                      "  pm.expect(body).to.have.property('data');",
+                      "  pm.expect(body).to.have.property('message').that.is.a('string').and.is.not.empty;",
+                      "});",
                       "pm.test('Error message is User not found', () => {",
                       "  const body = pm.response.json();",
                       "  pm.expect(body.status).to.equal('error');",
@@ -972,7 +1355,16 @@
                   "script": {
                     "type": "text/javascript",
                     "exec": [
-                      "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                      "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                      "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                      "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                      "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                      "pm.test('Response envelope is valid', () => {",
+                      "  const body = pm.response.json();",
+                      "  pm.expect(body).to.have.property('status');",
+                      "  pm.expect(body).to.have.property('data');",
+                      "  pm.expect(body).to.have.property('message');",
+                      "});",
                       "pm.test('Message is User deleted successfully', () => {",
                       "  const body = pm.response.json();",
                       "  pm.expect(body.status).to.equal('ok');",
@@ -989,13 +1381,13 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/user/not-a-valid-id",
+                  "raw": "{{base_url}}/user/{{malformed_id}}",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
                     "user",
-                    "not-a-valid-id"
+                    "{{malformed_id}}"
                   ]
                 },
                 "description": "Endpoint: DELETE /user/:id\n\nSetup instructions:\nSet user_id to a throwaway user. This permanently deletes the user and related posts/comments/replies/sessions/profile picture records.\n\nRequired variables:\n- base_url\n- user_id\n\nRequired headers:\nNone\n\nRequired body:\nNone\n\nExpected success response:\n{ status: \"ok\", data: {}, message: \"User deleted successfully\" }\n\nExpected error responses:\n400 invalid user id, 404 user not found, 500 unexpected server error.\n\nScenario: malformed MongoDB id. Expected status: 400."
@@ -1006,7 +1398,16 @@
                   "script": {
                     "type": "text/javascript",
                     "exec": [
-                      "pm.test('Status 400', () => pm.response.to.have.status(400));",
+                      "pm.test('Status code is 400', () => pm.response.to.have.status(400));",
+                      "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                      "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                      "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                      "pm.test('Error response envelope is valid', () => {",
+                      "  const body = pm.response.json();",
+                      "  pm.expect(body.status).to.equal('error');",
+                      "  pm.expect(body).to.have.property('data');",
+                      "  pm.expect(body).to.have.property('message').that.is.a('string').and.is.not.empty;",
+                      "});",
                       "pm.test('Error message is Invalid user id', () => {",
                       "  const body = pm.response.json();",
                       "  pm.expect(body.status).to.equal('error');",
@@ -1023,13 +1424,13 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/user/507f1f77bcf86cd799439011",
+                  "raw": "{{base_url}}/user/{{nonexistent_user_id}}",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
                     "user",
-                    "507f1f77bcf86cd799439011"
+                    "{{nonexistent_user_id}}"
                   ]
                 },
                 "description": "Endpoint: DELETE /user/:id\n\nSetup instructions:\nSet user_id to a throwaway user. This permanently deletes the user and related posts/comments/replies/sessions/profile picture records.\n\nRequired variables:\n- base_url\n- user_id\n\nRequired headers:\nNone\n\nRequired body:\nNone\n\nExpected success response:\n{ status: \"ok\", data: {}, message: \"User deleted successfully\" }\n\nExpected error responses:\n400 invalid user id, 404 user not found, 500 unexpected server error.\n\nScenario: valid ObjectId format but no matching user. Expected status: 404."
@@ -1040,7 +1441,16 @@
                   "script": {
                     "type": "text/javascript",
                     "exec": [
-                      "pm.test('Status 404', () => pm.response.to.have.status(404));",
+                      "pm.test('Status code is 404', () => pm.response.to.have.status(404));",
+                      "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                      "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                      "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                      "pm.test('Error response envelope is valid', () => {",
+                      "  const body = pm.response.json();",
+                      "  pm.expect(body.status).to.equal('error');",
+                      "  pm.expect(body).to.have.property('data');",
+                      "  pm.expect(body).to.have.property('message').that.is.a('string').and.is.not.empty;",
+                      "});",
                       "pm.test('Error message is User not found', () => {",
                       "  const body = pm.response.json();",
                       "  pm.expect(body.status).to.equal('error');",
@@ -1079,7 +1489,16 @@
                   "script": {
                     "type": "text/javascript",
                     "exec": [
-                      "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                      "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                      "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                      "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                      "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                      "pm.test('Response envelope is valid', () => {",
+                      "  const body = pm.response.json();",
+                      "  pm.expect(body).to.have.property('status');",
+                      "  pm.expect(body).to.have.property('data');",
+                      "  pm.expect(body).to.have.property('message');",
+                      "});",
                       "pm.test('Message is Post deleted successfully', () => {",
                       "  const body = pm.response.json();",
                       "  pm.expect(body.status).to.equal('ok');",
@@ -1096,13 +1515,13 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/posts/not-a-valid-id",
+                  "raw": "{{base_url}}/posts/{{malformed_id}}",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
                     "posts",
-                    "not-a-valid-id"
+                    "{{malformed_id}}"
                   ]
                 },
                 "description": "Endpoint: DELETE /posts/:id\n\nSetup instructions:\nSet post_id to a throwaway post. This permanently deletes the post plus attached comments and related replies.\n\nRequired variables:\n- base_url\n- post_id\n\nRequired headers:\nNone\n\nRequired body:\nNone\n\nExpected success response:\n{ status: \"ok\", data: {}, message: \"Post deleted successfully\" }\n\nExpected error responses:\n400 invalid post id, 404 post not found, 500 unexpected server error.\n\nScenario: malformed MongoDB id. Expected status: 400."
@@ -1113,7 +1532,16 @@
                   "script": {
                     "type": "text/javascript",
                     "exec": [
-                      "pm.test('Status 400', () => pm.response.to.have.status(400));",
+                      "pm.test('Status code is 400', () => pm.response.to.have.status(400));",
+                      "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                      "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                      "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                      "pm.test('Error response envelope is valid', () => {",
+                      "  const body = pm.response.json();",
+                      "  pm.expect(body.status).to.equal('error');",
+                      "  pm.expect(body).to.have.property('data');",
+                      "  pm.expect(body).to.have.property('message').that.is.a('string').and.is.not.empty;",
+                      "});",
                       "pm.test('Error message is Invalid post id', () => {",
                       "  const body = pm.response.json();",
                       "  pm.expect(body.status).to.equal('error');",
@@ -1130,13 +1558,13 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/posts/507f1f77bcf86cd799439011",
+                  "raw": "{{base_url}}/posts/{{nonexistent_post_id}}",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
                     "posts",
-                    "507f1f77bcf86cd799439011"
+                    "{{nonexistent_post_id}}"
                   ]
                 },
                 "description": "Endpoint: DELETE /posts/:id\n\nSetup instructions:\nSet post_id to a throwaway post. This permanently deletes the post plus attached comments and related replies.\n\nRequired variables:\n- base_url\n- post_id\n\nRequired headers:\nNone\n\nRequired body:\nNone\n\nExpected success response:\n{ status: \"ok\", data: {}, message: \"Post deleted successfully\" }\n\nExpected error responses:\n400 invalid post id, 404 post not found, 500 unexpected server error.\n\nScenario: valid ObjectId format but no matching post. Expected status: 404."
@@ -1147,7 +1575,16 @@
                   "script": {
                     "type": "text/javascript",
                     "exec": [
-                      "pm.test('Status 404', () => pm.response.to.have.status(404));",
+                      "pm.test('Status code is 404', () => pm.response.to.have.status(404));",
+                      "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                      "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                      "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                      "pm.test('Error response envelope is valid', () => {",
+                      "  const body = pm.response.json();",
+                      "  pm.expect(body.status).to.equal('error');",
+                      "  pm.expect(body).to.have.property('data');",
+                      "  pm.expect(body).to.have.property('message').that.is.a('string').and.is.not.empty;",
+                      "});",
                       "pm.test('Error message is Post not found', () => {",
                       "  const body = pm.response.json();",
                       "  pm.expect(body.status).to.equal('error');",
@@ -1186,7 +1623,16 @@
                   "script": {
                     "type": "text/javascript",
                     "exec": [
-                      "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                      "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                      "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                      "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                      "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                      "pm.test('Response envelope is valid', () => {",
+                      "  const body = pm.response.json();",
+                      "  pm.expect(body).to.have.property('status');",
+                      "  pm.expect(body).to.have.property('data');",
+                      "  pm.expect(body).to.have.property('message');",
+                      "});",
                       "pm.test('Message is Comment deleted successfully', () => {",
                       "  const body = pm.response.json();",
                       "  pm.expect(body.status).to.equal('ok');",
@@ -1203,13 +1649,13 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/comments/not-a-valid-id",
+                  "raw": "{{base_url}}/comments/{{malformed_id}}",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
                     "comments",
-                    "not-a-valid-id"
+                    "{{malformed_id}}"
                   ]
                 },
                 "description": "Endpoint: DELETE /comments/:id\n\nSetup instructions:\nSet comment_id to a throwaway comment. This permanently deletes the comment, related replies, and removes the comment id from the parent post comments array.\n\nRequired variables:\n- base_url\n- comment_id\n\nRequired headers:\nNone\n\nRequired body:\nNone\n\nExpected success response:\n{ status: \"ok\", data: {}, message: \"Comment deleted successfully\" }\n\nExpected error responses:\n400 invalid comment id, 404 comment not found, 500 unexpected server error.\n\nScenario: malformed MongoDB id. Expected status: 400."
@@ -1220,7 +1666,16 @@
                   "script": {
                     "type": "text/javascript",
                     "exec": [
-                      "pm.test('Status 400', () => pm.response.to.have.status(400));",
+                      "pm.test('Status code is 400', () => pm.response.to.have.status(400));",
+                      "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                      "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                      "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                      "pm.test('Error response envelope is valid', () => {",
+                      "  const body = pm.response.json();",
+                      "  pm.expect(body.status).to.equal('error');",
+                      "  pm.expect(body).to.have.property('data');",
+                      "  pm.expect(body).to.have.property('message').that.is.a('string').and.is.not.empty;",
+                      "});",
                       "pm.test('Error message is Invalid comment id', () => {",
                       "  const body = pm.response.json();",
                       "  pm.expect(body.status).to.equal('error');",
@@ -1237,13 +1692,13 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/comments/507f1f77bcf86cd799439011",
+                  "raw": "{{base_url}}/comments/{{nonexistent_comment_id}}",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
                     "comments",
-                    "507f1f77bcf86cd799439011"
+                    "{{nonexistent_comment_id}}"
                   ]
                 },
                 "description": "Endpoint: DELETE /comments/:id\n\nSetup instructions:\nSet comment_id to a throwaway comment. This permanently deletes the comment, related replies, and removes the comment id from the parent post comments array.\n\nRequired variables:\n- base_url\n- comment_id\n\nRequired headers:\nNone\n\nRequired body:\nNone\n\nExpected success response:\n{ status: \"ok\", data: {}, message: \"Comment deleted successfully\" }\n\nExpected error responses:\n400 invalid comment id, 404 comment not found, 500 unexpected server error.\n\nScenario: valid ObjectId format but no matching comment. Expected status: 404."
@@ -1254,7 +1709,16 @@
                   "script": {
                     "type": "text/javascript",
                     "exec": [
-                      "pm.test('Status 404', () => pm.response.to.have.status(404));",
+                      "pm.test('Status code is 404', () => pm.response.to.have.status(404));",
+                      "pm.test('Response time is acceptable', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                      "pm.test('Response is JSON', () => pm.response.to.be.json);",
+                      "pm.test('Content-Type is JSON', () => pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'));",
+                      "pm.test('Error response envelope is valid', () => {",
+                      "  const body = pm.response.json();",
+                      "  pm.expect(body.status).to.equal('error');",
+                      "  pm.expect(body).to.have.property('data');",
+                      "  pm.expect(body).to.have.property('message').that.is.a('string').and.is.not.empty;",
+                      "});",
                       "pm.test('Error message is Comment not found', () => {",
                       "  const body = pm.response.json();",
                       "  pm.expect(body.status).to.equal('error');",
