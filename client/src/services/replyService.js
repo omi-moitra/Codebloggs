@@ -42,6 +42,11 @@ export const createReply = async ({
   };
 };
 
+// DELETE /replies/:id — remove a single reply (endpoint pending backend partner).
+export const deleteReply = async (replyId) => {
+  await request(`/replies/${replyId}`, { method: "DELETE" });
+};
+
 // PUT /replies/:id — increment or decrement like count (server uses $inc).
 export const updateReplyLikes = async (replyId, likesDelta) => {
   const payload = await request(`/replies/${replyId}`, {
