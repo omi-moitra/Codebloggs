@@ -24,6 +24,7 @@ import { IoTrashOutline } from "react-icons/io5";
 import { TbCaretUpDownFilled } from "react-icons/tb";
 import { fetchPosts, deletePostAction } from "../redux/actions/postActions";
 import { fetchUsers } from "../redux/actions/userActions";
+import { selectUsersById } from "../redux/selectors/userSelectors";
 import ConfirmModal from "../components/ConfirmModal";
 import SkeletonTable from "../components/SkeletonTable";
 
@@ -82,9 +83,7 @@ const ContentManager = () => {
   // Pull post list and async state from the Redux store.
   const { posts, loading, error: storeError } = useSelector((state) => state.posts);
 
-  // Pull the user list for author name resolution. If the admin came from the
-  // User Manager, this is already populated — no extra network call needed.
-  const { users } = useSelector((state) => state.users);
+  const usersById = useSelector(selectUsersById);
 
   // Local UI state — does not belong in Redux because it only affects this
   // component and does not need to survive navigation.
@@ -101,12 +100,9 @@ const ContentManager = () => {
   const [sortField, setSortField] = useState("time_stamp");
   const [sortDir, setSortDir] = useState("desc");
 
-  // Fetch posts on mount. Also fetch users if the store is empty — this handles
-  // direct navigation to /admin/content without going through the User Manager
-  // (which would have already dispatched fetchUsers and populated state.users.users).
   useEffect(() => {
     dispatch(fetchPosts());
-    if (users.length === 0) dispatch(fetchUsers());
+    dispatch(fetchUsers());
   }, [dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // --- Client-side date filter ---
@@ -125,15 +121,6 @@ const ContentManager = () => {
       return afterStart && beforeEnd;
     });
   }, [posts, startDate, endDate]);
-
-  // Build a userId → user lookup map so each row can resolve its author name
-  // in O(1) without iterating the users array per row.
-  const usersById = useMemo(() => {
-    return users.reduce((map, u) => {
-      map[getId(u._id)] = u;
-      return map;
-    }, {});
-  }, [users]);
 
   // --- Client-side sort ---
   // "author" is a derived value (resolved from usersById), so it's handled as

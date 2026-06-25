@@ -20,7 +20,9 @@ import {
 import { getUsers, deleteUser, updateUser } from "../../services/userService";
 
 // Fetch all users from GET /user and store them in the Redux users slice.
-export const fetchUsers = () => async (dispatch) => {
+// Guard: skip the network call if users are already loaded.
+export const fetchUsers = () => async (dispatch, getState) => {
+  if (getState().users.users.length > 0) return;
   dispatch({ type: FETCH_USERS_REQUEST });
 
   try {

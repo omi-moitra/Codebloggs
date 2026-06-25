@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Badge, Button, Card, Col, Form, Row, Spinner } from "react-bootstrap";
 import { FaRegThumbsUp, FaThumbsUp } from "react-icons/fa";
 import AutoDismissAlert from "../components/AutoDismissAlert";
@@ -10,7 +11,9 @@ import { createComment, getComments, updateCommentLikes } from "../services/comm
 import { getPosts, updatePostLikes } from "../services/postService";
 import { createReply, getReplies, updateReplyLikes } from "../services/replyService";
 import { hasLocalLike, setLocalLike } from "../services/socialInteractionService";
-import { getUserById, getUsers } from "../services/userService";
+import { getUserById } from "../services/userService";
+import { fetchUsers } from "../redux/actions/userActions";
+import { selectUsersById } from "../redux/selectors/userSelectors";
 
 const getId = (value) => {
   if (!value) {
@@ -74,10 +77,11 @@ const MAX_REPLY_DEPTH = 3;
 const Home = () => {
   const { user: sessionUser } = useAuth();
   const { isActive } = usePresence();
+  const dispatch = useDispatch();
+  const usersById = useSelector(selectUsersById);
   const [profile, setProfile] = useState(sessionUser);
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState([]);
-  const [users, setUsers] = useState([]);
   const [replies, setReplies] = useState([]);
   const [status, setStatus] = useState("loading");
   const [error, setError] = useState("");
@@ -98,6 +102,8 @@ const Home = () => {
   useEffect(() => {
     let isCurrent = true;
 
+    dispatch(fetchUsers());
+
     const loadHomeData = async () => {
       if (!userId) {
         setStatus("error");
@@ -109,12 +115,11 @@ const Home = () => {
       setError("");
 
       try {
-        const [profileResult, postsResult, commentsResult, usersResult, repliesResult] =
+        const [profileResult, postsResult, commentsResult, repliesResult] =
           await Promise.all([
             getUserById(userId),
             getPosts(),
             getComments(),
-            getUsers(),
             getReplies(),
           ]);
 
@@ -125,7 +130,6 @@ const Home = () => {
         setProfile(profileResult.user || sessionUser);
         setPosts(postsResult.posts);
         setComments(commentsResult.comments);
-        setUsers(usersResult.users);
         setReplies(repliesResult.replies);
         setStatus("success");
       } catch (loadError) {
@@ -156,13 +160,6 @@ const Home = () => {
         return dateB - dateA;
       });
   }, [posts, userId]);
-
-  const usersById = useMemo(() => {
-    return users.reduce((grouped, user) => {
-      grouped[getId(user._id)] = user;
-      return grouped;
-    }, {});
-  }, [users]);
 
   const commentsByPostId = useMemo(() => {
     return comments.reduce((grouped, comment) => {
