@@ -14,9 +14,10 @@
    10. Blogs Page                .blogs-* (feed, posts, comments)
    11. Settings Page             .settings-*
    12. Network Page              .network-*
-   13. Admin Panel               .admin-*
+   13. Admin Panel               .admin-*, .admin-shell*, .user-manager*
    14. Post Modal                .post-modal*
-   15. Responsive                @media (max-width: 767.98px)
+   15. Responsive — Hamburger    .app-header__hamburger, .app-header__mobile-nav*
+   16. Responsive — Breakpoints  @media (max-width: 767.98px), @media (max-width: 991.98px)
 
    THEMING NOTE: All colors are driven by the CSS custom properties below.
    Dark mode (styles/theme-dark.css) only redefines these variables under
@@ -110,6 +111,10 @@ body {
   color: var(--color-text);
 }
 
+* {
+  cursor: url('/Handholdingquill.png') 10 52, auto !important;
+}
+
 a {
   color: var(--color-slate-blue);
 }
@@ -122,8 +127,41 @@ select {
 }
 
 .app-shell {
+  position: relative;
+  z-index: 2;
   min-height: 100vh;
-  background: var(--color-background);
+  background: transparent;
+}
+
+/* Full-viewport animated mesh gradient — sits behind the BulgeGrid canvas */
+.mesh-gradient-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--mesh-a1), rgba(192, 188, 255, 0.20) 0%, transparent 60%),
+    linear-gradient(var(--mesh-a2), rgba(106, 92, 255, 0.16) 0%, transparent 60%),
+    linear-gradient(var(--mesh-a3), rgba(91, 77, 255, 0.14) 0%, transparent 57%),
+    linear-gradient(calc(var(--mesh-a1) + 75deg), rgba(192, 188, 255, 0.11) 0%, transparent 64%),
+    linear-gradient(calc(var(--mesh-a2) + 75deg), rgba(91, 77, 255, 0.10) 0%, transparent 64%);
+  filter: blur(90px);
+  animation: mesh-morph 14s ease-in-out infinite;
+  will-change: filter;
+}
+
+[data-theme="dark"] .mesh-gradient-bg {
+  background:
+    linear-gradient(var(--mesh-a1), rgba(177, 173, 255, 0.14) 0%, transparent 60%),
+    linear-gradient(var(--mesh-a2), rgba(106, 92, 255, 0.18) 0%, transparent 60%),
+    linear-gradient(var(--mesh-a3), rgba(91, 77, 255, 0.16) 0%, transparent 57%),
+    linear-gradient(calc(var(--mesh-a1) + 75deg), rgba(153, 147, 255, 0.10) 0%, transparent 64%),
+    linear-gradient(calc(var(--mesh-a2) + 75deg), rgba(91, 77, 255, 0.12) 0%, transparent 64%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  canvas[aria-hidden="true"] { display: none; }
+  .mesh-gradient-bg { animation: none; }
 }
 
 /* ===== 2. HEADER & NAVIGATION ===== */
@@ -147,8 +185,15 @@ select {
   z-index: 1;
 }
 
+/* Bootstrap's base .navbar-collapse sets flex-grow: 1, which absorbs all free
+   space in the header row before ms-auto on .app-header__session can push it
+   to the right edge — causing session buttons to cluster against the logo.
+   Overriding to 0 lets the auto margin work as intended. */
+.app-header .navbar-collapse {
+  flex-grow: 0;
+}
+
 /* Liquid-glass "flash": a brand-tinted sheen that periodically sweeps across. */
-.app-header::after,
 .app-sidebar::after {
   content: "";
   position: absolute;
@@ -178,17 +223,47 @@ select {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .app-header::after,
-  .app-sidebar::after {
+  .app-sidebar::after,
+  .app-header__brand::before,
+  .auth-card::before {
     animation: none;
   }
 }
 
+@property --mesh-a1 { syntax: '<angle>'; initial-value:  30deg; inherits: false; }
+@property --mesh-a2 { syntax: '<angle>'; initial-value: 150deg; inherits: false; }
+@property --mesh-a3 { syntax: '<angle>'; initial-value: 270deg; inherits: false; }
+
+@keyframes mesh-morph {
+  0%   { --mesh-a1:  30deg; --mesh-a2: 150deg; --mesh-a3: 270deg; }
+  33%  { --mesh-a1: 120deg; --mesh-a2: 240deg; --mesh-a3:   0deg; }
+  66%  { --mesh-a1: 210deg; --mesh-a2: 330deg; --mesh-a3:  90deg; }
+  100% { --mesh-a1:  30deg; --mesh-a2: 150deg; --mesh-a3: 270deg; }
+}
+
 .app-header__brand {
+  position: relative;
   color: var(--color-header-fg);
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: 0;
+}
+
+.app-header__brand::before {
+  content: '';
+  position: absolute;
+  inset: -36px -48px;
+  border-radius: 16px;
+  z-index: -1;
+  background:
+    linear-gradient(var(--mesh-a1), rgba(192, 188, 255, 0.95) 0%, transparent 58%),
+    linear-gradient(var(--mesh-a2), rgba(106, 92, 255, 0.88) 0%, transparent 58%),
+    linear-gradient(var(--mesh-a3), rgba(91, 77, 255, 0.84) 0%, transparent 55%),
+    linear-gradient(calc(var(--mesh-a1) + 75deg), rgba(192, 188, 255, 0.70) 0%, transparent 62%),
+    linear-gradient(calc(var(--mesh-a2) + 75deg), rgba(91, 77, 255, 0.65) 0%, transparent 62%);
+  filter: blur(18px);
+  animation: mesh-morph 8s ease-in-out infinite;
+  will-change: filter;
 }
 
 .app-header__logo {
@@ -412,7 +487,8 @@ select {
 
 /* ===== 5. LAYOUT & SIDEBAR ===== */
 .app-layout {
-  display: flex;
+  /* Bootstrap Row (inside Container fluid) provides the flex layout between
+     the sidebar Col and content Col — display:flex is no longer needed here. */
   min-height: calc(100vh - var(--header-height));
 }
 
@@ -496,6 +572,8 @@ select {
 
 /* ===== 7. PUBLIC / AUTH PAGES ===== */
 .public-page {
+  position: relative;
+  z-index: 3;
   min-height: 100vh;
   display: grid;
   place-items: center;
@@ -505,6 +583,36 @@ select {
 
 .public-page .card {
   width: min(100%, 32rem);
+}
+
+.auth-card {
+  position: relative;
+  isolation: isolate;
+  --bs-card-bg: rgba(255, 255, 255, 0.85);
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 0.75rem 1.75rem var(--color-shadow);
+}
+
+[data-theme="dark"] .auth-card {
+  --bs-card-bg: rgba(18, 17, 28, 0.85);
+  background-color: rgba(18, 17, 28, 0.85) !important;
+}
+
+.auth-card::before {
+  content: '';
+  position: absolute;
+  inset: -88px;
+  border-radius: inherit;
+  z-index: -1;
+  background:
+    linear-gradient(var(--mesh-a1), rgba(192, 188, 255, 0.48) 0%, transparent 58%),
+    linear-gradient(var(--mesh-a2), rgba(106, 92, 255, 0.42) 0%, transparent 58%),
+    linear-gradient(var(--mesh-a3), rgba(91, 77, 255, 0.40) 0%, transparent 55%),
+    linear-gradient(calc(var(--mesh-a1) + 75deg), rgba(192, 188, 255, 0.30) 0%, transparent 62%),
+    linear-gradient(calc(var(--mesh-a2) + 75deg), rgba(91, 77, 255, 0.26) 0%, transparent 62%);
+  filter: blur(48px);
+  animation: mesh-morph 10s ease-in-out infinite;
+  will-change: filter;
 }
 
 .auth-card .card-title {
@@ -613,15 +721,26 @@ select {
 }
 
 .home-stat--compact .card-body {
-  min-height: 2.5rem;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 1rem;
+  min-height: 3.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.25rem;
+  padding: 0.6rem 1rem;
+}
+
+.home-stat--compact .home-stat__label {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--color-dim-gray);
+  opacity: 0.75;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .home-stat--compact .home-stat__value {
-  font-size: 1.75rem;
+  font-size: 1.35rem;
+  font-weight: 600;
 }
 
 .home-stat-stack {
@@ -1598,6 +1717,260 @@ select {
   text-transform: uppercase;
 }
 
+/* --- Admin Shell (tab nav wrapper) --- */
+.admin-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Override Bootstrap's tab border so the tabs sit flush against the content
+   area below rather than floating. The bottom border of the tab bar visually
+   separates it from the content panel. */
+.admin-shell__tabs {
+  border-bottom: 2px solid var(--color-border-strong);
+}
+
+.admin-shell__tab-link {
+  color: var(--color-heading);
+  font-weight: 600;
+}
+
+.admin-shell__tab-link:hover {
+  color: var(--color-delft-blue);
+}
+
+/* When NavLink marks the link active, Bootstrap's .active class is applied. */
+.admin-shell__tab-link.active {
+  color: var(--color-delft-blue) !important;
+  font-weight: 700;
+}
+
+.admin-shell__content {
+  padding: 1.5rem 0 0;
+}
+
+/* --- User Manager --- */
+.user-manager {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.user-manager__loading {
+  display: flex;
+  align-items: center;
+  padding: 2rem 0;
+  color: var(--color-dim-gray);
+}
+
+.user-manager__alert {
+  margin: 0;
+}
+
+/* Two-field search row: [First Name…] [Last Name…] [Clear] */
+.user-manager__search-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.user-manager__search-field {
+  flex: 1;
+  min-width: 10rem;
+  max-width: 16rem;
+}
+
+.user-manager__table {
+  margin: 0;
+  /* Override Bootstrap's default gray table-hover color with the same
+     periwinkle used on sidebar nav link hovers (--color-periwinkle: #B1ADFF).
+     Full opacity would overwhelm table text, so 20% gives a clear tint while
+     keeping the row readable over both plain and striped backgrounds. */
+  --bs-table-hover-bg: rgba(177, 173, 255, 0.2);
+}
+
+.user-manager__empty {
+  padding: 1.5rem;
+  color: var(--color-dim-gray);
+}
+
+/* Pagination row: prev button, page indicator, show label, dropdown, next button. */
+.user-manager__pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.user-manager__page-info {
+  color: var(--color-dim-gray);
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.user-manager__page-label {
+  color: var(--color-dim-gray);
+  font-size: 0.9rem;
+}
+
+/* Keep the results-per-page dropdown compact so it doesn't stretch. */
+.user-manager__page-size {
+  width: auto;
+  min-width: 5rem;
+}
+
+/* Actions cell: flex so Edit and Delete sit side-by-side with a small gap. */
+.user-manager__actions-cell {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+
+/* Remove the separator between Location (col 3) and the Actions column (col 4).
+   With border-collapse both sides of the joint must be zeroed — clearing only
+   one side leaves the other side's 1px border still visible. */
+.user-manager__table > :not(caption) > * > *:nth-child(3) {
+  border-right: 0;
+}
+.user-manager__table > :not(caption) > * > *:nth-child(4) {
+  border-left: 0;
+}
+
+/* Flex wrapper so the sort icon sits on the same baseline as the column label. */
+.user-manager__col-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* Mute the double-caret on unsorted columns so the active column's icon
+   reads as the only directional signal. */
+.user-manager__sort-icon--inactive {
+  opacity: 0.35;
+}
+
+/* ===== 13b. EDIT USER PAGE ===== */
+
+/* ==========================================================================
+   EditUserPage — /admin/users/:id
+   --------------------------------------------------------------------------
+   1. Container     .edit-user-page         top-level spacing
+   2. Back link     .edit-user-page__back-link
+   3. Heading       .edit-user-page__heading
+   ========================================================================== */
+
+.edit-user-page {
+  padding-top: 1.25rem;
+}
+
+.edit-user-page__back-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: var(--color-tropical-indigo);
+  text-decoration: none;
+}
+
+.edit-user-page__back-link:hover {
+  text-decoration: underline;
+  color: var(--color-electric-violet);
+}
+
+.edit-user-page__heading {
+  margin-bottom: 1.25rem;
+}
+
+/* ===== 13c. CONTENT MANAGER ===== */
+
+/* ==========================================================================
+   ContentManager — /admin/content
+   --------------------------------------------------------------------------
+   1. Container     .content-manager         outer wrapper
+   2. Loading       .content-manager__loading
+   3. Alert         .content-manager__alert
+   4. Filter row    .content-manager__filter-row, __filter-label, __date-input
+   5. Table         .content-manager__table, __empty
+   6. Pagination    .content-manager__pagination, __page-info,
+                    __page-label, __page-size
+   ========================================================================== */
+
+.content-manager {
+  padding: 0;
+}
+
+.content-manager__loading {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+  color: var(--color-dim-gray);
+}
+
+.content-manager__alert {
+  margin-bottom: 1rem;
+}
+
+.content-manager__filter-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.content-manager__filter-label {
+  font-size: 0.875rem;
+  color: var(--color-dim-gray);
+  white-space: nowrap;
+}
+
+.content-manager__date-input {
+  width: auto;
+  max-width: 10rem;
+}
+
+.content-manager__table {
+  font-size: 0.9rem;
+  /* Override Bootstrap's default gray table-hover color with the same
+     periwinkle used on sidebar nav link hovers (--color-periwinkle: #B1ADFF).
+     Full opacity would overwhelm table text, so 20% gives a clear tint while
+     keeping the row readable over both plain and striped backgrounds. */
+  --bs-table-hover-bg: rgba(177, 173, 255, 0.2);
+}
+
+.content-manager__empty {
+  color: var(--color-dim-gray);
+  font-style: italic;
+  padding: 1.25rem;
+}
+
+.content-manager__pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.content-manager__page-info {
+  font-size: 0.875rem;
+  color: var(--color-dim-gray);
+  margin: 0 0.25rem;
+}
+
+.content-manager__page-label {
+  font-size: 0.875rem;
+  color: var(--color-dim-gray);
+}
+
+.content-manager__page-size {
+  width: auto;
+  min-width: 4.5rem;
+}
+
 /* ===== 14. POST MODAL ===== */
 .post-modal {
   position: fixed;
@@ -1683,43 +2056,73 @@ select {
   border-color: var(--color-delft-blue);
 }
 
-/* ===== 15. RESPONSIVE ===== */
+/* ===== 15. RESPONSIVE — HAMBURGER & MOBILE NAV ===== */
+
+/* Hamburger toggle button — styled to match the dark glass header. Bootstrap
+   renders the default toggler-icon SVG; variant="dark" on Navbar makes it
+   white automatically, so no custom background-image override is needed. */
+.app-header__hamburger {
+  padding: 0.3rem 0.55rem;
+  border-color: rgba(211, 209, 238, 0.4);
+  border-radius: 0.375rem;
+}
+
+.app-header__hamburger:hover,
+.app-header__hamburger:focus {
+  border-color: var(--color-periwinkle);
+  background: rgba(177, 173, 255, 0.15);
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
+}
+
+/* Mobile nav dropdown — the links inside Navbar.Collapse that appear below the
+   header on tablet and mobile. d-lg-none on the Nav element hides these links
+   at desktop (the sidebar column already shows them there). */
+.app-header__mobile-nav {
+  width: 100%;
+  padding-bottom: 0.5rem;
+}
+
+/* Each nav link is a full-width tap target (minimum 44px height per spec). */
+.app-header__mobile-nav .nav-link {
+  padding: 0.75rem 1rem;
+  color: var(--color-header-fg);
+  font-weight: 600;
+  border-bottom: 1px solid rgba(211, 209, 238, 0.15);
+}
+
+.app-header__mobile-nav .nav-link:hover,
+.app-header__mobile-nav .nav-link:focus {
+  background: rgba(177, 173, 255, 0.15);
+  color: var(--color-on-accent);
+}
+
+/* Active-route indicator in the dropdown — border-left replaces the desktop
+   sidebar's background-fill highlight, which does not translate to a dropdown. */
+.app-header__mobile-nav .nav-link.active {
+  border-left: 3px solid currentColor;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-on-accent);
+  padding-left: calc(1rem - 3px); /* offset the border so text stays aligned */
+}
+
+/* ===== 16. RESPONSIVE — BREAKPOINTS ===== */
+
+/* ---- Tablet (768px–991px): sidebar column hidden, hamburger visible ---- */
+@media (max-width: 991.98px) {
+  /* Tighten the header session gap on narrower viewports. */
+  .app-header__session {
+    gap: 0.5rem;
+  }
+}
+
+/* ---- Mobile (< 768px): phone-width adjustments ---- */
 @media (max-width: 767.98px) {
   .app-header__placeholder {
     display: none;
   }
 
-  .app-layout {
-    flex-direction: column;
-  }
-
-  .app-sidebar {
-    width: 100%;
-    flex-basis: auto;
-    border-right: 0;
-    border-bottom: 1px solid var(--color-lavender);
-  }
-
-  .app-sidebar__nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .app-sidebar__link {
-    flex: 1 1 9rem;
-    text-align: center;
-  }
-
   .app-main {
     padding: 1rem;
-  }
-
-  .app-header__session {
-    gap: 0.5rem;
-  }
-
-  .app-header__post {
-    min-width: 4.5rem;
   }
 
   .app-feedback {

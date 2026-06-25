@@ -9,6 +9,7 @@ import {
   createComment,
   updateComment,
   getAllComments,
+  deleteComment,
 } from "../controllers/comment.controller.js";
 import { requireSession } from "../middleware/requireSession.js";
 
@@ -22,5 +23,8 @@ router.get("/", getAllComments);
 
 // PATCH /comments/:id  → update a comment by id (content and/or likes)
 router.patch("/:id", updateComment);
+
+// DELETE /comments/:id → delete a comment and related replies
+router.delete("/:id", deleteComment);
 
 export default router;

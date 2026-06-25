@@ -250,6 +250,49 @@ Stores comments associated with blog posts.
 
 ---
 
+## Developer Role and Integration Protocol
+
+### Role Determination
+
+At the start of every session the AI **must ask**:
+
+> "Are you working on the **frontend** or the **backend** for this session?"
+
+* **Frontend answer** → only implement **FE** tasks (React components, Redux, styles, client-side routing). Do not generate or modify backend routes, controllers, or models.
+* **Backend answer** → only implement **BE** tasks (Express routes, controllers, models, middleware). Do not generate or modify React components, Redux slices, or frontend styles.
+* Do not cross role boundaries within a session unless the user explicitly states they are switching roles.
+
+### Integration Tracking
+
+Every implementation must create or update:
+
+```
+Working/Module_10/Integration.md
+```
+
+This file records every **orphaned task** — a frontend or backend piece that cannot be fully connected because the counterpart has not yet been implemented.
+
+#### Entry format
+
+For each orphaned item add a row in this table:
+
+| Task / Path | Role gap | What is in place | What is needed from the other side |
+|-------------|----------|------------------|------------------------------------|
+| `POST /api/session` login call | FE waiting on BE | `authService` returns a hardcoded mock user | Real Express route + session cookie |
+| `<PostList>` data fetch | FE waiting on BE | Static fixture array imported locally | `GET /api/posts` returning live DB data |
+
+#### Rules for maintaining Integration.md
+
+* **Add** a row whenever you introduce a stub, mock, hardcoded value, or placeholder that depends on the other role.
+* **Mark resolved** (prepend `✅`) when the counterpart is implemented and the dependency is wired up.
+* Keep one file — append to the existing table rather than creating a new file each session.
+
+#### Goal
+
+Frontend and backend can each be built and tested independently. `Integration.md` becomes the single checklist used to wire both sides together once both are finished.
+
+---
+
 ## Code Quality Requirements
 
 Every generated or modified file must contain:

@@ -3,8 +3,11 @@
 // Create comments (kept in sync with the parent post), update a comment's text,
 // and read all comments. All responses follow { status, data, message }.
 
+import mongoose from "mongoose";
+
 import Comment from "../schemas/Comment.js";
 import Post from "../schemas/Post.js";
+import Reply from "../schemas/Reply.js";
 
 // POST /comments — Create a new comment.
 export async function createComment(req, res) {
@@ -145,6 +148,57 @@ export async function getAllComments(req, res) {
     });
   } catch (err) {
     console.error("Get all comments error:", err);
+    return res.status(500).json({
+      status: "error",
+      data: {},
+      message: "Internal server error",
+    });
+  }
+}
+
+// DELETE /comments/:id — Delete a comment and clean up related replies.
+export async function deleteComment(req, res) {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        status: "error",
+        data: {},
+        message: "Invalid comment id",
+      });
+    }
+
+    const comment = await Comment.findById(id);
+
+    if (!comment) {
+      return res.status(404).json({
+        status: "error",
+        data: {},
+        message: "Comment not found",
+      });
+    }
+
+    await Reply.deleteMany({
+      $or: [
+        { root_comment_id: id },
+        { parent_id: id },
+      ],
+    });
+
+    await Post.findByIdAndUpdate(comment.post_id, {
+      $pull: { comments: comment._id },
+    });
+
+    await Comment.findByIdAndDelete(id);
+
+    return res.status(200).json({
+      status: "ok",
+      data: {},
+      message: "Comment deleted successfully",
+    });
+  } catch (err) {
+    console.error("Delete comment error:", err);
     return res.status(500).json({
       status: "error",
       data: {},
