@@ -1,0 +1,121 @@
+Issue Type,Summary,Description,Priority,Labels,Parent
+Story,Admin Page Foundation,Create the admin section with protected routing and tab-based navigation between User Manager and Content Manager.,Medium,frontend,
+Task,Create admin route and page component,Set up a React route for /admin and build the base admin page component.,Medium,frontend,Admin Page Foundation
+Sub-task,Restrict admin route to admin role only,Redirect non-admin users away from the admin route using a role guard.,Medium,frontend,Create admin route and page component
+Task,Implement admin navigation,Build a navigation component (tabs or links) to switch between User Manager and Content Manager.,Medium,frontend,Admin Page Foundation
+Story,User Manager - List and Search,Display a paginated searchable table of all users for admin management.,Medium,frontend,
+Task,Build User Manager data table component,Create the table UI that fetches and renders user data from the Redux store.,Medium,frontend,User Manager - List and Search
+Sub-task,Display paginated list with default 10 users per page,Implement pagination showing 10 users per page by default.,Medium,frontend,Build User Manager data table component
+Sub-task,Add results-per-page dropdown,Add a dropdown to switch between 10 / 15 / 20 results per page.,Medium,frontend,Build User Manager data table component
+Sub-task,Connect User Manager to Redux store,Wire the component to fetch user data via Redux action on mount.,Medium,frontend,Build User Manager data table component
+Task,Implement user search by first and last name,Add a search input that filters the user list by first or last name.,Medium,frontend,User Manager - List and Search
+Sub-task,Add search input field,Build the text input UI element for name search.,Low,frontend,Implement user search by first and last name
+Sub-task,Wire search input to Redux action and API call,Dispatch the search action and call the backend on input change.,Medium,frontend,Implement user search by first and last name
+Story,User Manager - Edit User,Allow admins to update user information including password with validation.,Medium,frontend,
+Task,Build user edit modal and form,Create the edit modal containing a form pre-populated with the selected user's data.,Medium,frontend,User Manager - Edit User
+Sub-task,Pre-populate form fields with existing user data,Load selected user's current values into the form on modal open.,Medium,frontend,Build user edit modal and form
+Sub-task,Add password and confirmation field validation,Validate that new password and confirmation password match before allowing submission.,Medium,frontend,Build user edit modal and form
+Task,Implement edit confirmation modal,Show a confirmation prompt before submitting the edit request.,Medium,frontend,User Manager - Edit User
+Task,Wire edit form to Redux action and PUT endpoint,Dispatch the update user action on confirmation and handle success and error states.,Medium,frontend,User Manager - Edit User
+Story,User Manager - Delete User,Allow admins to delete a user with cascade delete handled by the backend.,Medium,frontend,
+Task,Implement delete user button with confirmation modal,Show a confirmation prompt before sending the delete request.,Medium,frontend,User Manager - Delete User
+Task,Wire user delete to Redux action and DELETE endpoint,Dispatch delete action on confirmation and remove user from Redux store on success.,Medium,frontend,User Manager - Delete User
+Story,Content Manager - List and Date Filtering,Display a paginated date-filterable table of all posts for admin management.,Medium,frontend,
+Task,Build Content Manager data table component,Create the table UI that fetches and renders post data from the Redux store.,Medium,frontend,Content Manager - List and Date Filtering
+Sub-task,Display paginated list with default 10 posts per page,Implement pagination showing 10 posts per page by default.,Medium,frontend,Build Content Manager data table component
+Sub-task,Add results-per-page dropdown,Add a dropdown to switch between 10 / 15 / 20 results per page.,Medium,frontend,Build Content Manager data table component
+Sub-task,Connect Content Manager to Redux store,Wire the component to fetch post data via Redux action on mount.,Medium,frontend,Build Content Manager data table component
+Task,Implement date range filter,Add date range input fields that filter posts between a start and end date.,Medium,frontend,Content Manager - List and Date Filtering
+Sub-task,Add date range input fields,Build start date and end date input UI elements.,Low,frontend,Implement date range filter
+Sub-task,Wire date filter to Redux action and API call,Dispatch the filter action and call the backend when dates change.,Medium,frontend,Implement date range filter
+Story,Content Manager - Delete Post,Allow admins to delete a post with cascade delete of its comments handled by the backend.,Medium,frontend,
+Task,Implement delete post button with confirmation modal,Show a confirmation prompt before sending the delete request.,Medium,frontend,Content Manager - Delete Post
+Task,Wire post delete to Redux action and DELETE endpoint,Dispatch delete action on confirmation and remove post from Redux store on success.,Medium,frontend,Content Manager - Delete Post
+Story,Skeleton Loaders - Reactive Design,Show loading skeleton bars during data fetches and CRUD operations to improve perceived performance.,Medium,frontend,
+Task,Add skeleton loaders to User Manager,Display skeleton loading bars when User Manager data is loading or an operation is in progress.,Medium,frontend,Skeleton Loaders - Reactive Design
+Sub-task,Show skeleton during initial User Manager data fetch,Render skeleton bars while the user list is being fetched on component mount.,Medium,frontend,Add skeleton loaders to User Manager
+Sub-task,Show skeleton during User Manager edit and delete operations,Render skeleton bars while an edit or delete request is in flight.,Medium,frontend,Add skeleton loaders to User Manager
+Task,Add skeleton loaders to Content Manager,Display skeleton loading bars when Content Manager data is loading or an operation is in progress.,Medium,frontend,Skeleton Loaders - Reactive Design
+Sub-task,Show skeleton during initial Content Manager data fetch,Render skeleton bars while the post list is being fetched on component mount.,Medium,frontend,Add skeleton loaders to Content Manager
+Sub-task,Show skeleton during Content Manager delete operations,Render skeleton bars while a delete request is in flight.,Medium,frontend,Add skeleton loaders to Content Manager
+Story,Responsive Navbar,Adapt the navigation bar for small screens using a horizontal layout below a justified breakpoint.,Medium,frontend,
+Task,Implement horizontal navbar for mobile view,Convert the vertical navbar to a horizontal layout on small screen sizes.,Medium,frontend,Responsive Navbar
+Sub-task,Define and document breakpoints with justification,Choose breakpoints and write justification for each in README.md.,Medium,frontend,Implement horizontal navbar for mobile view
+Sub-task,Write CSS media queries for mobile tablet and desktop,Implement the three-tier responsive layout using CSS media queries.,Medium,frontend,Implement horizontal navbar for mobile view
+Sub-task,Test navbar on multiple device types via DevTools,Verify navbar renders correctly on phone tablet and desktop viewports.,Medium,frontend,Implement horizontal navbar for mobile view
+Story,Update User Endpoint,Expose a PUT or PATCH endpoint that allows updating user fields.,Medium,backend,
+Task,Create PUT/PATCH /api/users/:id endpoint,Build the route handler for updating a user record by ID.,Medium,backend,Update User Endpoint
+Sub-task,Validate request body fields for user update,Check that required fields are present and properly typed before processing.,Medium,backend,Create PUT/PATCH /api/users/:id endpoint
+Sub-task,Hash updated password if a new password is provided,Run bcrypt hash on the new password before saving to the database.,High,backend,Create PUT/PATCH /api/users/:id endpoint
+Sub-task,Return updated user data in the response,Send back the updated user object after a successful save.,Low,backend,Create PUT/PATCH /api/users/:id endpoint
+Story,Delete User Endpoint with Cascade,Expose a DELETE endpoint that removes a user and all their posts and comments.,High,backend,
+Task,Create DELETE /api/users/:id endpoint,Build the route handler for deleting a user and cascading the deletion.,High,backend,Delete User Endpoint with Cascade
+Sub-task,Find and delete all posts belonging to the user,Query the Post model for all posts by the user ID and delete them.,High,backend,Create DELETE /api/users/:id endpoint
+Sub-task,Delete all comments on each of the user's posts,For each post found above query Comment model and delete associated comments.,High,backend,Create DELETE /api/users/:id endpoint
+Sub-task,Delete the user record,Remove the user from the User collection after posts and comments are cleared.,High,backend,Create DELETE /api/users/:id endpoint
+Sub-task,Return success response for user delete,Send a 200 success response after all cascade deletions complete.,Low,backend,Create DELETE /api/users/:id endpoint
+Story,Delete Post Endpoint with Cascade,Expose a DELETE endpoint that removes a post and all its comments.,High,backend,
+Task,Create DELETE /api/posts/:id endpoint,Build the route handler for deleting a post and cascading deletion to comments.,High,backend,Delete Post Endpoint with Cascade
+Sub-task,Find and delete all comments on the post,Query the Comment model for all comments on the post ID and delete them.,High,backend,Create DELETE /api/posts/:id endpoint
+Sub-task,Delete the post record,Remove the post from the Post collection after comments are cleared.,High,backend,Create DELETE /api/posts/:id endpoint
+Sub-task,Return success response for post delete,Send a 200 success response after all cascade deletions complete.,Low,backend,Create DELETE /api/posts/:id endpoint
+Story,Delete Comment Endpoint,Expose a DELETE endpoint that removes a single comment.,Medium,backend,
+Task,Create DELETE /api/comments/:id endpoint,Build the route handler for deleting a comment by ID.,Medium,backend,Delete Comment Endpoint
+Sub-task,Delete the comment record,Remove the comment from the Comment collection.,Medium,backend,Create DELETE /api/comments/:id endpoint
+Sub-task,Return success response for comment delete,Send a 200 success response after deletion.,Low,backend,Create DELETE /api/comments/:id endpoint
+Story,Schema Validation,Ensure all Mongoose schemas are complete and correct per the grading sheet.,Medium,backend,
+Task,Validate and finalize User schema,Review User model fields and constraints against grading sheet requirements.,Medium,backend,Schema Validation
+Task,Validate and finalize Session schema,Review Session model fields and constraints against grading sheet requirements.,Medium,backend,Schema Validation
+Task,Validate and finalize Post schema,Review Post model fields and constraints against grading sheet requirements.,Medium,backend,Schema Validation
+Task,Validate and finalize Comment schema,Review Comment model fields and constraints against grading sheet requirements.,Medium,backend,Schema Validation
+Story,AI Specification Documents,Create the spec-driven AI workflow documents used to guide AI code generation per the module methodology.,Medium,documentation,
+Task,Create global ai-spec.md,Write the global project specification file at ./ai/ai-spec.md covering architecture conventions database and API structure.,Medium,documentation,AI Specification Documents
+Sub-task,Document project architecture and conventions in ai-spec.md,Describe the MERN stack structure folder conventions and code style.,Medium,documentation,Create global ai-spec.md
+Sub-task,Document database schema in ai-spec.md,Describe all four Mongoose models and their field definitions.,Medium,documentation,Create global ai-spec.md
+Sub-task,Document API structure in ai-spec.md,List all routes with HTTP methods and expected request/response shapes.,Medium,documentation,Create global ai-spec.md
+Task,Create feature spec files in ./ai/features/,Write individual feature specification files for use in AI-assisted development.,Medium,documentation,AI Specification Documents
+Sub-task,Create user-manager.feature.md,Write the feature spec for the User Manager admin panel.,Medium,documentation,Create feature spec files in ./ai/features/
+Sub-task,Create content-manager.feature.md,Write the feature spec for the Content Manager admin panel.,Medium,documentation,Create feature spec files in ./ai/features/
+Sub-task,Create skeleton-loaders.feature.md,Write the feature spec for skeleton loader reactive design.,Medium,documentation,Create feature spec files in ./ai/features/
+Sub-task,Create responsive-navbar.feature.md,Write the feature spec for the responsive navbar.,Medium,documentation,Create feature spec files in ./ai/features/
+Sub-task,Create user-endpoints.feature.md,Write the feature spec for user update and delete endpoints.,Medium,documentation,Create feature spec files in ./ai/features/
+Sub-task,Create post-endpoints.feature.md,Write the feature spec for post delete endpoint.,Medium,documentation,Create feature spec files in ./ai/features/
+Sub-task,Create comment-endpoints.feature.md,Write the feature spec for comment delete endpoint.,Medium,documentation,Create feature spec files in ./ai/features/
+Story,README.md,Provide complete project documentation for the repository.,Medium,documentation,
+Task,Write project description and tech stack section,Describe CodeBloggs and list all technologies used in the MERN stack.,Medium,documentation,README.md
+Task,Write project structure section,Document the folder and file organization of the repository.,Low,documentation,README.md
+Task,Write installation and setup instructions,Provide step-by-step guide to clone install and run the project locally.,Medium,documentation,README.md
+Task,Document all environment variables,List and describe every required env var with placeholder values.,Medium,documentation,README.md
+Task,Write API documentation section,Document all endpoints with method path parameters and response shape.,Medium,documentation,README.md
+Task,Add reactive vs responsive design explanation and breakpoint justification,Summarize the reactive vs responsive concepts and justify chosen CSS breakpoints.,Medium,documentation,README.md
+Story,Research.md,Standalone research document comparing reactive and responsive design in depth.,Medium,documentation,
+Task,Research reactive vs responsive design concepts,Gather sources and form a clear understanding of both design paradigms.,Medium,documentation,Research.md
+Task,Write Research.md comparing both design concepts,Author the research document with definitions comparison use cases and conclusions.,Medium,documentation,Research.md
+Story,CONCEPTS.md,Document 3 technically challenging concepts for the interview video.,Medium,documentation,
+Task,Identify 3 challenging technical concepts from the project,Select 3 concepts encountered in M10 development that required significant learning.,Medium,documentation,CONCEPTS.md
+Task,Document each concept in CONCEPTS.md,Write purpose why challenging and where it is used in the codebase for each concept.,Medium,documentation,CONCEPTS.md
+Story,Postman Collection,Maintain an up-to-date PostmanCollection.json covering all M10 API endpoints.,Medium,documentation,
+Task,Add update user request to PostmanCollection.json,Create and configure the PUT/PATCH user request in Postman and export.,Medium,documentation,Postman Collection
+Task,Add delete user request to PostmanCollection.json,Create and configure the DELETE user request in Postman and export.,Medium,documentation,Postman Collection
+Task,Add delete post request to PostmanCollection.json,Create and configure the DELETE post request in Postman and export.,Medium,documentation,Postman Collection
+Task,Add delete comment request to PostmanCollection.json,Create and configure the DELETE comment request in Postman and export.,Medium,documentation,Postman Collection
+Story,GitHub Workflow,Follow the required branching strategy and commit message convention throughout all development.,Medium,documentation,
+Task,Set up branching structure main dev and feature branches,Create main dev and feature/* branches following the required Git workflow.,High,documentation,GitHub Workflow
+Task,Follow commit message convention throughout development,Use imperative mood with issue references and keywords (feat fix chore docs style test) on every commit.,Medium,documentation,GitHub Workflow
+Task,Create and merge PRs following the slide procedure,Open PRs from feature to dev and from dev to main following the review and merge steps in the slides.,Medium,documentation,GitHub Workflow
+Story,Wireframe Analysis Document,Document wireframe analysis for each of the four M10 features.,Low,documentation,
+Task,Document wireframe analysis for each feature,Write wireframe analysis for User Manager Content Manager Skeleton Loaders and Responsive Navbar.,Low,documentation,Wireframe Analysis Document
+Story,LeetCode Challenges,Solve 5 LeetCode problems save screenshots and prepare to explain reasoning.,Medium,interview,
+Task,Solve LeetCode challenge 1 and save screenshot,Complete one LeetCode problem and save a screenshot to ./LeetCode-Challenges/<challenge-name>.png.,Medium,interview,LeetCode Challenges
+Task,Solve LeetCode challenge 2 and save screenshot,Complete one LeetCode problem and save a screenshot to ./LeetCode-Challenges/<challenge-name>.png.,Medium,interview,LeetCode Challenges
+Task,Solve LeetCode challenge 3 and save screenshot,Complete one LeetCode problem and save a screenshot to ./LeetCode-Challenges/<challenge-name>.png.,Medium,interview,LeetCode Challenges
+Task,Solve LeetCode challenge 4 and save screenshot,Complete one LeetCode problem and save a screenshot to ./LeetCode-Challenges/<challenge-name>.png.,Medium,interview,LeetCode Challenges
+Task,Solve LeetCode challenge 5 and save screenshot,Complete one LeetCode problem and save a screenshot to ./LeetCode-Challenges/<challenge-name>.png.,Medium,interview,LeetCode Challenges
+Story,Interview Videos,Record the three required videos demonstrating concepts problem-solving and the live product.,Medium,interview,
+Task,Record CONCEPTS explanation video 5 to 10 minutes,Explain each of the 3 concepts from CONCEPTS.md in your own words on camera.,Medium,interview,Interview Videos
+Task,Record LeetCode problem-solving video 5 to 10 minutes,Walk through the reasoning behind your solutions to the 5 LeetCode challenges.,Medium,interview,Interview Videos
+Task,Record technical demo and code overview video 10 to 15 minutes,Film a functional demo of the app then walk through the key parts of the codebase.,Medium,interview,Interview Videos
+Story,Submission Package,Package and submit all deliverables through the platform.,High,interview,
+Task,Create submission summary document,Write a document with your name repo link all video links and login credentials - DO NOT commit to GitHub.,High,interview,Submission Package
+Task,Merge dev branch to main,Ensure all feature branches are merged to dev and then dev is merged to main before submitting.,High,interview,Submission Package
+Task,Submit through the platform with submission summary,Upload or link the submission summary document through the Codeboxx submission platform.,High,interview,Submission Package

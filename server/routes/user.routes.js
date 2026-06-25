@@ -12,6 +12,8 @@ import {
   createUser,
   getUserById,
   getAllUsers,
+  updateUser,
+  deleteUser,
 } from "../controllers/user.controller.js";
 import { registerValidators } from "../validators/user.validators.js";
 
@@ -25,5 +27,11 @@ router.get("/", getAllUsers);
 
 // GET  /user/:id    → get a single user by MongoDB _id
 router.get("/:id", getUserById);
+
+// PATCH /user/:id   → update allowed user fields by MongoDB _id
+router.patch("/:id", updateUser);
+
+// DELETE /user/:id  → delete a user and related content
+router.delete("/:id", deleteUser);
 
 export default router;

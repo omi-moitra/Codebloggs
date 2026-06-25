@@ -1,9 +1,13 @@
 import { Outlet } from "react-router-dom";
+import MeshGradient from "./components/MeshGradient";
+import BulgeGrid from "./components/BulgeGrid";
 
-const App = () => {
-  // App is the top-level route wrapper. Each child route decides whether it
-  // renders by itself or inside MainLayout.
-  return <Outlet />;
-};
+const App = () => (
+  <>
+    <MeshGradient />
+    <BulgeGrid />
+    <Outlet />
+  </>
+);
 
 export default App;

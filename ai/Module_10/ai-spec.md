@@ -1,34 +1,16 @@
 # 🤖 AI_SPEC — Project Specification (Main)
 
-> 🚨 **Important: Delete all placeholder text marked with `>` (including this line) and replace it with your own project-specification content.**
->
-> Add this file to the root directory of your project at **`/docs/ai/AI_SPEC.md`**.
->
-> This document is the **main AI specification** for your project.
-> Its role is to explain the **overall context, scope, structure, and rules** of the project.
->
-> AI tools (such as GitHub Copilot in Agent Mode) will rely on this file to understand:
->
-> - What the project is
-> - What should (and should not) be built
-> - How the project is organized
->  
-> Before starting, read each section carefully.
-> When you understand it, **remove the explanation** and replace it with your own project content.
-
 ---
 
 ## Project Identity
 
-> This section answers the question: *“What is this project?”*
->
-> Keep it short and clear. Anyone (human or AI) should understand the project in a few seconds.
+* **Project Name:** CodeBloggs
 
-- **Project Name:**
-- **Short Description:**  
-  > 1–2 sentences describing what the project does.
-- **Project Type:**  
-  > Example: Static Website, JavaScript App, Express API, MERN App, Java Server, Mobile App (Expo)
+* **Short Description:**
+  CodeBloggs is a MERN-stack social blogging platform that allows users to create posts, interact with content, manage profiles, and connect with other users. Module 10 extends the platform with administrative tools, reactive loading states, and responsive layouts for mobile and tablet devices.
+
+* **Project Type:**
+  MERN Stack Application
 
 ---
 
@@ -36,225 +18,459 @@
 
 ### Goal
 
-> Describe the **main objective** of the project.
-> Focus on *what the project must accomplish*, not how it is implemented.
+Extend the existing CodeBloggs application by implementing administrative management tools, reactive loading experiences, and responsive layouts while maintaining all functionality completed in previous modules.
 
 ### In Scope (Build Now)
 
-> List what **must be built** for this project or module.
->
-> This helps the AI avoid adding features that are not required.
+#### Backend (BE)
+
+* BE User Update Endpoint
+* BE User Delete Endpoint
+* BE User Cascade Delete Logic
+* BE Post Delete Endpoint
+* BE Post Cascade Delete Logic
+* BE Comment Delete Endpoint
+
+#### Frontend (FE)
+
+* FE User Manager
+* FE User Update Screen
+* FE Content Manager
+* FE Pagination
+* FE Results Per Page Controls
+* FE User Search
+* FE Date Filtering
+* FE Skeleton Loaders
+* FE Responsive Navigation
+
+#### Documentation
+
+* README.md updates
+* Research.md updates
+* AI Specifications
+* Feature Specifications
+* Postman Collection updates
+* CONCEPTS.md
 
 ### Out of Scope (Do NOT Build)
 
-> List what **must not be built**, even if it sounds useful.
->
-> This is extremely important to prevent:
->
-> - Feature creep
-> - Over-engineering
-> - Unnecessary complexity
+* New authentication systems
+* New user roles
+* New database collections
+* Real-time messaging
+* Chat systems
+* Major UI redesigns
+* Color palette changes
+* Replacing existing libraries
+* Redux architecture refactors
+* Features not listed in Module 10 requirements
 
 ---
 
 ## Users and Use Cases
 
-> This section explains **who uses the project** and **what they can do**.
->
-> Keep it simple. Most junior projects have only 1–3 user types.
->
-> Example format:
->
-> - **User Type:** what they can do
-> - **User Type:** what they can do
+* **Basic User**
+
+  * Register an account
+  * Login and logout
+  * Create posts
+  * Comment on posts
+  * Like posts
+  * View the network page
+  * Manage personal profile information
+
+* **Administrator**
+
+  * Access the Admin section
+  * Search users
+  * Update users
+  * Delete users
+  * Search content
+  * Filter content by date
+  * Delete posts
+  * Moderate site content
 
 ---
 
 ## Feature Index (Links Only)
 
-> This is **not** where you describe features.
->
-> This section is only a **navigation map** for the AI and the student.
-> Each feature listed here must have its **own AI feature specification file**.
->
-> Example:
->
-> - `ai_feature_contact_form.md`
-> - `ai_feature_fetch_products.md`
+* `schema-usage.feature.md`
+* `server-configuration.feature.md`
+* `user-endpoint.feature.md`
+* `post-endpoint.feature.md`
+* `comment-endpoint.feature.md`
+* `user-manager.feature.md`
+* `user-update.feature.md`
+* `content-manager.feature.md`
+* `reactive-design.feature.md`
+* `responsive-design.feature.md`
 
 ---
 
 ## Pages / Screens / Routes (Project Map)
 
-> This section explains **how the project is structured from a user or API perspective**.
->
-> It helps the AI understand:
->
-> - Navigation between pages or screens
-> - Available API routes
-> - What exists before writing code
+### Frontend Pages
 
-### If Website / Frontend Project
+* `/login` — user authentication
+* `/register` — account registration
+* `/home` — user dashboard
+* `/blogs` — blog feed
+* `/network` — user networking page
+* `/admin` — administrator landing page
+* `/admin/users` — user manager
+* `/admin/users/:id` — user update page
+* `/admin/content` — content manager
 
-> List each page or screen and its purpose.
->
-> Example:
->
-> - `/index.html` — homepage
-> - `/contact.html` — contact form
+### Backend Routes
 
-### If Backend / API Project
+#### User Routes
 
-> List endpoints and what they do (no implementation details).
->
-> Example:
->
-> - `GET /products` — return product list
-> - `POST /orders` — create a new order
+* `GET /user` — retrieve users
+* `GET /user/:id` — retrieve a user
+* `PATCH /user/:id` — update a user
+* `DELETE /user/:id` — delete a user and related content
+
+#### Session Routes
+
+* `POST /session` — create a session
+* `GET /session/validate` — validate a session
+* `DELETE /session` — terminate a session
+
+#### Post Routes
+
+* `GET /posts` — retrieve posts
+* `POST /posts` — create a post
+* `PATCH /posts/:id` — update post interactions
+* `DELETE /posts/:id` — delete a post and related comments
+
+#### Comment Routes
+
+* `GET /comments` — retrieve comments
+* `DELETE /comments/:id` — delete a comment
 
 ---
 
 ## Data and Models (Simple)
 
-> This section explains **what data exists** in the project.
->
-> Keep it **conceptual**, not technical.
-> Do not write full schemas unless required.
+### Database
 
-### If No Database
+MongoDB
 
-> Describe the data used in forms, fetch requests, or JavaScript objects.
->
-> Example:
->
-> - Contact form data: name, email, message
+### Main Collections
 
-### If Database Exists
+#### User
 
-> Describe:
->
-> - Database type
-> - Main collections or tables
-> - Important fields (only the essentials)
+Stores account information, profile details, and authorization information.
+
+#### Session
+
+Stores active authenticated sessions.
+
+#### Post
+
+Stores user-created blog posts.
+
+#### Comment
+
+Stores comments associated with blog posts.
 
 ---
 
 ## Tech Stack and Tools
 
-> This section tells the AI **which technologies are allowed and expected**.
->
-> It prevents the AI from:
->
-> - Using the wrong framework
-> - Introducing advanced or unknown tools
-> - Mixing incompatible technologies
-
 ### Frontend
 
-> Technologies used to build the user interface.
->
-> Examples:
->
-> - HTML, CSS, JavaScript
-> - React
-> - React Native (Expo)
+* React
+* React Router
+* React Bootstrap
+* Redux
+* Redux Thunk
+* CSS
 
 ### Backend
 
-> Technologies used to handle logic, APIs, or servers.
->
-> Examples:
->
-> - Node.js with Express
-> - Java with Spring Boot
-> - No backend (static site)
+* Node.js
+* Express
 
-### Database (if any)
+### Database
 
-> Technology used to store data.
->
-> Examples:
->
-> - MongoDB
-> - PostgreSQL
-> - None (data is not persisted)
+* MongoDB
+* Mongoose
 
 ### Tools / Libraries
 
-> Additional tools or libraries that may be used.
->
-> Examples:
->
-> - Fetch API
-> - Axios
-> - React Router
-> - Mongoose
+* React Bootstrap
+* Redux
+* Redux Thunk
+* react-use-cookie
+* bcrypt
+* uuid
+* dotenv
+* cors
 
 ---
 
 ## Repository Structure
 
-> This section helps the AI understand **where to place files**.
->
-> It avoids random file creation and keeps the project organized.
->
-> Example:
->
-> - `/client` — frontend code
-> - `/server` — backend code
-> - `/src/components`
-> - `/routes`
+* `/client` — frontend application
+* `/server` — backend application
+* `/server/models` — database models
+* `/server/routes` — API routes
+* `/server/controllers` — controller logic
+* `/server/middleware` — middleware
+* `/ai` — AI documentation
+* `/ai/Module_9` — Module 9 AI spec and feature specifications
+* `/ai/Module_9/features` — Module 9 feature specifications
+* `/ai/Module_10` — Module 10 AI spec and feature specifications
+* `/ai/Module_10/features/backend` — backend feature specifications
+* `/ai/Module_10/features/frontend` — frontend feature specifications
+* `/LeetCode-Challenges` — challenge screenshots
+* `README.md`
+* `Research.md`
+* `CONCEPTS.md`
+* `PostmanCollection.json`
 
 ---
 
 ## Rules for the AI
 
-> These are **strict rules** the AI must follow when generating code or explanations.
->
-> Keep this list short and clear.
->
-> Example rules:
->
-> - Use junior-friendly code
-> - Avoid advanced patterns
-> - Do not add features not listed
-> - Reuse existing files when possible
-> - Explain changes briefly
+* Use junior-friendly code.
+* Follow the existing project structure.
+* Reuse existing files whenever possible.
+* Avoid unnecessary libraries.
+* Avoid advanced patterns and over-engineering.
+* Preserve all existing Module 09 functionality.
+* Maintain the existing CodeBloggs color palette.
+* Do not implement features outside the approved scope.
+* Clearly label Backend work with **BE**.
+* Clearly label Frontend work with **FE**.
+* Respect existing MERN architecture and coding conventions.
+* Explain generated changes briefly when appropriate.
+* All JavaScript must use **ES Module syntax (ESM6)** — do not use CommonJS (`require` / `module.exports`).
+
+---
+
+## Developer Role and Integration Protocol
+
+### Role Determination
+
+At the start of every session the AI **must ask**:
+
+> "Are you working on the **frontend** or the **backend** for this session?"
+
+* **Frontend answer** → only implement **FE** tasks (React components, Redux, styles, client-side routing). Do not generate or modify backend routes, controllers, or models.
+* **Backend answer** → only implement **BE** tasks (Express routes, controllers, models, middleware). Do not generate or modify React components, Redux slices, or frontend styles.
+* Do not cross role boundaries within a session unless the user explicitly states they are switching roles.
+
+### Integration Tracking
+
+Every implementation must create or update:
+
+```
+Working/Module_10/Integration.md
+```
+
+This file records every **orphaned task** — a frontend or backend piece that cannot be fully connected because the counterpart has not yet been implemented.
+
+#### Entry format
+
+For each orphaned item add a row in this table:
+
+| Task / Path | Role gap | What is in place | What is needed from the other side |
+|-------------|----------|------------------|------------------------------------|
+| `POST /api/session` login call | FE waiting on BE | `authService` returns a hardcoded mock user | Real Express route + session cookie |
+| `<PostList>` data fetch | FE waiting on BE | Static fixture array imported locally | `GET /api/posts` returning live DB data |
+
+#### Rules for maintaining Integration.md
+
+* **Add** a row whenever you introduce a stub, mock, hardcoded value, or placeholder that depends on the other role.
+* **Mark resolved** (prepend `✅`) when the counterpart is implemented and the dependency is wired up.
+* Keep one file — append to the existing table rather than creating a new file each session.
+
+#### Goal
+
+Frontend and backend can each be built and tested independently. `Integration.md` becomes the single checklist used to wire both sides together once both are finished.
+
+---
+
+## Code Quality Requirements
+
+Every generated or modified file must contain:
+
+* A **comments-based Table of Contents** at the top of the file describing its sections at a glance (see style guide below)
+* Clear inline comments explaining important logic
+* Notes explaining implementation decisions
+* Warnings for known limitations using `// ⚠️`
+
+### Comments TOC
+
+Every file must open with a comment block that maps its contents — modelled on the style used in `client/src/styles/theme.css`:
+
+```javascript
+// =============================================================================
+// controllers/user.controller.js — User API handlers
+// -----------------------------------------------------------------------------
+// 1. getUsers          GET  /user         — retrieve all users
+// 2. getUserById       GET  /user/:id     — retrieve a single user
+// 3. updateUser        PATCH /user/:id    — update user fields
+// 4. deleteUser        DELETE /user/:id   — delete user + cascade posts/comments
+// =============================================================================
+```
+
+```css
+/* ==========================================================================
+   ComponentName — short description
+   --------------------------------------------------------------------------
+   1.  Variables & Layout      selectors
+   2.  States                  .component--modifier
+   3.  Responsive              @media (max-width: ...)
+   ========================================================================== */
+```
+
+### Inline Comment Style
+
+Comments must explain **why** a decision was made, not just what the code does. Model all comments after `server/controllers/comment.controller.js`:
+
+**Why-comments** — explain constraints, invariants, and non-obvious decisions:
+
+```javascript
+// user_id is always taken from the validated session (set by requireSession
+// middleware) — never from the request body, so clients cannot impersonate
+// another user.
+const user_id = req.user._id;
+
+// time_stamp is always generated server-side so clients cannot supply
+// backdated or future-dated values.
+const time_stamp = new Date().toISOString();
+```
+
+**`// ⚠️` warnings** — flag important constraints and cross-system invariants:
+
+```javascript
+// ⚠️ likes is always set to 0 server-side on create (never read from the body).
+
+// ⚠️ Two-way Post ↔ Comment link: the Comment stores post_id, AND the Post
+// stores the comment's _id in its comments[]. Both sides must stay in sync.
+await Post.findByIdAndUpdate(post_id, { $push: { comments: comment._id } });
+```
+
+### JavaScript Standard
+
+All JavaScript must use **ES Module syntax (ESM6)**. Do not use CommonJS.
+
+| Use | Avoid |
+|-----|-------|
+| `import x from 'y'` | `const x = require('y')` |
+| `export default x` | `module.exports = x` |
+| `export { x }` | `module.exports = { x }` |
+
+### Implementation Logs
+
+An implementation log must be created for every completed feature in:
+
+```
+Working/Module_10/Implementation_Logs/
+```
+
+Name each log with a `FE_` or `BE_` prefix to indicate which end it covers:
+
+```
+FE_<feature-name>.md
+BE_<feature-name>.md
+```
+
+Each log must summarize:
+
+* Files created
+* Files modified
+* Decisions made
+* Deviations from specification
+* Known issues
 
 ---
 
 ## How to Run / Test the Project
 
-> This section explains **how to start and test the project**.
->
-> The AI will use this to:
->
-> - Suggest correct commands
-> - Avoid incorrect setup steps
->
-> Example:
->
-> - Install dependencies
-> - Run the project
-> - Open URL or test endpoint
-> - Environment variables (if any)
+### Install Dependencies
+
+Backend:
+
+```bash
+cd server
+npm install
+```
+
+Frontend:
+
+```bash
+cd client
+npm install
+```
+
+### Run Backend
+
+```bash
+npm start
+```
+
+or
+
+```bash
+npm run dev
+```
+
+### Run Frontend
+
+```bash
+npm run dev
+```
+
+### Environment Variables
+
+Server `.env`
+
+```env
+PORT=
+MONGO_URI=
+CLIENT_ORIGIN=
+```
+
+### Verification
+
+* Confirm MongoDB connection succeeds
+* Confirm server starts without errors
+* Confirm frontend builds successfully
+* Confirm API endpoints function through Postman
 
 ---
 
 ## Definition of Done
 
-> This section defines **when the project is considered complete**.
->
-> It acts as:
->
-> - A final checklist for students
-> - A validation guide for the AI
->  
-> If all items are checked, the project is finished.
->
-> Example checklist:
->
-> - [ ] Project runs without errors
-> - [ ] Required features are implemented
-> - [ ] Basic UI or API works as expected
-> - [ ] Code is readable and organized
+* [ ] User Manager implemented
+* [ ] User Update implemented
+* [ ] User Delete implemented
+* [ ] User Cascade Delete implemented
+* [ ] Post Delete implemented
+* [ ] Post Cascade Delete implemented
+* [ ] Comment Delete implemented
+* [ ] Content Manager implemented
+* [ ] Search functionality implemented
+* [ ] Date filtering implemented
+* [ ] Pagination implemented
+* [ ] Results-per-page controls implemented
+* [ ] Skeleton loaders implemented
+* [ ] Responsive navigation implemented
+* [ ] README.md updated
+* [ ] Research.md updated
+* [ ] AI specifications completed
+* [ ] Feature specifications completed
+* [ ] Postman collection updated
+* [ ] CONCEPTS.md completed
+* [ ] Application runs without errors
+* [ ] MongoDB connection succeeds
+* [ ] Frontend builds successfully
+* [ ] All required Module 10 requirements are satisfied
+* [ ] Final project merged into main branch
+* [ ] All generated/modified files include a comments-based TOC at the top
+* [ ] All generated/modified files include inline why-comments on important logic
+* [ ] Implementation log created for each completed feature (`FE_` or `BE_` prefix in `Working/Module_10/Implementation_Logs/`)

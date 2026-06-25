@@ -16,6 +16,9 @@ import Register from "./pages/Register";
 import Blogs from "./pages/Blogs";
 import Network from "./pages/Network";
 import Admin from "./pages/Admin";
+import UserManager from "./pages/UserManager";
+import EditUserPage from "./pages/EditUserPage";
+import ContentManager from "./pages/ContentManager";
 import AccountSettings from "./pages/AccountSettings";
 import NotFound from "./pages/NotFound";
 
@@ -42,9 +45,33 @@ const router = createBrowserRouter([
               { path: "network", element: <Network /> },
               { path: "settings", element: <AccountSettings /> },
               {
+                // ⚠️ Admin routes are double-guarded: the outer RequireAuth
+                // checks authentication; this inner RequireAuth checks for the
+                // admin role (auth_level === "admin"). Non-admins are sent to /home.
                 element: <RequireAuth requireAdmin redirectTo="/home" />,
                 children: [
-                  { path: "admin", element: <Admin /> },
+                  {
+                    path: "admin",
+                    element: <Admin />,  // AdminShell — renders tabs + <Outlet>
+                    children: [
+                      // /admin with no sub-path redirects to /admin/users.
+                      { index: true, element: <Navigate to="/admin/users" replace /> },
+                      { path: "users", element: <UserManager /> },
+                      // /admin/users/:id — Edit User page; implemented in
+                      // user-update.feature.md. Protected by the same admin guard
+                      // as the parent route so non-admins are redirected to /home.
+                      {
+                        path: "users/:id",
+                        element: <EditUserPage />,
+                      },
+                      // /admin/content — Content Manager page; implemented in
+                      // content-manager.feature.md.
+                      {
+                        path: "content",
+                        element: <ContentManager />,
+                      },
+                    ],
+                  },
                 ],
               },
             ],

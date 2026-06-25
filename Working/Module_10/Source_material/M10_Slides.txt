@@ -1,0 +1,725 @@
+﻿Continuation
+________________
+
+
+ 
+ 
+CodeBloggs (our lovely client), is well aware that this was a big project for just one week, so there may be a few loose ends and design work that will need to go into your website before moving on.  Take this time to finish up anything that you may have missed, such as the Login feature, or getting a post to work the way you want it to.
+ 
+This week will be a continuation of what you worked last week.  So make sure to take a look at the previous week's requirements and finish up what's lingering.  If nothing else is left from last week, we can move on to completing our time with CodeBloggs!
+ 
+We'll be taking a look at adding on to the Admin Section, and a deeper dive into Reactive / Responsive Design using React.  What that simply means is, we would like to be able to view this website/app on our mobile device or tablet.
+ 
+ 
+Research Document
+________________
+
+
+ 
+ 
+Research Document
+For this week's documentation, the Client heard a few buzzwords and is hoping that we will be implementing some of these concepts for their their website.  We were going to do this anyway, but it's good to keep our client nice and happy.  
+ 
+In your Research.md file, add a section for Reactive VS. Responsive Design.
+ 
+ 
+Reactive Vs. Responsive Design
+In your own words, come up with a paragraph for what each concept is.  One for Reactive Design, and one for Responsive Design.
+ 
+We'd then like to see a paragraph or two on the differences between these two concepts.
+ 
+Along with this, make sure to explain how we are implementing them in our CodeBloggs website project.
+ 
+ 
+GitHub Branching Workflow
+________________
+
+
+ 
+Branches Structure
+ 
+* Your repository must follow this branching model throughout development:
+   * main → Production-ready branch (only branch graded)
+   * dev   → Primary Development branch, merged into main
+   * (if applicable) feature/* → One branch per feature
+                                    → Must be created from dev
+                                    → Must be merged back into dev when completed
+   * No direct commits to main
+ 
+Final Branches State
+ 
+   * Before submitting the module:
+   1. (if applicable) All feature branches must be merged into dev
+   2. The dev branch must then be merged into main
+   3. The main branch must reflect the final, stable version of the project
+   4. The commit history must clearly demonstrate this workflow:
+   * feature → dev → main
+   5. Only the main branch will be graded.
+ 
+ 
+ 
+Procedure
+________________
+
+
+ 
+A pull request (PR) is a way for developers to propose changes to a codebase hosted on platforms like GitHub. It allows contributors to notify others about changes they've made and ask for feedback or approval before merging the changes into the main code. Pull requests facilitate collaboration, code review, and maintaining code quality by involving multiple team members in the decision-making process. They ensure that changes are thoroughly examined and tested before being integrated, enhancing overall code reliability and collaboration within a development team.
+ 
+Pull requests are mandatory and a specific procedure needs to be followed. Please refer to the Pull Request Procedure document for further instructions.
+PULL REQUEST WITH REVIEWERS
+
+
+Every module, you will be asked to do a PR that will be reviewed by your assigned coach. The PR needs to be done during the middle of each week.
+
+
+
+   1. REPOSITORY PREPARATION
+   1.  Add coaches as collaborators in your project.
+   2.  Create a new branch named development.
+   3.  Work on the development branch.
+
+
+
+
+   2. COMMIT & PUSH ON REPOSITORY
+   1. Commit changes with a concise and meaningful summary.
+   1. Refer to the Commits Convention section for guidance on writing commits messages.
+   2.  Push your work from your local development branch to your remote development branch.
+
+
+
+
+   3. PULL REQUEST AND REVIEWERS
+   1.  In the top menu, select the "Pull requests" tab.
+  
+
+
+
+   2.  After a new push, a yellow rectangle indicating the recently pushed branch will appear. You can also use the green button to create the pull request.
+  
+
+
+
+   3.  On the page listing all pull requests, click the green button labeled "New pull request."
+ A screenshot of a web page
+
+Description automatically generated 
+
+
+
+   4.  On the new page, you will select the base branch and the compare branch. The left dropdown is the base branch you want to merge in (main) and the right dropdown is the compare branch you worked on (development).
+  
+
+
+
+   5.  On the same page, if you scroll down a little bit, you will see information about the pull request you want to create. It is a good time to review your code and make sure you are ready to create the pull request.
+ A screenshot of a computer
+
+Description automatically generated 
+
+   6.  In the blue box, press the "Create pull request" button.
+  
+
+
+
+   7.  On the new page, you can change the title of the pull request and leave more information as a comment (ie. What does this pull request entails). On the same page, and more importantly, on the right side of the page, you can add Reviewers to verify your pull request.
+ A screenshot of a computer
+
+Description automatically generated 
+
+
+
+   8.  Add your Pull Request Coach and jessopf as reviewers. They will receive a notification saying they have been added as reviewers. If you don’t know who your PR Coach is, ask away!
+ A screenshot of a phone
+
+Description automatically generated 
+
+
+
+   9.  When satisfied with the comment, press the green button named Create pull request.
+  
+
+
+
+   10. At this moment, you should meet with your PR coach for the pull request review. Your coach may comment, request changes, or approve the request.
+
+
+
+
+COLLABORATION PART 1
+
+
+
+
+Before we begin the collaboration phase, please take note of the following important point:
+
+
+Coaches can track if you've merged your own pull request, and points will be lost if you do so. Do not merge yourself. The exercise's objective is to support your progress and ensure good practices.
+  
+
+
+
+
+
+
+
+   4. IMPLEMENT REQUESTED CHANGES AND PUSH THEM BACK
+   1.  When changes are requested by a coach, you will receive a notification / email about it.
+  
+
+
+
+   2.  Comments and requested changes will appear on the pull request page along with a red message saying “Changes requested”.
+  
+
+
+
+   3.  Navigate to the "File changed" section to review comments and suggested changes.
+  
+
+
+
+   4.  Make the suggested changes in VSCode and push them back to your remote repository (always on the development branch).
+
+
+
+
+COLLABORATION PART 2
+
+
+   5. CONTINUE WORKING ON YOUR PROJECT
+   1.  Once you have implemented all changes and your coach merged your branches (don’t do it yourself!), you’ll get a message saying “Pull request successfully merged and closed”. You can now move on and continue your project (development branch, we never want to work directly on the main branch!).
+  
+
+
+
+
+
+________________
+
+
+COMMIT MESSAGE CONVENTION
+
+
+The conventions for Git commit messages play a crucial role in maintaining a clear and organized version history of a project. It's important to note that these conventions can vary significantly from one team to another, and their adoption is often influenced by the team's workflow, priorities, and preferences. In our team, we recognize the importance of a standardized commit message format for enhancing collaboration and traceability. After thoughtful consideration and collaborative discussions, our team has collectively decided to adhere to a specific convention for Git commit messages. This convention serves as a guiding framework, ensuring that commit messages are informative, concise, and consistent. By establishing and following this convention, we aim to streamline our development process, make it more transparent, and facilitate effective communication within the team.
+
+
+
+
+   1. Short and Meaningful Summary:
+   1. Keep the first line of the commit message concise and informative.
+   2. Provide a brief summary of the changes.
+
+
+   2. Use the Imperative Mood:
+   1. Write commit messages in the imperative mood (e.g., "Add feature" instead of "Added feature").
+   2. Maintains consistency with automated Git-generated messages.
+
+
+   3. Separate Subject from Body:
+   1. If needed, offer a more detailed explanation in the commit message body.
+   2. Separate the subject (first line) from the body with a blank line.
+
+
+   4. Limit Subject Line Length:
+   1. Keep the subject line around 50 characters or less for improved readability.
+
+
+   5. Reference Issues:
+   1. If the commit addresses a specific issue, reference it in the commit message using keywords like "Fix," "Close," or "Resolve" followed by the issue number.
+
+
+   1. Closes, Fixes, Resolves:
+   1. These keywords automatically close an issue when the commit is merged.
+   2. Example: Closes #123, Fixes #456, Resolves #789.
+
+
+   2. References, Refs, Addresses:
+   1. These keywords reference an issue or pull request without automatically closing it.
+   2. Example: References #123, Refs #456, Addresses #789.
+
+
+   3. Related:
+   1. Indicates that the commit is related to an issue or pull request.
+   2. Example: Related to #123.
+
+
+   4. See Also:
+   1. Used to provide additional references.
+   2. Example: See Also #123.
+
+
+   5. Implements:
+   1. Indicates that a commit implements a certain feature.
+   2. Example: Implements #123, Implements feature/xyz.
+
+
+   6. 6. Commit Message Keywords:
+   1. Feat:
+   1. Short for "feature," indicates the introduction of a new feature.
+   2. Example: feat: add user authentication.
+
+
+   2. Fix:
+   1. Indicates a bug fix.
+   2. Example: fix: resolve issue with user login.
+
+
+   3. Chore:
+   1. Used for tasks or changes that are not user-facing or are maintenance-related.
+   2. Example: chore: update dependencies.
+
+
+   4. Docs:
+   1. Used when updating documentation.
+   2. Example: docs: update README with new instructions.
+
+
+   5. Style:
+   1. Indicates changes that do not affect the meaning of the code (e.g., formatting).
+   2. Example: style: format code according to style guide.
+
+
+   6. Test:
+   1. Used for adding or modifying tests.
+   2. Example: test: add unit tests for user authentication.
+AI Specification Documents
+________________
+
+
+ 
+Overview
+ 
+   * This project uses two AI specification documents to help you work clearly with AI tools (Claude Code or GitHub Copilot, etc.) and keep your project well structured.
+ 
+ 
+ 
+ai-spec.md
+ 
+   * This document is the main AI specification for your project. Its role is to explain the overall context, scope, structure, and rules of the project.
+   * AI tools (such as Claude Code or GitHub Copilot) will rely on this file to understand:
+   * What the project is
+   * What should (and should not) be built
+   * How the project is organized
+ 
+ 
+feature-name.feature.md
+ 
+   * This document describes one feature of the project.
+   * A feature can include multiple small requirements that work together.
+   * It helps the AI understand :
+   * what belongs together
+   * how to implement it consistently.
+ 
+ 
+How to use both files with a prompt
+ 
+   * When asking the AI for help, always reference the specs.
+   * Example prompt:
+   * Use ai-spec.md as the global specification reference and feature-name.feature.md as the feature-specific requirements.
+   * Implement the feature strictly according to these documents.
+   * Do not introduce any functionality, structure, or assumptions that are not explicitly defined.
+   * This helps the AI:
+   * Stay on topic
+   * Avoid extra features
+   * Match your project level 
+ 
+ 
+Reference
+ 
+   * You can find both documents — ai-spec.md and feature-name.feature.md — in the Student Board section.
+   * You can access the board by clicking the button provided in the post related to the Student Board, in the #question-fds Slack channel.
+ 
+ 
+ 
+Admin Section
+________________
+
+
+ 
+ 
+Now that we have a working website with some basic features, we're going to need an Admin section for our client.  In this Admin section, they're going to need the power to control the content that users make (since we don't want things like bullying or harassment to take place on our platform), and the power to edit the CodeBloggs User base.
+  
+ 
+User Manager
+  
+
+ 
+The User Manager will list out all the current users, but with CRUD functionality. The authorized Admin should be able to Edit and/or Delete a User.  When clicking on a User, this should take you to a details page (or open a modal) where the admin will have access to edit the info of the User. 
+By default, all users should be displayed using a pagination system that shows 10 users per page, along with a dropdown allowing the user to adjust how many users are displayed per page (e.g., 10, 15, 20, etc.).
+ 
+The fields we could use for this include first_name and last_name.  The other columns will be Edit and Delete.  You're free to style these up in any way you see fit.  Much like the Agents table in previous weeks, you should be able to sort the list of Users alphabetically by first name, or last name.
+ 
+Somewhere at the top, we'd also like to have a search button that will filter out Users by first name or last name.
+ 
+ 
+Content Manager
+  
+
+ 
+The content manager should really only manage one thing about our content, which is the blogg post.  And we should really be able to edit anything here, so the only CRUD feature we need for this is Delete.  By default, all posts will be shown when the user first loads up the screen.
+ 
+Like the User Manager section, we want to implement a search functionality that should search by a range of dates.
+ 
+Pagination system that shows 10 posts per page should be implemented as well, along with a dropdown allowing the user to adjust how many posts are displayed per page (e.g., 10, 15, 20, etc.).
+ 
+ 
+Modal
+A few weeks back we added popup modals that would give a user a confirmation making sure that we wanted to delete the agent.  We're going to implement that again, but this time for Posts and Users.
+ 
+ 
+Skeleton Loader
+Once you're complete with the implementation of the User and Content Manager sections, you can then add the feature of a Skeleton Loader.
+ 
+You've probably seen this feature in other sites like YouTube or other big applications that require a lot of data processing.  Essentially, skeleton loading is something you'd see as a placeholder to where data is going to go after it's loaded.  This is so the user isn't staring at a blank screen while they wait:
+ 
+  
+
+ 
+ 
+ 
+Reactive and Responsive Design
+________________
+
+
+ 
+ 
+In this section, we want you to think about how the website not only looks and feels on a desktop, but on a mobile device or tablet.  With the research that we did earlier, we should be able to tackle our Reactive and Responsive design.
+ 
+ 
+Reactive Design
+There's a lot you could get into with Reactive design, but what this essentially means is things will be happening on the website while our data is loading in the background from our database.  For the time being, the only type of Reactive design we would like you to focus on would be the Skeleton Loaders in the Admin section, and if you finish the project early, you can dive deeper into Reactive design with the bonus material.
+ 
+ 
+Responsive Design
+At the moment, our website looks great!  But...have you tried squeezing the sides for a smaller view port?  Or even looking at it through a mobile device with your DevTools?  Chances are, unless you already had this in mind, that something is broken, or looks off, or doesn't fit with the look you're trying to go for.
+ 
+This is where Responsive Design comes in.  Once our screen starts to move elements in ways that weren't designed originally, we're going to need to add to our CSS in order to correct this behavior.  Media Queries in CSS is a great place to start
+ 
+We should have a view as a full page, a tablet view, and a mobile view.  It'll be up to you to figure out the sizes that these should be!
+ 
+________________
+
+
+Additional Resources
+   * CSS Media Queries
+
+   * Responsive Design w/ React
+
+________________
+
+
+Readme.md File
+________________
+
+
+ 
+Readme.md File
+ 
+Every time you create a new repository, you must automatically create a README.md file. GitHub provides this option when you create the repository.
+Generally, README files are used to help understand your project: what your project is, what it does, how to use it, and sometimes things like FAQs. The better your README file is, the easier it will be for people to use the tools you develop.
+Once your project is complete, create your README by following the provided requirements and incorporating your understanding of the technologies used
+ 
+ 
+ 
+Purpose
+ 
+      * Create a README.md file that clearly explains your project to someone with no prior knowledge of the setup
+ 
+ 
+ 
+Project Description
+ 
+      * This should be readable by non-developers too.
+      * A short paragraph explaining:
+      * What the project does
+      * Who it's for
+      * What problem it solves 
+  
+ 
+Tech Stack
+ 
+      * List all major technologies used in your project. 
+      * Include: Frontend, Backend, Database, DevOps tools, Testing frameworks, etc.
+ 
+ 
+ 
+Project Structure
+ 
+      * Display your actual project's file and folder organization.
+      * This helps newcomers understand where to find specific code.
+ 
+ 
+ 
+Installation / Setup
+ 
+      * Provide clear, step-by-step instructions to run your project locally. 
+      * Assume the reader knows nothing about your setup.
+      * Include:
+      * cloning,
+      * dependencies installation,
+      * environment setup,
+      * and how to start the app.
+ 
+ 
+Environment Variables
+(If applicable)
+ 
+      * List ALL environment variables required for your project. 
+      * Include descriptions for each variable so users know what values to provide.
+      * If your project doesn't use environment variables, you can remove this entire section.
+ 
+ 
+ 
+API Documentation
+(If applicable)
+ 
+      * Brief overview of main endpoints/functions or link to full API docs.
+ 
+ 
+ 
+Author / Contributors
+ 
+      * Add your information and links to your professional profiles. 
+      * This is especially important for portfolio and student projects.
+ 
+ 
+ 
+Reference
+ 
+      * You can find the README.md file in the Student Board section.
+      * You can access the board by clicking the button provided in the post related to the Student Board, in the #question-fds Slack channel.
+ 
+ 
+ 
+Concepts.md File
+________________
+
+
+ 
+Purpose
+ 
+      * This exercise is designed to help you identify and deeply understand the most challenging concepts you encountered in your project. By documenting and explaining them in your own words, you reinforce your learning, improve your ability to communicate technical ideas, and demonstrate real comprehension beyond just writing code.
+ 
+ 
+ 
+Part 1
+ 
+      * Create CONCEPTS.md and list 3 challenging concepts used in your project.
+ 
+ 
+ 
+ 
+What to Document
+ 
+      * For each concept, include:
+      * the Name of the concept you found challenging.
+      * its Purpose within the project.
+      * explaination in your own words Why it was challenging.
+      * if applicable, indicate Whereit was used in your project (file name and line number).
+ 
+  
+Example
+ 
+      * Concept - 01 
+      * Name:
+
+         * JWT Authentication
+         * Purpose:
+
+            * To securely identify and authenticate users when they interact with protected backend endpoints.
+            * Why it was challenging:
+            * It was challenging because I had to understand how tokens are generated, stored, and sent with requests. I also needed to figure out how middleware verifies the token and how authentication works between the frontend and backend.
+            * Where:
+            * Used in authController.js (login endpoint) and authMiddleware.js for protecting routes.
+ 
+Part 2
+ 
+            * Record a video (~ 5 - 10 minutes) and explain the 3 concepts in your own words to demonstrate your understanding.
+ 
+ 
+ 
+Part 3
+ 
+            * Upload to YouTube (Unlisted) and include the link in your submission summary document.
+ 
+ 
+ 
+Reference
+  
+            * You can find the CONCEPTS.md file in the Student Board section.
+            * You can access the board by clicking the button provided in the post related to the Student Board, in the #question-fds Slack channel.
+ 
+ 
+Problem Solving
+________________
+
+
+ 
+Purpose
+ 
+            * This exercise is designed to help you apply and demonstrate your understanding of core programming concepts through problem-solving.
+            * By completing challenges and explaining your reasoning, you strengthen your analytical thinking, improve your ability to break down problems, and show that you understand how and why your solutions work—not just how to code them.
+ 
+ 
+ 
+Part 1
+ 
+            * Refer to the requirement checklist to identify which challenges to complete on leetcode.com. 
+            * Each module has different list of challenges.
+ 
+ 
+ 
+Part 2
+ 
+            * For each completed challenge:
+            * Take a clear screenshot of your solution.
+            * Save the screenshot in your project folder using the following structure:
+            * File Name & Location: ./LeetCode-Challenges/<challenge-name>.png
+ 
+Part 3
+ 
+            * Record a problem-solving explanation video (~5–10 minutes) where you explain each challenge in your own words.
+            * Focus on the reasoning behind the solution, not just the final code or answer.
+ 
+ 
+ 
+Part 4
+ 
+            * Upload to YouTube (Unlisted) and include the link in your submission summary document.
+ 
+ 
+ 
+Technical Demonstration & Code Overview
+________________
+
+
+ 
+Purpose
+ 
+            * This exercise is designed to help you demonstrate both the functional quality of your application and your understanding of how it is built internally.
+            * By showcasing your project through a live demonstration and explaining your code, you validate that your implementation is complete, coherent, and aligned with the requirements.
+            * Overall, this exercise ensures that you are not only able to build features, but also to clearly explain, justify, and communicate your technical decisions, an essential skill in real-world development.
+            * Record a ~10–15 minutes video maximum.
+ 
+ 
+ 
+Part 1
+ 
+Functional Demonstration (UI & Behavior)
+ 
+            * The first part focuses on proving that your application works as expected from a user and system perspective (UI, API, and database interactions). 
+ 
+            * Demonstrate how each requirement works by interacting with:
+            * User Interface (UI)
+            * Postman (API calls, if applicable)
+            * DBeaver / MongoDB (Database, if applicable)
+            * etc.
+ 
+  
+Part 2
+ 
+Code Explanation (Internal Implementation)
+ 
+            * The second part focuses on your ability to explain the internal logic of your project, including how different components are structured and how data flows through the application.
+ 
+            * Explain how each requirement is implemented in the code, including:
+            * Project structure
+            * How each requirement works internally (state management, navigation, APIs, core logic) 
+ 
+ 
+Part 3
+ 
+            * Upload to YouTube (Unlisted) and include the link in your submission summary document. 
+ 
+            * Note: Instructions for uploading a YouTube video as unlisted are provided in the Student Board. See the reference section below.
+
+ 
+ 
+ 
+Reference
+  
+               * You can find an example in the Student Board section.
+               * You can access the board by clicking the button provided in the post related to the Student Board, in the #question-fds Slack channel.
+ 
+ 
+ 
+Bonus Content
+________________
+
+
+ 
+ 
+User Home
+The Home page should be refactored a little bit to make the site just a bit more solid.
+               * /home/{userId}
+
+               * Refactor code to make home page /home/{logged_in_user_id}
+
+               * If admin, allow navigation to /home/{any_user_id}
+
+                  * If not admin and try to navigate to another user page, get rerouted home, and display ‘unauthorized’ toaster
+
+                  * If user does not exist, reroute home, display ‘user not found’ toaster
+
+ 
+Auto-Fill Feature
+In Registration page when making a new User - Location auto-fill in registration https://www.npmjs.com/package/react-places-autocomplete
+ 
+ 
+State Management
+Implement RX-JS to manage state https://react-rxjs.org/
+ 
+Here is a good place to start React-Motivation
+ 
+Skeleton Loader
+Much like the User and Content Manger Pages, you should implement a Skeleton loader across the entire project.  So any pages with things like Bloggs, Comments and Users pages should have a Skeleton Loader.
+ 
+ 
+Beyond Extra Miles
+________________
+
+
+  
+Additional challenges are available to help you go further in your module, deepen your understanding, and gain more hands-on practice on the current topic.
+Since these extra miles are regularly updated, they are not all listed on the platform. The checklist is your main reference to view the latest available challenges along with a brief description.
+ 
+ 
+ 
+If you finish early
+ 
+                     * If you complete your module ahead of time, focus on the extra miles listed in the checklist before moving on to the next module.
+                     * This will help you strengthen your skills, deepen your understanding, and build stronger technical habits.
+ 
+ 
+ 
+Request additional challenges
+ 
+                     * If you have already completed the suggested extra miles, you can ask a coach for additional challenges related to the current module.
+                     * This is an effective way to keep improving, practice further, and explore useful extensions of the topic.
+ 
+ 
+Reference
+                     * Consult the checklist table to view the available extra miles and their descriptions.
+                     * If needed, ask your coach which challenges are most relevant to your current progress.
+ 
+ 
+ 
+Submission Summary Document
+________________
+
+
+ 
+                     * Submit a summary document (.txt, .md, .docx) through the platform during the deliverable step, as an attachment or public Google Docs link (view access enabled).
+ 
+                     * The document must include:
+                     * Student Name
+                     * Module Name
+                     * Project Repository Link
+                     * All Required Video Links
+                     * Any Required Credentials (e.g., .env values, login details if applicable)
+ 
+                     * File name: submission-summary.md / .txt / .docx
+ 
+                     * Important:
+                     * This file must NOT be committed to GitHub.

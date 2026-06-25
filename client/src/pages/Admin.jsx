@@ -1,63 +1,40 @@
-import { useState } from "react";
-import { Card, Col, Row } from "react-bootstrap";
-import AutoDismissAlert from "../components/AutoDismissAlert";
+// =============================================================================
+// pages/Admin.jsx — Admin Page Shell (layout for all /admin sub-pages)
+// -----------------------------------------------------------------------------
+// 1. Tab navigation     <Nav variant="tabs"> linking User Manager / Content Manager
+// 2. Outlet             renders the active child route (UserManager, ContentManager)
+// =============================================================================
 
-const adminTools = [
-  {
-    id: "users",
-    title: "User Manager",
-    description: "Review account management tools planned for the next admin module.",
-    message: "User Manager is under construction and coming in Module 10.",
-  },
-  {
-    id: "content",
-    title: "Content Manager",
-    description: "Prepare for future content review and moderation workflows.",
-    message: "Content Manager is under construction and coming in Module 10.",
-  },
-];
+import { Nav } from "react-bootstrap";
+import { NavLink, Outlet } from "react-router-dom";
 
+// Admin is the shell that wraps every /admin/* page. It renders the tab bar
+// at the top and an <Outlet> below where child routes paint their content.
+// Route protection (admin-only) is handled by RequireAuth in main.jsx — this
+// component does not re-check the role on every render.
 const Admin = () => {
-  const [feedback, setFeedback] = useState("");
-
   return (
-    <section className="admin-page">
-      <div className="admin-page__header">
-        <div>
-          <h1>Admin</h1>
-          <p>Module 9 admin tools are staged here for future management workflows.</p>
-        </div>
+    <section className="admin-shell">
+      <Nav variant="tabs" className="admin-shell__tabs">
+        <Nav.Item>
+          {/* NavLink automatically adds the "active" class when /admin/users
+              is the current route, which Bootstrap's .nav-tabs styles pick up.
+              No `end` prop — the tab stays active on /admin/users/:id (User
+              Update) so the admin always knows which section they're in. */}
+          <Nav.Link as={NavLink} to="/admin/users" className="admin-shell__tab-link">
+            User Manager
+          </Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link as={NavLink} to="/admin/content" end className="admin-shell__tab-link">
+            Content Manager
+          </Nav.Link>
+        </Nav.Item>
+      </Nav>
+
+      <div className="admin-shell__content">
+        <Outlet />
       </div>
-
-      {feedback ? (
-        <AutoDismissAlert
-          className="admin-page__alert"
-          dismissible
-          onClose={() => setFeedback("")}
-          variant="info"
-        >
-          {feedback}
-        </AutoDismissAlert>
-      ) : null}
-
-      <Row className="g-4">
-        {adminTools.map((tool) => (
-          <Col md={6} key={tool.id}>
-            <Card
-              as="button"
-              className="admin-tool h-100"
-              onClick={() => setFeedback(tool.message)}
-              type="button"
-            >
-              <Card.Body>
-                <Card.Title as="h2">{tool.title}</Card.Title>
-                <Card.Text>{tool.description}</Card.Text>
-                <span>Coming in Module 10</span>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
-      </Row>
     </section>
   );
 };
