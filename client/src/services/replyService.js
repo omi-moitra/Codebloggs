@@ -42,9 +42,13 @@ export const createReply = async ({
   };
 };
 
-// DELETE /replies/:id — remove a single reply (endpoint pending backend partner).
+// DELETE /replies/:id — admin removes a reply and its child replies.
 export const deleteReply = async (replyId) => {
-  await request(`/replies/${replyId}`, { method: "DELETE" });
+  const payload = await request(`/replies/${replyId}`, { method: "DELETE" });
+
+  return {
+    message: payload?.message || "Reply deleted successfully.",
+  };
 };
 
 // PUT /replies/:id — increment or decrement like count (server uses $inc).
