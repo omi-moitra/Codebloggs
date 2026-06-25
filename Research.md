@@ -6,9 +6,11 @@
 2. [Responsive Design](#responsive-design)
 3. [Differences Between the Two](#differences-between-the-two)
 4. [Implementation in CodeBloggs](#implementation-in-codebloggs)
-5. [Extra Mile — SQL & Relational Basics](#extra-mile--sql--relational-basics)
-6. [Extra Mile — Relationships in This Project](#extra-mile--relationships-in-this-project)
-7. [Sources](#sources)
+5. [Responsive Threshold Justification](#responsive-threshold-justification)
+6. [Project Setup Instructions](#project-setup-instructions)
+7. [Extra Mile — SQL & Relational Basics](#extra-mile--sql--relational-basics)
+8. [Extra Mile — Relationships in This Project](#extra-mile--relationships-in-this-project)
+9. [Sources](#sources)
 
 ---
 
@@ -37,6 +39,91 @@ In CodeBloggs, reactive design is implemented through skeleton loaders on the Ad
 **Responsive Design — Responsive Navigation and Layouts**
 
 Responsive design in CodeBloggs is implemented primarily through CSS media queries and React Bootstrap's grid system [5][7]. The navigation bar is the most visible touchpoint: on a full desktop viewport it displays all links inline, while on tablet and mobile viewports it collapses into a compact menu that does not overflow the screen [6]. Page layouts such as the blog feed, admin tables, and profile sections are built with Bootstrap's column system so they reflow naturally as the viewport narrows — multi-column arrangements stack vertically, and oversized elements scale down to fit [7]. Three breakpoints are targeted: desktop (full width), tablet (medium viewports), and mobile (small viewports), ensuring the site is usable on any device a visitor might bring [5][6].
+
+---
+
+## Responsive Threshold Justification
+
+CodeBloggs uses **992px** (Bootstrap's `lg` breakpoint, implemented as `max-width: 991.98px` in CSS) as the point at which the vertical sidebar collapses and is replaced by a horizontal hamburger-driven navbar in the header.
+
+**Why 992px?**
+
+992px is Bootstrap's established boundary between "tablet landscape / small desktop" and "full desktop" viewports [7]. Below this width, a fixed vertical sidebar that takes up roughly 200px of horizontal space becomes a significant tax on content area — on a 768px tablet in portrait mode, that sidebar consumes over 25% of the screen width, leaving the main content cramped and requiring horizontal scrolling on data-dense pages like the admin tables [5][6]. Replacing it with a collapsible header nav at 992px frees the full viewport width for content on every device smaller than a large desktop monitor.
+
+**What UX problem does it solve?**
+
+The core problem is that the vertical sidebar layout assumes a wide viewport. On tablet and mobile sizes, keeping it visible forces either: (a) content to reflow into an unusably narrow column, or (b) the user to scroll horizontally — both of which violate the fundamental goal of responsive design [4][5]. Switching to a horizontal navbar below 992px means navigation links are always accessible (via the hamburger toggle) without stealing space from the page body. A secondary benefit is that the `lg` breakpoint is the natural inflection point where most tablet viewports end and laptop viewports begin, so the switch happens at a device boundary that users already understand as a layout shift [6][7].
+
+The specific value of 991.98px (rather than exactly 992px) is a Bootstrap convention that prevents 1px overlap between the `≤ 991.98px` rule and the `≥ 992px` rule when the browser rounds sub-pixel viewport widths, ensuring no device width accidentally triggers both rules at once [7].
+
+---
+
+## Project Setup Instructions
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) v18 or higher
+- A running MongoDB instance (local or Atlas); connection string goes in `.env`
+
+### Clone and Install
+
+```bash
+git clone git@github.com:YOUR_GITHUB_USERNAME/FullStack_CodeBloggsM10.git
+cd FullStack_CodeBloggsM10
+```
+
+**Backend:**
+
+```bash
+cd server
+npm install
+cp .env.example .env   # then fill in your values (see below)
+```
+
+**Frontend:**
+
+```bash
+cd ../client
+npm install
+```
+
+### Environment Variables
+
+Create `server/.env` with the following keys (values are environment-specific):
+
+```
+PORT=5050
+MONGO_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/<db>
+SESSION_SECRET=<any long random string>
+CLIENT_ORIGIN=http://localhost:3000
+```
+
+Do **not** commit `.env` — it is listed in `.gitignore`.
+
+### Start the Application
+
+Open two terminal tabs:
+
+```bash
+# Tab 1 — backend (runs on http://localhost:5050)
+cd server
+npm run dev
+
+# Tab 2 — frontend (runs on http://localhost:3000)
+cd client
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Seed the Database (optional)
+
+```bash
+cd server
+node seed.js
+```
+
+This populates the database with the sample users and posts from `codebloggs_seed_users_no_indian_gods.json` and `codebloggs_seed_posts_no_indian_gods.json`.
 
 ---
 
