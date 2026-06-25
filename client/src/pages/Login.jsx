@@ -97,7 +97,7 @@ const Login = () => {
             </Button>
           </Form>
           <p className="auth-card__footer">
-            Not a member? <Link to="/register">Register now</Link>
+            <Link to="/register">Not a member? Register now</Link>
           </p>
         </Card.Body>
       </Card>
