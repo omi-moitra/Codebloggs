@@ -33,11 +33,6 @@ export const fetchUsers = () => async (dispatch, getState) => {
   }
 };
 
-// ⚠️ DELETE /user/:id is a new M10 endpoint — not yet delivered by the backend
-// partner. Until it exists the fetch will return a 404. The action catches the
-// error, dispatches DELETE_USER_FAILURE, and returns { success: false } so the
-// component can display a graceful error message. No change to this file is
-// needed once the endpoint is live — the same call succeeds automatically.
 export const deleteUserAction = (userId) => async (dispatch) => {
   // SET_USERS_LOADING true before the DELETE so the table body switches to
   // skeleton rows while the request is in flight (spec: delete in flight state).
@@ -58,11 +53,6 @@ export const deleteUserAction = (userId) => async (dispatch) => {
   }
 };
 
-// ⚠️ PATCH /user/:id is a new M10 endpoint — not yet delivered by the backend
-// partner. Until it exists the fetch will return a 404. The action catches the
-// error, dispatches UPDATE_USER_FAILURE, and returns { success: false } so the
-// EditUserPage can display a graceful inline alert. The Redux store is NOT
-// modified on failure — the user object stays unchanged.
 export const updateUserAction = (userId, payload) => async (dispatch) => {
   try {
     const { user } = await updateUser(userId, payload);

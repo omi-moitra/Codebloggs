@@ -112,7 +112,7 @@ body {
 }
 
 * {
-  cursor: url('/Handholdingquill.png') 10 52, auto !important;
+  cursor: url('/Handholdingquill.png') 5 45, auto !important;
 }
 
 a {
@@ -157,6 +157,22 @@ select {
     linear-gradient(var(--mesh-a3), rgba(91, 77, 255, 0.16) 0%, transparent 57%),
     linear-gradient(calc(var(--mesh-a1) + 75deg), rgba(153, 147, 255, 0.10) 0%, transparent 64%),
     linear-gradient(calc(var(--mesh-a2) + 75deg), rgba(91, 77, 255, 0.12) 0%, transparent 64%);
+}
+
+/* Dark glass for cards and tables — swap the light-mode white/lavender
+   gradient for a deep-purple tint. Border and shadow adapt automatically
+   via their CSS variables (--glass-border, --color-shadow). */
+[data-theme="dark"] .home-profile,
+[data-theme="dark"] .home-stat,
+[data-theme="dark"] .home-post,
+[data-theme="dark"] .home-empty,
+[data-theme="dark"] .blogs-post {
+  background: linear-gradient(160deg, rgba(30, 28, 43, 0.72), rgba(64, 62, 107, 0.52));
+}
+
+[data-theme="dark"] .user-manager .table-responsive,
+[data-theme="dark"] .content-manager .table-responsive {
+  background: linear-gradient(160deg, rgba(30, 28, 43, 0.72), rgba(64, 62, 107, 0.52));
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -493,7 +509,10 @@ select {
 }
 
 .app-sidebar {
-  position: relative;
+  position: sticky;
+  top: var(--header-height);
+  height: calc(100vh - var(--header-height));
+  overflow-y: auto;
   width: var(--sidebar-width);
   flex: 0 0 var(--sidebar-width);
   padding: 1.25rem;
@@ -671,7 +690,13 @@ select {
 .home-stat,
 .home-post,
 .home-empty {
+  --bs-card-bg: transparent;
   border-radius: 0.5rem;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.62), rgba(211, 209, 238, 0.42));
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 24px var(--color-shadow);
 }
 
 .home-profile .card-body {
@@ -1059,6 +1084,10 @@ select {
   font-weight: 700;
 }
 
+.social-comment__action--danger {
+  min-width: 6.25rem;
+}
+
 .social-replies__form {
   display: flex;
   align-items: flex-start;
@@ -1235,7 +1264,22 @@ select {
 
 .blogs-empty,
 .blogs-post {
+  --bs-card-bg: transparent;
   border-radius: 0.5rem;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.62), rgba(211, 209, 238, 0.42));
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 24px var(--color-shadow);
+}
+
+.blogs-post--highlighted {
+  animation: post-highlight-pulse 2s ease-out forwards;
+}
+
+@keyframes post-highlight-pulse {
+  0%   { box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.45); }
+  100% { box-shadow: none; }
 }
 
 .blogs-empty .card-title {
@@ -1782,6 +1826,15 @@ select {
   max-width: 16rem;
 }
 
+.user-manager .table-responsive {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.62), rgba(211, 209, 238, 0.42));
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid var(--glass-border);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 24px var(--color-shadow);
+}
+
 .user-manager__table {
   margin: 0;
   /* Override Bootstrap's default gray table-hover color with the same
@@ -1789,6 +1842,8 @@ select {
      Full opacity would overwhelm table text, so 20% gives a clear tint while
      keeping the row readable over both plain and striped backgrounds. */
   --bs-table-hover-bg: rgba(177, 173, 255, 0.2);
+  --bs-table-bg: transparent;
+  --bs-table-striped-bg: rgba(177, 173, 255, 0.08);
 }
 
 .user-manager__empty {
@@ -1827,6 +1882,7 @@ select {
   display: flex;
   gap: 0.4rem;
   align-items: center;
+  justify-content: flex-end;
 }
 
 
@@ -1851,6 +1907,29 @@ select {
    reads as the only directional signal. */
 .user-manager__sort-icon--inactive {
   opacity: 0.35;
+}
+
+
+/* ===== 13a-ii. USER PREVIEW POPOVER ===== */
+
+.user-preview-popover__body {
+  min-width: 220px;
+}
+
+.user-preview-popover__avatar {
+  width: 4rem;
+  height: 4rem;
+  font-size: 1.25rem;
+}
+
+.user-preview-popover__name {
+  font-weight: 600;
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.user-preview-popover__meta {
+  font-size: 0.8rem;
 }
 
 /* ===== 13b. EDIT USER PAGE ===== */
@@ -1932,6 +2011,15 @@ select {
   max-width: 10rem;
 }
 
+.content-manager .table-responsive {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.62), rgba(211, 209, 238, 0.42));
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid var(--glass-border);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 24px var(--color-shadow);
+}
+
 .content-manager__table {
   font-size: 0.9rem;
   /* Override Bootstrap's default gray table-hover color with the same
@@ -1939,6 +2027,8 @@ select {
      Full opacity would overwhelm table text, so 20% gives a clear tint while
      keeping the row readable over both plain and striped backgrounds. */
   --bs-table-hover-bg: rgba(177, 173, 255, 0.2);
+  --bs-table-bg: transparent;
+  --bs-table-striped-bg: rgba(177, 173, 255, 0.08);
 }
 
 .content-manager__empty {
@@ -1969,6 +2059,102 @@ select {
 .content-manager__page-size {
   width: auto;
   min-width: 4.5rem;
+}
+
+/* --- Content Manager: expandable comment/reply rows --- */
+.content-manager__post-cell { cursor: pointer; }
+
+.content-manager__caret {
+  display: inline-block;
+  margin-right: 0.4rem;
+  font-size: 0.75rem;
+  transition: transform 0.18s ease;
+  vertical-align: middle;
+}
+.content-manager__caret--open { transform: rotate(90deg); }
+
+/* Level 1 — comment rows: lavender bg + delft-blue left stripe.
+   Bootstrap 5 paints stripes via box-shadow: inset 0 0 0 9999px on every td, which sits above
+   background-color and hides it. We reset that shadow to none and restore our own on :first-child. */
+.content-manager__table .content-manager__comment-row > td {
+  background-color: rgba(211, 209, 238, 0.45) !important;
+  box-shadow: none !important;
+  transition: background-color 0.15s ease;
+}
+.content-manager__table .content-manager__comment-row > td:first-child {
+  box-shadow: inset 3px 0 0 var(--color-delft-blue, #403E6B) !important;
+}
+.content-manager__table .content-manager__comment-row:hover > td {
+  background-color: rgba(211, 209, 238, 0.7) !important;
+}
+
+.content-manager__comment-cell { font-size: 0.875rem; }
+
+/* Level 2 — reply rows: periwinkle bg + periwinkle left stripe + content indent.
+   Same Bootstrap shadow-override pattern as comment rows. */
+.content-manager__table .content-manager__reply-row > td {
+  background-color: rgba(177, 173, 255, 0.25) !important;
+  box-shadow: none !important;
+  transition: background-color 0.15s ease;
+}
+.content-manager__table .content-manager__reply-row > td:first-child {
+  box-shadow: inset 2px 0 0 var(--color-periwinkle, #B1ADFF) !important;
+  padding-left: 2.5rem;
+}
+.content-manager__table .content-manager__reply-row:hover > td {
+  background-color: rgba(177, 173, 255, 0.45) !important;
+}
+
+.content-manager__reply-cell { font-size: 0.875rem; }
+
+.content-manager__comment-meta {
+  font-size: 0.75rem;
+  color: var(--color-dim-gray, #5F5E6B);
+  margin-top: 0.125rem;
+}
+
+/* Action cell: no special alignment so the button sits flush-left like the post delete button */
+.content-manager__action-cell { white-space: nowrap; }
+
+.content-manager__preview-avatar {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: 0 0 1.5rem;
+  font-size: 0.5rem;
+}
+
+.content-manager__table .content-manager__no-comments-cell {
+  font-size: 0.875rem;
+  font-style: italic;
+  color: var(--color-dim-gray, #5F5E6B);
+  background: rgba(64, 62, 107, 0.04);
+}
+
+/* ===== 13d. USER PROFILE PAGE ===== */
+
+/* ==========================================================================
+   UserProfilePage — /users/:id
+   --------------------------------------------------------------------------
+   1. Container     .user-profile-page          outer wrapper (centered column)
+   2. Centered      .user-profile-page--centered  loading / error state
+   ========================================================================== */
+
+.user-profile-page {
+  max-width: 480px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.user-profile-page--centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 200px;
+  max-width: 480px;
+  margin: 2rem auto;
+  padding: 0 1rem;
 }
 
 /* ===== 14. POST MODAL ===== */

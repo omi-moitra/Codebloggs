@@ -1,33 +1,15 @@
-// =============================================================================
-// pages/UserManager.jsx — Admin User Manager table
-// -----------------------------------------------------------------------------
-// 1. Data fetching      dispatch fetchUsers() on mount via Redux Thunk
-// 2. Search             two fields (firstNameSearch / lastNameSearch); AND filter; Clear button
-//                       inputs are disabled while loading — no interaction against empty array
-// 2b. Location filter   dropdown populated with unique locations from the user list; AND-ed with name search
-// 3. Sort               client-side sort by column header click (asc / desc)
-// 4. Pagination         slice sorted results; previous/next controls; hidden while loading
-// 5. Results-per-page   dropdown: 10, 15, 20; resets to page 1 on change
-// 6. Skeleton loaders   SkeletonTable replaces <tbody> when state.users.loading is true
-//                       (initial fetch AND delete in flight)
-// 7. Delete flow        Delete button (IoTrashOutline) → ConfirmModal → dispatch deleteUserAction
-// 8. Edit flow          Edit button (FaRegEdit) → navigate to /admin/users/:id (EditUserPage)
-// 9. Icons              FaRegEdit (edit), IoTrashOutline (delete) from react-icons
-// 10. Location col      displays user.location; Edit + Delete share one unlabelled Actions column
-//                       action buttons are opacity:0 at rest and revealed on row hover (CSS only)
-// =============================================================================
-
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Alert, Button, Form, Table } from "react-bootstrap";
-import { BsCaretUpFill, BsFillCaretDownFill } from "react-icons/bs";
+import { Alert, Button, Form, OverlayTrigger, Table } from "react-bootstrap";
+import { BsCaretUpFill, BsEye, BsFillCaretDownFill } from "react-icons/bs";
 import { FaRegEdit } from "react-icons/fa";
 import { IoTrashOutline } from "react-icons/io5";
 import { TbCaretUpDownFilled } from "react-icons/tb";
 import { fetchUsers, deleteUserAction } from "../redux/actions/userActions";
 import ConfirmModal from "../components/ConfirmModal";
 import SkeletonTable from "../components/SkeletonTable";
+import UserPreviewPopover from "../components/UserPreviewPopover";
 
 const PAGE_SIZE_OPTIONS = [10, 15, 20];
 
@@ -35,31 +17,23 @@ const UserManager = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Pull user list and async state from the Redux store.
   const { users, loading, error: storeError } = useSelector((state) => state.users);
 
-  // Local UI state — none of this belongs in Redux because it only affects
-  // this component and does not need to survive navigation.
   const [firstNameSearch, setFirstNameSearch] = useState("");
   const [lastNameSearch, setLastNameSearch] = useState("");
   const [sortField, setSortField] = useState("first_name");
   const [sortDir, setSortDir] = useState("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [locationFilter, setLocationFilter] = useState(""); // "" = All Locations
+  const [locationFilter, setLocationFilter] = useState("");
   const [userToDelete, setUserToDelete] = useState(null);
   const [deleteError, setDeleteError] = useState("");
   const [deleting, setDeleting] = useState(false);
 
-  // Fetch the full user list once when the component mounts. The thunk
-  // updates the Redux store; re-renders happen via useSelector.
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
 
-  // --- Client-side filter ---
-  // Filter by first name AND last name independently. An empty field skips
-  // that dimension so partial searches work as expected.
   const filtered = useMemo(() => {
     const fn = firstNameSearch.toLowerCase().trim();
     const ln = lastNameSearch.toLowerCase().trim();
@@ -68,15 +42,10 @@ const UserManager = () => {
       (u) =>
         (!fn || u.first_name?.toLowerCase().includes(fn)) &&
         (!ln || u.last_name?.toLowerCase().includes(ln)) &&
-        // Exact match on location — the dropdown value is always the full
-        // stored string, so partial matching is not needed here.
         (!locationFilter || u.location === locationFilter)
     );
   }, [users, firstNameSearch, lastNameSearch, locationFilter]);
 
-  // --- Client-side sort ---
-  // Sort the filtered list by the active column. Spread into a new array so
-  // the original Redux array is not mutated.
   const sorted = useMemo(() => {
     return [...filtered].sort((a, b) => {
       const aVal = (a[sortField] || "").toLowerCase();
@@ -87,21 +56,15 @@ const UserManager = () => {
     });
   }, [filtered, sortField, sortDir]);
 
-  // --- Location dropdown options ---
-  // Build unique sorted location values from the full user list. Empty/null
-  // values are excluded so the dropdown only shows real locations.
   const locationOptions = useMemo(() => {
     const unique = [...new Set(users.map((u) => u.location).filter(Boolean))].sort();
     return unique;
   }, [users]);
 
-  // --- Pagination math ---
   const totalPages = Math.max(1, Math.ceil(sorted.length / pageSize));
-  // Clamp page so it never exceeds totalPages after a search narrows results.
   const page = Math.min(currentPage, totalPages);
   const pageSlice = sorted.slice((page - 1) * pageSize, page * pageSize);
 
-  // Toggle sort: click the same column → flip direction; click a new column → asc.
   const handleSort = (field) => {
     if (sortField === field) {
       setSortDir((d) => (d === "asc" ? "desc" : "asc"));
@@ -111,8 +74,6 @@ const UserManager = () => {
     }
   };
 
-  // Reset to page 1 whenever a search field changes so the admin always
-  // sees the first matching results, not a potentially empty page.
   const handleFirstNameSearch = (e) => {
     setFirstNameSearch(e.target.value);
     setCurrentPage(1);
@@ -123,7 +84,6 @@ const UserManager = () => {
     setCurrentPage(1);
   };
 
-  // Clear all filters (name fields + location dropdown) and reset to page 1.
   const handleClear = () => {
     setFirstNameSearch("");
     setLastNameSearch("");
@@ -131,15 +91,11 @@ const UserManager = () => {
     setCurrentPage(1);
   };
 
-  // Reset to page 1 on page-size change so the new size takes effect cleanly.
   const handlePageSizeChange = (e) => {
     setPageSize(Number(e.target.value));
     setCurrentPage(1);
   };
 
-  // After the admin confirms deletion, dispatch the action and wait for the
-  // result. The Redux store removes the user on success; on failure the user
-  // stays in the list and a local error message is shown.
   const handleDeleteConfirm = async () => {
     if (!userToDelete) return;
     setDeleting(true);
@@ -151,17 +107,12 @@ const UserManager = () => {
     setUserToDelete(null);
 
     if (!result.success) {
-      // ⚠️ DELETE /user/:id is a new M10 endpoint. Fallback message shown
-      // until the backend partner delivers the endpoint.
       setDeleteError(
         result.message || "Delete unavailable — backend update in progress."
       );
     }
   };
 
-  // Returns the appropriate sort icon for a column header.
-  // Unsorted columns get a neutral double-caret; the active column gets the
-  // directional caret that matches the current sort direction.
   const sortIndicator = (field) => {
     if (sortField !== field) return <TbCaretUpDownFilled className="user-manager__sort-icon user-manager__sort-icon--inactive" />;
     return sortDir === "asc"
@@ -171,15 +122,12 @@ const UserManager = () => {
 
   return (
     <div className="user-manager">
-      {/* Store-level fetch error */}
       {storeError && !deleteError && (
         <Alert variant="danger" className="user-manager__alert">
           {storeError}
         </Alert>
       )}
 
-      {/* Delete failure message — separate from fetch error so it can be
-          dismissed independently without clearing the user list. */}
       {deleteError && (
         <Alert
           variant="danger"
@@ -191,10 +139,6 @@ const UserManager = () => {
         </Alert>
       )}
 
-      {/* Two separate search fields (First Name + Last Name) + Clear button.
-          Both fields filter the list independently via AND logic on every keystroke. */}
-      {/* Search inputs are disabled while loading — typing against an empty array
-          produces no visible results and creates confusing UX per the spec. */}
       <div className="user-manager__search-row">
         <Form.Control
           type="text"
@@ -214,9 +158,6 @@ const UserManager = () => {
           className="user-manager__search-field"
           disabled={loading}
         />
-        {/* Location dropdown — options are derived from the live user list so
-            only real locations appear. Selecting one AND-filters with the name
-            fields. "All Locations" (value="") clears the location dimension. */}
         <Form.Select
           value={locationFilter}
           onChange={(e) => { setLocationFilter(e.target.value); setCurrentPage(1); }}
@@ -239,7 +180,6 @@ const UserManager = () => {
         </Button>
       </div>
 
-      {/* User table — striped + hover are applied via Bootstrap props. */}
       <Table
         striped
         bordered
@@ -268,13 +208,9 @@ const UserManager = () => {
               </span>
             </th>
             <th>Location</th>
-            {/* Actions column: no label — buttons are revealed only on row hover */}
             <th />
           </tr>
         </thead>
-        {/* Skeleton replaces the <tbody> while loading is true (initial fetch
-            or delete in flight). Column headers remain visible above it so
-            the admin understands the table structure before data arrives. */}
         {loading ? (
           <SkeletonTable rows={pageSize} cols={4} />
         ) : (
@@ -290,12 +226,7 @@ const UserManager = () => {
                 <tr key={user._id}>
                   <td>{user.first_name}</td>
                   <td>{user.last_name}</td>
-                  {/* Show an em dash when location is empty/null so the cell
-                      is never blank and stays visually consistent. */}
                   <td>{user.location || "—"}</td>
-                  {/* Edit + Delete share one unlabelled cell. Buttons are
-                      opacity:0 at rest and revealed on row hover via CSS —
-                      no JS state change needed. */}
                   <td className="user-manager__actions-cell">
                     <Button
                       variant="outline-primary"
@@ -305,6 +236,20 @@ const UserManager = () => {
                     >
                       <FaRegEdit />
                     </Button>
+                    <OverlayTrigger
+                      overlay={<UserPreviewPopover user={user} />}
+                      placement="left"
+                      rootClose
+                      trigger="click"
+                    >
+                      <Button
+                        aria-label={`Preview ${user.first_name} ${user.last_name}`}
+                        size="sm"
+                        variant="outline-secondary"
+                      >
+                        <BsEye />
+                      </Button>
+                    </OverlayTrigger>
                     <Button
                       variant="outline-danger"
                       size="sm"
@@ -321,8 +266,6 @@ const UserManager = () => {
         )}
       </Table>
 
-      {/* Pagination controls — hidden while loading (skeleton state) and when
-          the filtered list is empty. Spec: controls reappear once data loads. */}
       {sorted.length > 0 && !loading && (
         <div className="user-manager__pagination">
           <Button
@@ -365,9 +308,6 @@ const UserManager = () => {
         </div>
       )}
 
-      {/* Delete confirmation modal — reusable component shared with Content Manager.
-          Body is JSX so the user's name and the warning can sit in separate
-          paragraphs, matching the two-paragraph layout in the spec. */}
       <ConfirmModal
         show={!!userToDelete}
         title="Delete User"
@@ -381,6 +321,13 @@ const UserManager = () => {
                 </strong>
                 ?
               </p>
+              <p>This will permanently delete:</p>
+              <ul className="mb-2">
+                <li>Their account</li>
+                <li>All posts they created</li>
+                <li>All comments on those posts</li>
+                <li>All comments they left on other posts</li>
+              </ul>
               <p className="mb-0">This action cannot be undone.</p>
             </>
           ) : null

@@ -5,6 +5,7 @@ import ProfileAvatar from "../components/ProfileAvatar";
 import StatusDot from "../components/StatusDot";
 import { getPosts } from "../services/postService";
 import { getUsers } from "../services/userService";
+import { postCreated$ } from "../services/postEventBus";
 
 const getId = (value) => {
   if (!value) {
@@ -94,11 +95,11 @@ const Network = () => {
     };
 
     loadNetworkData();
-    window.addEventListener("codebloggs:post-created", loadNetworkData);
+    const postSub = postCreated$.subscribe(() => loadNetworkData());
 
     return () => {
       isCurrent = false;
-      window.removeEventListener("codebloggs:post-created", loadNetworkData);
+      postSub.unsubscribe();
     };
   }, []);
 

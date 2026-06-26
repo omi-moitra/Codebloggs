@@ -142,6 +142,7 @@ DELETE /comments/:id     - Delete a comment
 POST   /replies          - Create a reply (auth required)
 GET    /replies          - Get replies by post
 PUT    /replies/:id      - Update a reply
+DELETE /replies/:id      - Delete a reply (admin auth required)
 ```
 
 ### Profile Pictures
