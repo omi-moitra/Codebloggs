@@ -183,7 +183,7 @@ const Register = () => {
             </Button>
           </Form>
           <p className="auth-card__footer">
-            Already a member? <Link to="/login">Login</Link>
+            <Link to="/login">Already a member? Login</Link>
           </p>
         </Card.Body>
       </Card>

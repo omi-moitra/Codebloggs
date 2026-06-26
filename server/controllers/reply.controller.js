@@ -1,7 +1,10 @@
 // controllers/reply.controller.js — Reply API handlers.
 //
-// Create replies (to Comments or other Replies), update like counts, and
-// retrieve all replies for a post. All responses follow { status, data, message }.
+// Create replies (to Comments or other Replies), update like counts, delete
+// replies, and retrieve all replies for a post. All responses follow
+// { status, data, message }.
+
+import mongoose from "mongoose";
 
 import Reply from "../schemas/Reply.js";
 import Comment from "../schemas/Comment.js";
@@ -124,6 +127,71 @@ export async function updateReply(req, res) {
       });
     }
     console.error("Update reply error:", err);
+    return res.status(500).json({
+      status: "error",
+      data: {},
+      message: "Internal server error",
+    });
+  }
+}
+
+// DELETE /replies/:id — Admin-only delete for a reply and its child replies.
+export async function deleteReply(req, res) {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        status: "error",
+        data: {},
+        message: "Invalid reply id",
+      });
+    }
+
+    if (req.user?.auth_level !== "admin") {
+      return res.status(403).json({
+        status: "error",
+        data: {},
+        message: "Admin access required",
+      });
+    }
+
+    const reply = await Reply.findById(id);
+
+    if (!reply) {
+      return res.status(404).json({
+        status: "error",
+        data: {},
+        message: "Reply not found",
+      });
+    }
+
+    const replyIdsToDelete = new Set([reply._id.toString()]);
+    let parentReplyIds = [reply._id];
+
+    while (parentReplyIds.length > 0) {
+      const childReplies = await Reply.find({
+        parent_type: "Reply",
+        parent_id: { $in: parentReplyIds },
+      }).select("_id");
+
+      const newChildIds = childReplies
+        .filter((childReply) => !replyIdsToDelete.has(childReply._id.toString()))
+        .map((childReply) => childReply._id);
+
+      newChildIds.forEach((replyId) => replyIdsToDelete.add(replyId.toString()));
+      parentReplyIds = newChildIds;
+    }
+
+    await Reply.deleteMany({ _id: { $in: Array.from(replyIdsToDelete) } });
+
+    return res.status(200).json({
+      status: "ok",
+      data: {},
+      message: "Reply deleted successfully",
+    });
+  } catch (err) {
+    console.error("Delete reply error:", err);
     return res.status(500).json({
       status: "error",
       data: {},

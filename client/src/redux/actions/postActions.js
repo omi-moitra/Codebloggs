@@ -30,11 +30,6 @@ export const fetchPosts = () => async (dispatch) => {
   }
 };
 
-// ⚠️ DELETE /posts/:id is a new M10 endpoint — not yet delivered by the backend
-// partner. Until it exists the fetch will return a 404. The action catches the
-// error, dispatches DELETE_POST_FAILURE, and returns { success: false } so the
-// component can display a graceful error message. No change to this file is
-// needed once the endpoint is live — the same call succeeds automatically.
 export const deletePostAction = (postId) => async (dispatch) => {
   // SET_POSTS_LOADING true before the DELETE so the table body switches to
   // skeleton rows while the request is in flight (spec: delete in flight state).

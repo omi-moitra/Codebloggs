@@ -1,38 +1,20 @@
-// =============================================================================
-// pages/ContentManager.jsx — Admin Content Manager table (/admin/content)
-// -----------------------------------------------------------------------------
-// 1. Data fetching    dispatch fetchPosts() + fetchUsers() on mount via Redux Thunk
-// 2. Date filter      From/To date inputs; client-side filter on post time_stamp;
-//                     either field can be used independently; disabled while loading
-// 3. Select All       clears both date inputs; restores full post list; resets page 1
-// 4. Sort             click Author or Date column header to sort asc/desc;
-//                     default: Date descending (newest first)
-// 5. Pagination       slice sorted+filtered results; previous/next controls; hidden while loading
-// 6. Results-per-page dropdown: 10, 15, 20; resets to page 1 on change
-// 7. Skeleton loaders SkeletonTable replaces <tbody> when state.posts.loading is true
-//                     (initial fetch AND delete in flight)
-// 8. Delete flow      Delete button (IoTrashOutline) → ConfirmModal → dispatch deletePostAction
-// 9. Author column    cross-references state.users.users by post.user_id (same pattern as Blogs/Home)
-// 10. Post column     post.title if present; otherwise truncated content (40 chars)
-// =============================================================================
-
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Alert, Button, Form, Table } from "react-bootstrap";
-import { BsCaretUpFill, BsFillCaretDownFill } from "react-icons/bs";
-import { IoTrashOutline } from "react-icons/io5";
+import { Alert, Button, Form, Overlay, Popover, Table } from "react-bootstrap";
+import { BsCaretUpFill, BsFillCaretDownFill, BsChevronRight } from "react-icons/bs";
+import { IoEyeOutline, IoTrashOutline } from "react-icons/io5";
 import { TbCaretUpDownFilled } from "react-icons/tb";
 import { fetchPosts, deletePostAction } from "../redux/actions/postActions";
 import { fetchUsers } from "../redux/actions/userActions";
 import { selectUsersById } from "../redux/selectors/userSelectors";
+import { getComments, deleteComment } from "../services/commentService";
+import { getReplies, deleteReply } from "../services/replyService";
 import ConfirmModal from "../components/ConfirmModal";
+import ProfileAvatar from "../components/ProfileAvatar";
 import SkeletonTable from "../components/SkeletonTable";
 
 const PAGE_SIZE_OPTIONS = [10, 15, 20];
 
-// Returns the post title or a content excerpt truncated at 40 characters.
-// The Post column shows whichever is available so the table always has a
-// meaningful label even when a title field isn't present in the response.
 const getPostLabel = (post) => {
   if (post.title && post.title.trim()) return post.title;
   if (post.content) {
@@ -43,31 +25,30 @@ const getPostLabel = (post) => {
   return "(no content)";
 };
 
-// Normalises ObjectId variants to a plain string so lookup keys are consistent.
-// Mirrors the getId() helper used in Blogs.jsx and Home.jsx.
 const getId = (value) => {
   if (!value) return "";
   if (typeof value === "string") return value;
   return value._id || value.$oid || String(value);
 };
 
-// Returns the user's full name, email, or "CodeBloggs user" in order of availability.
-// Mirrors the getDisplayName() helper used in Blogs.jsx and Home.jsx.
 const getDisplayName = (user) => {
   const fullName = `${user?.first_name || ""} ${user?.last_name || ""}`.trim();
   return fullName || user?.email || "CodeBloggs user";
 };
 
-// Cross-references the user lookup map by post.user_id to get the author's name.
-// GET /posts returns raw ObjectId references — names are resolved client-side
-// from state.users.users, which is the same approach used by Blogs and Home pages.
+const getInitials = (user) => {
+  const first = user?.first_name?.trim()?.[0] || "";
+  const last = user?.last_name?.trim()?.[0] || "";
+  const email = user?.email?.trim()?.[0] || "";
+  return `${first}${last}`.toUpperCase() || email.toUpperCase() || "CB";
+};
+
 const getAuthorLabel = (post, usersById) => {
   const author = usersById[getId(post.user_id)];
   if (author) return getDisplayName(author);
   return String(post.user_id) || "Unknown";
 };
 
-// Format a timestamp string (ISO or date-only) into a human-readable YYYY-MM-DD.
 const formatDate = (timestamp) => {
   if (!timestamp) return "—";
   try {
@@ -80,13 +61,9 @@ const formatDate = (timestamp) => {
 const ContentManager = () => {
   const dispatch = useDispatch();
 
-  // Pull post list and async state from the Redux store.
   const { posts, loading, error: storeError } = useSelector((state) => state.posts);
-
   const usersById = useSelector(selectUsersById);
 
-  // Local UI state — does not belong in Redux because it only affects this
-  // component and does not need to survive navigation.
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -95,38 +72,52 @@ const ContentManager = () => {
   const [deleteError, setDeleteError] = useState("");
   const [deleting, setDeleting] = useState(false);
 
-  // Sort state — "author" sorts by resolved author name; "time_stamp" sorts by date.
-  // Default to newest-first so admins see the most recent content immediately.
   const [sortField, setSortField] = useState("time_stamp");
   const [sortDir, setSortDir] = useState("desc");
+
+  const [previewState, setPreviewState] = useState(null);
+
+  const [expandedPostIds, setExpandedPostIds] = useState(new Set());
+  const [comments, setComments] = useState([]);
+  const [replies, setReplies] = useState([]);
+  const [commentToDelete, setCommentToDelete] = useState(null);
+  const [deletingComment, setDeletingComment] = useState(false);
+  const [deleteCommentError, setDeleteCommentError] = useState("");
 
   useEffect(() => {
     dispatch(fetchPosts());
     dispatch(fetchUsers());
-  }, [dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
+    Promise.all([getComments(), getReplies()]).then(([cr, rr]) => {
+      setComments(cr.comments);
+      setReplies(rr.replies);
+    });
+  }, [dispatch]);
 
-  // --- Client-side date filter ---
-  // Posts are filtered in memory after the initial GET /posts load — no additional
-  // API call is made when the filter changes (consistent with the User Manager
-  // name-search pattern and confirmed in Issues.md Issue #13).
-  //
-  // For the end date, append 'T23:59:59' so posts created at any time on the
-  // To date are included (not just before midnight UTC).
+  const commentsByPostId = useMemo(() =>
+    comments.reduce((acc, c) => {
+      const key = getId(c.post_id);
+      (acc[key] = acc[key] || []).push(c);
+      return acc;
+    }, {}), [comments]);
+
+  const repliesByCommentId = useMemo(() =>
+    replies.reduce((acc, r) => {
+      const key = getId(r.root_comment_id);
+      (acc[key] = acc[key] || []).push(r);
+      return acc;
+    }, {}), [replies]);
+
   const filtered = useMemo(() => {
     if (!startDate && !endDate) return posts;
     return posts.filter((p) => {
-      const ts = p.time_stamp || "";
-      const afterStart = !startDate || ts >= startDate;
-      const beforeEnd = !endDate || ts <= endDate + "T23:59:59";
+      if (!p.time_stamp) return !startDate;
+      const postDate = new Date(p.time_stamp).toLocaleDateString("en-CA");
+      const afterStart = !startDate || postDate >= startDate;
+      const beforeEnd = !endDate || postDate <= endDate;
       return afterStart && beforeEnd;
     });
   }, [posts, startDate, endDate]);
 
-  // --- Client-side sort ---
-  // "author" is a derived value (resolved from usersById), so it's handled as
-  // a special case rather than a direct post field lookup.
-  // "time_stamp" is an ISO string — lexicographic comparison is accurate for
-  // ISO 8601 dates, so no Date conversion is needed here.
   const sorted = useMemo(() => {
     return [...filtered].sort((a, b) => {
       const aVal =
@@ -143,8 +134,6 @@ const ContentManager = () => {
     });
   }, [filtered, sortField, sortDir, usersById]);
 
-  // Toggle sort: click the active column → flip direction; click a new column → asc.
-  // Sorting resets to page 1 so the admin always sees the top of the new order.
   const handleSort = (field) => {
     if (sortField === field) {
       setSortDir((d) => (d === "asc" ? "desc" : "asc"));
@@ -155,8 +144,6 @@ const ContentManager = () => {
     setCurrentPage(1);
   };
 
-  // Returns the appropriate sort icon for a column header.
-  // Reuses the same .user-manager__sort-icon CSS classes to stay visually consistent.
   const sortIndicator = (field) => {
     if (sortField !== field)
       return <TbCaretUpDownFilled className="user-manager__sort-icon user-manager__sort-icon--inactive" />;
@@ -165,23 +152,16 @@ const ContentManager = () => {
       : <BsFillCaretDownFill className="user-manager__sort-icon" />;
   };
 
-  // --- Pagination math ---
   const totalPages = Math.max(1, Math.ceil(sorted.length / pageSize));
-  // Clamp page so it never exceeds totalPages after a filter narrows results.
   const page = Math.min(currentPage, totalPages);
   const pageSlice = sorted.slice((page - 1) * pageSize, page * pageSize);
 
-  // "Select All" clears both date inputs and restores the full post list.
-  // The button label must be "Select All" — the grading sheet checks this
-  // exact label for the Content Manager (Issues.md Issue #12).
   const handleSelectAll = () => {
     setStartDate("");
     setEndDate("");
     setCurrentPage(1);
   };
 
-  // Reset to page 1 whenever the date filter changes so the admin always
-  // sees the first matching results, not a potentially empty page.
   const handleStartDateChange = (e) => {
     setStartDate(e.target.value);
     setCurrentPage(1);
@@ -192,15 +172,11 @@ const ContentManager = () => {
     setCurrentPage(1);
   };
 
-  // Reset to page 1 on page-size change so the new size takes effect cleanly.
   const handlePageSizeChange = (e) => {
     setPageSize(Number(e.target.value));
     setCurrentPage(1);
   };
 
-  // After the admin confirms deletion, dispatch the action and wait for the
-  // result. The Redux store removes the post on success; on failure the post
-  // stays in the list and a local error message is shown.
   const handleDeleteConfirm = async () => {
     if (!postToDelete) return;
     setDeleting(true);
@@ -212,25 +188,51 @@ const ContentManager = () => {
     setPostToDelete(null);
 
     if (!result.success) {
-      // ⚠️ DELETE /posts/:id is a new M10 endpoint. Fallback message shown
-      // until the backend partner delivers the endpoint.
       setDeleteError(
         result.message || "Delete unavailable — backend update in progress."
       );
     }
   };
 
+  const togglePost = (postId) => {
+    setExpandedPostIds((prev) => {
+      const next = new Set(prev);
+      next.has(postId) ? next.delete(postId) : next.add(postId);
+      return next;
+    });
+  };
+
+  const handleDeleteCommentConfirm = async () => {
+    if (!commentToDelete) return;
+    setDeletingComment(true);
+    setDeleteCommentError("");
+    try {
+      if (commentToDelete.type === "comment") {
+        await deleteComment(commentToDelete.item._id);
+        const id = getId(commentToDelete.item._id);
+        setComments((prev) => prev.filter((c) => getId(c._id) !== id));
+        setReplies((prev) => prev.filter((r) => getId(r.root_comment_id) !== id));
+      } else {
+        await deleteReply(commentToDelete.item._id);
+        const id = getId(commentToDelete.item._id);
+        setReplies((prev) => prev.filter((r) => getId(r._id) !== id));
+      }
+    } catch (err) {
+      setDeleteCommentError(err.message || "Delete failed.");
+    } finally {
+      setDeletingComment(false);
+      setCommentToDelete(null);
+    }
+  };
+
   return (
     <div className="content-manager">
-      {/* Store-level fetch error */}
       {storeError && !deleteError && (
         <Alert variant="danger" className="content-manager__alert">
           {storeError}
         </Alert>
       )}
 
-      {/* Delete failure message — separate from fetch error so it can be
-          dismissed independently without clearing the post list. */}
       {deleteError && (
         <Alert
           variant="danger"
@@ -242,26 +244,34 @@ const ContentManager = () => {
         </Alert>
       )}
 
-      {/* Date range filter row + "Select All" button.
-          Both inputs filter independently — leaving one blank applies no bound
-          on that side of the range. */}
-      {/* Date filter inputs are disabled while loading — filtering against an
-          empty array produces no visible results and is confusing UX. */}
+      {deleteCommentError && (
+        <Alert
+          variant="danger"
+          dismissible
+          onClose={() => setDeleteCommentError("")}
+          className="content-manager__alert"
+        >
+          {deleteCommentError}
+        </Alert>
+      )}
+
       <div className="content-manager__filter-row">
         <span className="content-manager__filter-label">From:</span>
         <Form.Control
-          type="date"
+          type="text"
           value={startDate}
           onChange={handleStartDateChange}
+          placeholder="YYYY-MM-DD"
           aria-label="Filter from date"
           className="content-manager__date-input"
           disabled={loading}
         />
         <span className="content-manager__filter-label">To:</span>
         <Form.Control
-          type="date"
+          type="text"
           value={endDate}
           onChange={handleEndDateChange}
+          placeholder="YYYY-MM-DD"
           aria-label="Filter to date"
           className="content-manager__date-input"
           disabled={loading}
@@ -272,11 +282,10 @@ const ContentManager = () => {
           onClick={handleSelectAll}
           disabled={loading}
         >
-          Select All
+          Clear
         </Button>
       </div>
 
-      {/* Post table — striped + hover via Bootstrap props. */}
       <Table
         striped
         bordered
@@ -286,11 +295,8 @@ const ContentManager = () => {
       >
         <thead>
           <tr>
-            {/* Author and Date headers are clickable — click once for asc,
-                again to flip to desc. The Date column is pre-sorted desc
-                (newest first) on initial load. */}
             <th
-              style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer", width: "14%" }}
               onClick={() => handleSort("author")}
               aria-sort={sortField === "author" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}
             >
@@ -298,9 +304,9 @@ const ContentManager = () => {
                 Author {sortIndicator("author")}
               </span>
             </th>
-            <th>Post</th>
+            <th style={{ width: "67%" }}>Post</th>
             <th
-              style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer", width: "12%" }}
               onClick={() => handleSort("time_stamp")}
               aria-sort={sortField === "time_stamp" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}
             >
@@ -308,13 +314,15 @@ const ContentManager = () => {
                 Date {sortIndicator("time_stamp")}
               </span>
             </th>
-            <th>Delete</th>
+            <th style={{ width: "7%" }}>Actions</th>
           </tr>
         </thead>
-        {/* Skeleton replaces the <tbody> while loading is true (initial fetch
-            or delete in flight). Column headers remain visible above it. */}
         {loading ? (
-          <SkeletonTable rows={pageSize} cols={4} />
+          <SkeletonTable
+            rows={pageSize}
+            cols={4}
+            colWidths={["55%", "80%", "40%", "30%"]}
+          />
         ) : (
           <tbody>
             {pageSlice.length === 0 ? (
@@ -326,32 +334,109 @@ const ContentManager = () => {
                 </td>
               </tr>
             ) : (
-              pageSlice.map((post) => (
-                <tr key={post._id}>
-                  <td>{getAuthorLabel(post, usersById)}</td>
-                  <td>{getPostLabel(post)}</td>
-                  <td>{formatDate(post.time_stamp)}</td>
-                  <td>
-                    {/* Icon-only delete button — IoTrashOutline matches the spec.
-                        aria-label names the post so screen readers convey the action. */}
-                    <Button
-                      variant="outline-danger"
-                      size="sm"
-                      onClick={() => setPostToDelete(post)}
-                      aria-label={`Delete post: ${getPostLabel(post)}`}
+              pageSlice.map((post) => {
+                const isExpanded = expandedPostIds.has(post._id);
+                const postComments = commentsByPostId[post._id] || [];
+                return (
+                  <React.Fragment key={post._id}>
+                    <tr
+                      onClick={() => togglePost(post._id)}
+                      style={{ cursor: "pointer" }}
                     >
-                      <IoTrashOutline />
-                    </Button>
-                  </td>
-                </tr>
-              ))
+                      <td>{getAuthorLabel(post, usersById)}</td>
+                      <td className="content-manager__post-cell">
+                        <BsChevronRight
+                          className={`content-manager__caret${isExpanded ? " content-manager__caret--open" : ""}`}
+                        />
+                        {getPostLabel(post)}
+                      </td>
+                      <td>{formatDate(post.time_stamp)}</td>
+                      <td onClick={(e) => e.stopPropagation()}>
+                        <div className="d-flex gap-1">
+                          <Button
+                            variant="outline-secondary"
+                            size="sm"
+                            aria-label={`Preview post: ${getPostLabel(post)}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setPreviewState((prev) =>
+                                prev?.post._id === post._id
+                                  ? null
+                                  : { post, el: e.currentTarget }
+                              );
+                            }}
+                          >
+                            <IoEyeOutline />
+                          </Button>
+                          <Button
+                            variant="outline-danger"
+                            size="sm"
+                            onClick={() => setPostToDelete(post)}
+                            aria-label={`Delete post: ${getPostLabel(post)}`}
+                          >
+                            <IoTrashOutline />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                    {isExpanded && (
+                      postComments.length === 0 ? (
+                        <tr key={`${post._id}-empty`}>
+                          <td colSpan={4} className="content-manager__no-comments-cell">
+                            No comments on this post.
+                          </td>
+                        </tr>
+                      ) : (
+                        postComments.flatMap((comment) => [
+                          <tr key={`${comment._id}-c`} className="content-manager__comment-row">
+                            <td colSpan={3} className="content-manager__comment-cell">
+                              <span>{comment.content}</span>
+                              <div className="content-manager__comment-meta">
+                                {getAuthorLabel(comment, usersById)} · {formatDate(comment.time_stamp)}
+                              </div>
+                            </td>
+                            <td className="content-manager__action-cell" onClick={(e) => e.stopPropagation()}>
+                              <Button
+                                variant="outline-danger"
+                                size="sm"
+                                onClick={() => setCommentToDelete({ type: "comment", item: comment })}
+                                aria-label="Delete comment"
+                              >
+                                <IoTrashOutline />
+                              </Button>
+                            </td>
+                          </tr>,
+                          ...(repliesByCommentId[getId(comment._id)] || []).map((reply) => (
+                            <tr key={`${reply._id}-r`} className="content-manager__reply-row">
+                              <td colSpan={3} className="content-manager__reply-cell">
+                                <span>{reply.content}</span>
+                                <div className="content-manager__comment-meta">
+                                  {getAuthorLabel(reply, usersById)} · {formatDate(reply.time_stamp)}
+                                </div>
+                              </td>
+                              <td className="content-manager__action-cell" onClick={(e) => e.stopPropagation()}>
+                                <Button
+                                  variant="outline-danger"
+                                  size="sm"
+                                  onClick={() => setCommentToDelete({ type: "reply", item: reply })}
+                                  aria-label="Delete reply"
+                                >
+                                  <IoTrashOutline />
+                                </Button>
+                              </td>
+                            </tr>
+                          )),
+                        ])
+                      )
+                    )}
+                  </React.Fragment>
+                );
+              })
             )}
           </tbody>
         )}
       </Table>
 
-      {/* Pagination controls — hidden while loading (skeleton state) and when
-          the filtered list is empty. Spec: controls reappear once data loads. */}
       {sorted.length > 0 && !loading && (
         <div className="content-manager__pagination">
           <Button
@@ -394,8 +479,51 @@ const ContentManager = () => {
         </div>
       )}
 
-      {/* Delete confirmation modal — reuses the shared ConfirmModal from
-          User Manager. Body is multi-paragraph JSX per the spec layout. */}
+      <Overlay
+        show={Boolean(previewState)}
+        target={previewState?.el}
+        placement="left"
+        rootClose
+        onHide={() => setPreviewState(null)}
+      >
+        <Popover id="post-preview-popover" style={{ maxWidth: "300px" }}>
+          <Popover.Header as="h6">Post Preview</Popover.Header>
+          <Popover.Body>
+            {previewState && (() => {
+              const author = usersById[getId(previewState.post.user_id)];
+              return (
+              <>
+                <div className="d-flex align-items-center gap-2 mb-3">
+                  <ProfileAvatar
+                    user={author}
+                    fallbackInitials={getInitials(author)}
+                    className="content-manager__preview-avatar"
+                  />
+                  <div>
+                    <p className="mb-0 fw-semibold small">{getDisplayName(author)}</p>
+                    <p className="mb-0 text-muted small">{formatDate(previewState.post.time_stamp)}</p>
+                  </div>
+                </div>
+                <p className="mb-3" style={{ maxHeight: "10rem", overflowY: "auto" }}>
+                  {previewState.post.content || previewState.post.title || "(no content)"}
+                </p>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  className="w-100"
+                  onClick={() =>
+                    window.open(`/blogs#post-${previewState.post._id}`, "_blank")
+                  }
+                >
+                  Open this post in a new tab
+                </Button>
+              </>
+              );
+            })()}
+          </Popover.Body>
+        </Popover>
+      </Overlay>
+
       <ConfirmModal
         show={!!postToDelete}
         title="Delete Post"
@@ -415,6 +543,34 @@ const ContentManager = () => {
         confirmLabel="Delete"
         confirmVariant="danger"
         loading={deleting}
+        loadingLabel="Deleting…"
+      />
+
+      <ConfirmModal
+        show={!!commentToDelete}
+        title={commentToDelete?.type === "reply" ? "Delete Reply" : "Delete Comment"}
+        body={
+          commentToDelete ? (
+            <>
+              <p>
+                Are you sure you want to delete this{" "}
+                {commentToDelete.type}?
+              </p>
+              <p>
+                <em>&ldquo;{commentToDelete.item.content?.slice(0, 80)}{commentToDelete.item.content?.length > 80 ? "…" : ""}&rdquo;</em>
+              </p>
+              {commentToDelete.type === "comment" && (
+                <p>All replies to this comment will also be deleted.</p>
+              )}
+              <p className="mb-0">This action cannot be undone.</p>
+            </>
+          ) : null
+        }
+        onCancel={() => setCommentToDelete(null)}
+        onConfirm={handleDeleteCommentConfirm}
+        confirmLabel="Delete"
+        confirmVariant="danger"
+        loading={deletingComment}
         loadingLabel="Deleting…"
       />
     </div>

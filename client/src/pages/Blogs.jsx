@@ -4,14 +4,25 @@ import { Button, Card, Form, Spinner } from "react-bootstrap";
 import AutoDismissAlert from "../components/AutoDismissAlert";
 import ProfileAvatar from "../components/ProfileAvatar";
 import StatusDot from "../components/StatusDot";
-import { FaRegThumbsUp, FaThumbsUp } from "react-icons/fa";
+import { FaRegThumbsUp, FaRegTrashAlt, FaThumbsUp } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
-import { createComment, getComments, updateCommentLikes } from "../services/commentService";
+import {
+  createComment,
+  deleteComment,
+  getComments,
+  updateCommentLikes,
+} from "../services/commentService";
 import { getPosts, updatePostLikes } from "../services/postService";
-import { createReply, getReplies, updateReplyLikes } from "../services/replyService";
+import {
+  createReply,
+  deleteReply,
+  getReplies,
+  updateReplyLikes,
+} from "../services/replyService";
 import { hasLocalLike, setLocalLike } from "../services/socialInteractionService";
 import { fetchUsers } from "../redux/actions/userActions";
 import { selectUsersById } from "../redux/selectors/userSelectors";
+import { postCreated$ } from "../services/postEventBus";
 
 const getId = (value) => {
   if (!value) {
@@ -83,6 +94,8 @@ const Blogs = () => {
   const [likingPostId, setLikingPostId] = useState("");
   const [likingCommentId, setLikingCommentId] = useState("");
   const [likingReplyId, setLikingReplyId] = useState("");
+  const [deletingCommentId, setDeletingCommentId] = useState("");
+  const [deletingReplyId, setDeletingReplyId] = useState("");
   const [commentDrafts, setCommentDrafts] = useState({});
   const [commentingPostId, setCommentingPostId] = useState("");
   const [replyDrafts, setReplyDrafts] = useState({});
@@ -93,6 +106,7 @@ const Blogs = () => {
   const [localReplies, setLocalReplies] = useState({});
 
   const userId = getId(sessionUser?._id);
+  const isAdmin = sessionUser?.auth_level === "admin";
 
   useEffect(() => {
     let isCurrent = true;
@@ -129,13 +143,28 @@ const Blogs = () => {
     };
 
     loadBlogsData();
-    window.addEventListener("codebloggs:post-created", loadBlogsData);
+    const postSub = postCreated$.subscribe(() => loadBlogsData());
 
     return () => {
       isCurrent = false;
-      window.removeEventListener("codebloggs:post-created", loadBlogsData);
+      postSub.unsubscribe();
     };
-  }, []);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (status !== "success") return;
+    const hash = window.location.hash;
+    if (!hash) return;
+    const timer = setTimeout(() => {
+      const el = document.querySelector(hash);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        el.classList.add("blogs-post--highlighted");
+        setTimeout(() => el.classList.remove("blogs-post--highlighted"), 2000);
+      }
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [status]);
 
   const repliesByParentId = useMemo(() => {
     return replies.reduce((grouped, reply) => {
@@ -312,6 +341,57 @@ const Blogs = () => {
     }
   };
 
+  const handleCommentDelete = async (comment) => {
+    const commentId = getId(comment._id);
+    if (!commentId) {
+      return;
+    }
+
+    setDeletingCommentId(commentId);
+    setError("");
+
+    try {
+      await deleteComment(commentId);
+      setComments((currentComments) =>
+        currentComments.filter((currentComment) => getId(currentComment._id) !== commentId)
+      );
+      setReplies((currentReplies) =>
+        currentReplies.filter(
+          (reply) =>
+            getId(reply.root_comment_id) !== commentId &&
+            getId(reply.parent_id) !== commentId
+        )
+      );
+      setLocalReplies((currentReplies) =>
+        Object.entries(currentReplies).reduce((nextReplies, [parentId, replyList]) => {
+          if (parentId !== commentId) {
+            const keptReplies = replyList.filter(
+              (reply) => reply.rootCommentId !== commentId && reply.parentId !== commentId
+            );
+
+            if (keptReplies.length > 0) {
+              nextReplies[parentId] = keptReplies;
+            }
+          }
+
+          return nextReplies;
+        }, {})
+      );
+      setOpenReplyParentIds((currentParentIds) => {
+        const nextParentIds = { ...currentParentIds };
+        delete nextParentIds[commentId];
+        return nextParentIds;
+      });
+      setActiveReplyTargetId((currentParentId) =>
+        currentParentId === commentId ? "" : currentParentId
+      );
+    } catch (deleteError) {
+      setError(deleteError.message || "Unable to delete this comment.");
+    } finally {
+      setDeletingCommentId("");
+    }
+  };
+
   const handleReplyDraftChange = (parentId, value) => {
     setReplyDrafts((currentDrafts) => ({
       ...currentDrafts,
@@ -454,6 +534,79 @@ const Blogs = () => {
     }
   };
 
+  const getReplyThreadIds = (replyId, replyList) => {
+    const idsToDelete = new Set([replyId]);
+    let addedReply = true;
+
+    while (addedReply) {
+      addedReply = false;
+
+      replyList.forEach((reply) => {
+        const currentReplyId = getId(reply._id) || reply.id;
+        const parentId = getId(reply.parent_id) || reply.parentId;
+
+        if (parentId && idsToDelete.has(parentId) && !idsToDelete.has(currentReplyId)) {
+          idsToDelete.add(currentReplyId);
+          addedReply = true;
+        }
+      });
+    }
+
+    return idsToDelete;
+  };
+
+  const handleReplyDelete = async (reply) => {
+    if (!reply.id || !reply.isServerReply) {
+      return;
+    }
+
+    setDeletingReplyId(reply.id);
+    setError("");
+
+    try {
+      await deleteReply(reply.id);
+      const idsToDelete = getReplyThreadIds(reply.id, replies);
+
+      setReplies((currentReplies) =>
+        currentReplies.filter((currentReply) => !idsToDelete.has(getId(currentReply._id)))
+      );
+
+      setLocalReplies((currentReplies) =>
+        Object.entries(currentReplies).reduce((nextReplies, [parentId, replyList]) => {
+          if (idsToDelete.has(parentId)) {
+            return nextReplies;
+          }
+
+          const keptReplies = replyList.filter(
+            (currentReply) =>
+              !idsToDelete.has(currentReply.id) && !idsToDelete.has(currentReply.parentId)
+          );
+
+          if (keptReplies.length > 0) {
+            nextReplies[parentId] = keptReplies;
+          }
+
+          return nextReplies;
+        }, {})
+      );
+
+      setOpenReplyParentIds((currentParentIds) => {
+        const nextParentIds = { ...currentParentIds };
+        idsToDelete.forEach((replyId) => {
+          delete nextParentIds[replyId];
+        });
+        return nextParentIds;
+      });
+      setActiveReplyTargetId((currentParentId) =>
+        idsToDelete.has(currentParentId) ? "" : currentParentId
+      );
+    } catch (deleteError) {
+      setError(deleteError.message || "Unable to delete this reply.");
+    } finally {
+      setDeletingReplyId("");
+    }
+  };
+
   const renderReplyForm = (parentId, parentDepth, postId, rootCommentId) =>
     activeReplyTargetId === parentId ? (
       <Form
@@ -519,6 +672,7 @@ const Blogs = () => {
             reply.likedByCurrentUser ||
             hasLocalLike({ type: "reply", userId, itemId: reply.id });
           const replyDepth = Math.min(reply.depth || parentDepth + 1, MAX_REPLY_DEPTH);
+          const canDeleteReply = isAdmin && reply.isServerReply;
 
           return (
             <li
@@ -564,6 +718,20 @@ const Blogs = () => {
                 >
                   Reply
                 </Button>
+                {canDeleteReply ? (
+                  <Button
+                    aria-label="Delete reply"
+                    className="social-comment__action social-comment__action--danger"
+                    disabled={deletingReplyId === reply.id}
+                    onClick={() => handleReplyDelete(reply)}
+                    size="sm"
+                    type="button"
+                    variant="outline-danger"
+                  >
+                    <FaRegTrashAlt aria-hidden="true" />
+                    <span>{deletingReplyId === reply.id ? "Deleting..." : "Delete"}</span>
+                  </Button>
+                ) : null}
               </div>
               {renderReplyForm(reply.id, replyDepth, postId, rootCommentId)}
               {renderReplyThreadToggle(reply.id)}
@@ -630,7 +798,7 @@ const Blogs = () => {
             const postLiked = hasLocalLike({ type: "post", userId, itemId: postId });
 
             return (
-              <Card className="blogs-post" key={postId}>
+              <Card className="blogs-post" id={`post-${postId}`} key={postId}>
                 <Card.Body>
                   <div className="blogs-post__author">
                     <div className="avatar-presence">
@@ -732,6 +900,7 @@ const Blogs = () => {
                               userId,
                               itemId: commentId,
                             });
+                            const canDeleteComment = getId(comment.user_id) === userId;
                             return (
                               <li className="blogs-comments__item" key={commentId}>
                                 <div className="blogs-comments__meta">
@@ -774,6 +943,24 @@ const Blogs = () => {
                                   >
                                     Reply
                                   </Button>
+                                  {canDeleteComment ? (
+                                    <Button
+                                      aria-label="Delete comment"
+                                      className="social-comment__action social-comment__action--danger"
+                                      disabled={deletingCommentId === commentId}
+                                      onClick={() => handleCommentDelete(comment)}
+                                      size="sm"
+                                      type="button"
+                                      variant="outline-danger"
+                                    >
+                                      <FaRegTrashAlt aria-hidden="true" />
+                                      <span>
+                                        {deletingCommentId === commentId
+                                          ? "Deleting..."
+                                          : "Delete"}
+                                      </span>
+                                    </Button>
+                                  ) : null}
                                 </div>
 
                                 {renderReplyForm(commentId, 0, postId, commentId)}

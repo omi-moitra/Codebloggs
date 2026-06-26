@@ -42,6 +42,15 @@ export const createReply = async ({
   };
 };
 
+// DELETE /replies/:id — admin removes a reply and its child replies.
+export const deleteReply = async (replyId) => {
+  const payload = await request(`/replies/${replyId}`, { method: "DELETE" });
+
+  return {
+    message: payload?.message || "Reply deleted successfully.",
+  };
+};
+
 // PUT /replies/:id — increment or decrement like count (server uses $inc).
 export const updateReplyLikes = async (replyId, likesDelta) => {
   const payload = await request(`/replies/${replyId}`, {

@@ -11,6 +11,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import MainLayout from "./layout/MainLayout";
 import store from "./redux/store";
 import Home from "./pages/Home";
+import HomeRedirect from "./components/HomeRedirect";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Blogs from "./pages/Blogs";
@@ -20,6 +21,7 @@ import UserManager from "./pages/UserManager";
 import EditUserPage from "./pages/EditUserPage";
 import ContentManager from "./pages/ContentManager";
 import AccountSettings from "./pages/AccountSettings";
+import UserProfilePage from "./pages/UserProfilePage";
 import NotFound from "./pages/NotFound";
 
 const router = createBrowserRouter([
@@ -40,7 +42,8 @@ const router = createBrowserRouter([
           {
             element: <MainLayout />,
             children: [
-              { path: "home", element: <Home /> },
+              { path: "home", element: <HomeRedirect /> },
+              { path: "home/:userId", element: <Home /> },
               { path: "blogs", element: <Blogs /> },
               { path: "network", element: <Network /> },
               { path: "settings", element: <AccountSettings /> },
@@ -72,6 +75,9 @@ const router = createBrowserRouter([
                       },
                     ],
                   },
+                  // /users/:id — Read-only profile view for any user. Admin-only;
+                  // opened in a new tab from the UserManager preview popover.
+                  { path: "users/:id", element: <UserProfilePage /> },
                 ],
               },
             ],

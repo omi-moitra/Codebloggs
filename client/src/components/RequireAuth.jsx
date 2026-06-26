@@ -2,6 +2,12 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useAuth } from "../context/AuthContext";
 
+const getId = (value) => {
+  if (!value) return "";
+  if (typeof value === "string") return value;
+  return String(value._id || value.$oid || value);
+};
+
 const RequireAuth = ({ requireAdmin = false, redirectTo = "/login" }) => {
   const { isAuthenticated, isChecking, user } = useAuth();
   const location = useLocation();
@@ -27,7 +33,7 @@ const RequireAuth = ({ requireAdmin = false, redirectTo = "/login" }) => {
   }
 
   if (requireAdmin && user?.auth_level !== "admin") {
-    return <Navigate to="/home" replace />;
+    return <Navigate to={`/home/${getId(user?._id)}`} replace />;
   }
 
   return <Outlet />;

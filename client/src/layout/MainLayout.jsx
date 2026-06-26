@@ -17,6 +17,7 @@ import Header from "../components/Header";
 import PostModal from "../components/PostModal";
 import Sidebar from "../components/Sidebar";
 import MainContent from "./MainContent";
+import { emitPostCreated } from "../services/postEventBus";
 import { PresenceProvider } from "../context/PresenceContext";
 
 // MainLayout wraps pages that belong to the signed-in app experience.
@@ -28,11 +29,7 @@ const MainLayout = () => {
   const handlePostCreated = (result) => {
     const message = result?.message || "Post created successfully.";
     setFeedback({ message, variant: "success" });
-    window.dispatchEvent(
-      new CustomEvent("codebloggs:post-created", {
-        detail: { post: result?.post || null },
-      })
-    );
+    emitPostCreated(result?.post || null);
   };
 
   const handleAccountSettings = () => {

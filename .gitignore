@@ -152,3 +152,6 @@ private_local_folder/
 
 .ds_store
 .DS_Store
+
+
+client/package-lock.json

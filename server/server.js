@@ -14,7 +14,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 // Database connection helper. Imported after dotenv.config() so MONGO_URI exists.
-import { connectToDatabase } from "./db/connection.js";
+import dbConnection, { connectToDatabase } from "./db/connection.js";
 
 // Resource routers. Each is mounted below at its agreed base path. They are
 // empty for now (this feature only wires them up); later features add routes.
@@ -51,6 +51,8 @@ const allowedClientOrigins = new Set(
 );
 
 const app = express();
+let server;
+let isShuttingDown = false;
 
 // ---------------------------------------------------------------------------
 // Global middleware (order matters)
@@ -100,9 +102,47 @@ app.use("/presence", presenceRoutes); // who is online right now
 async function startServer() {
   await connectToDatabase();
 
-  app.listen(PORT, () => {
+  server = app.listen(PORT, () => {
     console.log(`🚀 Server listening on port ${PORT}`);
   });
 }
+
+async function shutdown(signal) {
+  if (isShuttingDown) {
+    return;
+  }
+
+  isShuttingDown = true;
+  console.log(`Server received shutdown signal: ${signal}`);
+
+  try {
+    if (server) {
+      console.log("Stopping HTTP server...");
+      await new Promise((resolve, reject) => {
+        server.close((err) => {
+          if (err) {
+            return reject(err);
+          }
+
+          return resolve();
+        });
+      });
+    }
+
+    if (dbConnection.readyState !== 0) {
+      console.log("Closing MongoDB connection...");
+      await dbConnection.close();
+    }
+
+    console.log("Shutdown complete.");
+    process.exit(0);
+  } catch (err) {
+    console.error("Shutdown failed:", err.message);
+    process.exit(1);
+  }
+}
+
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);
 
 startServer();
