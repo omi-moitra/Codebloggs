@@ -11,6 +11,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import MainLayout from "./layout/MainLayout";
 import store from "./redux/store";
 import Home from "./pages/Home";
+import HomeRedirect from "./components/HomeRedirect";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Blogs from "./pages/Blogs";
@@ -41,7 +42,8 @@ const router = createBrowserRouter([
           {
             element: <MainLayout />,
             children: [
-              { path: "home", element: <Home /> },
+              { path: "home", element: <HomeRedirect /> },
+              { path: "home/:userId", element: <Home /> },
               { path: "blogs", element: <Blogs /> },
               { path: "network", element: <Network /> },
               { path: "settings", element: <AccountSettings /> },

@@ -1,7 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Badge, Button, Card, Col, Form, Row, Spinner } from "react-bootstrap";
 import { FaRegThumbsUp, FaRegTrashAlt, FaThumbsUp } from "react-icons/fa";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { from, Subject } from "rxjs";
+import { exhaustMap } from "rxjs/operators";
 import AutoDismissAlert from "../components/AutoDismissAlert";
 import ProfileAvatar from "../components/ProfileAvatar";
 import StatusDot from "../components/StatusDot";
@@ -17,6 +20,7 @@ import { getPosts, updatePostLikes } from "../services/postService";
 import { createReply, getReplies, updateReplyLikes } from "../services/replyService";
 import { hasLocalLike, setLocalLike } from "../services/socialInteractionService";
 import { getUserById } from "../services/userService";
+import { postCreated$ } from "../services/postEventBus";
 import { fetchUsers } from "../redux/actions/userActions";
 import { selectUsersById } from "../redux/selectors/userSelectors";
 
@@ -84,6 +88,9 @@ const Home = () => {
   const { isActive } = usePresence();
   const dispatch = useDispatch();
   const usersById = useSelector(selectUsersById);
+  const { userId } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [profile, setProfile] = useState(sessionUser);
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState([]);
@@ -101,9 +108,16 @@ const Home = () => {
   const [openCommentPostIds, setOpenCommentPostIds] = useState({});
   const [openReplyParentIds, setOpenReplyParentIds] = useState({});
   const [localReplies, setLocalReplies] = useState({});
+  const [toastAlert, setToastAlert] = useState(null);
 
-  const userId = getId(sessionUser?._id);
+  const sessionUserId = getId(sessionUser?._id);
   const isUserActive = isActive(userId);
+
+  // RxJS subjects used to funnel like-button clicks through exhaustMap so that
+  // rapid clicks on the same item are ignored while a request is in-flight.
+  const likePost$ = useRef(new Subject());
+  const likeComment$ = useRef(new Subject());
+  const likeReply$ = useRef(new Subject());
 
   useEffect(() => {
     let isCurrent = true;
@@ -111,9 +125,18 @@ const Home = () => {
     dispatch(fetchUsers());
 
     const loadHomeData = async () => {
-      if (!userId) {
+      if (!userId || !sessionUserId) {
         setStatus("error");
-        setError("Unable to identify the logged-in user.");
+        setError("Unable to identify the user.");
+        return;
+      }
+
+      // Access control: only the user themselves or an admin may view a home page.
+      if (userId !== sessionUserId && sessionUser?.auth_level !== "admin") {
+        navigate(`/home/${sessionUserId}`, {
+          replace: true,
+          state: { toast: "unauthorized" },
+        });
         return;
       }
 
@@ -133,7 +156,15 @@ const Home = () => {
           return;
         }
 
-        setProfile(profileResult.user || sessionUser);
+        if (!profileResult?.user) {
+          navigate(`/home/${sessionUserId}`, {
+            replace: true,
+            state: { toast: "userNotFound" },
+          });
+          return;
+        }
+
+        setProfile(profileResult.user);
         setPosts(postsResult.posts);
         setComments(commentsResult.comments);
         setReplies(repliesResult.replies);
@@ -143,19 +174,27 @@ const Home = () => {
           return;
         }
 
-        setError(loadError.message || "Unable to load your home page.");
+        setError(loadError.message || "Unable to load home page.");
         setStatus("error");
       }
     };
 
     loadHomeData();
-    window.addEventListener("codebloggs:post-created", loadHomeData);
+    const postSub = postCreated$.subscribe(() => loadHomeData());
 
     return () => {
       isCurrent = false;
-      window.removeEventListener("codebloggs:post-created", loadHomeData);
+      postSub.unsubscribe();
     };
-  }, [dispatch, sessionUser, userId]);
+  }, [dispatch, navigate, sessionUser, sessionUserId, userId]);
+
+  // Read any redirect-borne toast message once, then clear it from history state.
+  useEffect(() => {
+    const toast = location.state?.toast;
+    if (!toast) return;
+    setToastAlert(toast);
+    window.history.replaceState({}, "", window.location.pathname);
+  }, [location.state]);
 
   const userPosts = useMemo(() => {
     return posts
@@ -236,16 +275,16 @@ const Home = () => {
 
   const userLikesCount = useMemo(() => {
     const postLikes = posts.filter((p) =>
-      hasLocalLike({ type: "post", userId, itemId: getId(p._id) })
+      hasLocalLike({ type: "post", userId: sessionUserId, itemId: getId(p._id) })
     ).length;
     const commentLikes = comments.filter((c) =>
-      hasLocalLike({ type: "comment", userId, itemId: getId(c._id) })
+      hasLocalLike({ type: "comment", userId: sessionUserId, itemId: getId(c._id) })
     ).length;
     const replyLikes = replies.filter((r) =>
-      hasLocalLike({ type: "reply", userId, itemId: getId(r._id) })
+      hasLocalLike({ type: "reply", userId: sessionUserId, itemId: getId(r._id) })
     ).length;
     return postLikes + commentLikes + replyLikes;
-  }, [posts, comments, replies, userId]);
+  }, [posts, comments, replies, sessionUserId]);
 
   const getRepliesForParent = (parentId) => {
     const serverReplies = (repliesByParentId[parentId] || []).map(normalizeReply);
@@ -273,11 +312,11 @@ const Home = () => {
 
   const handleLike = async (post) => {
     const postId = getId(post._id);
-    const liked = hasLocalLike({ type: "post", userId, itemId: postId });
+    const liked = hasLocalLike({ type: "post", userId: sessionUserId, itemId: postId });
     const likes = Number(post.likes || 0);
 
     if (liked && likes <= 0) {
-      setLocalLike({ type: "post", userId, itemId: postId, liked: false });
+      setLocalLike({ type: "post", userId: sessionUserId, itemId: postId, liked: false });
       return;
     }
 
@@ -290,7 +329,7 @@ const Home = () => {
       const updatedPost =
         result.post || { ...post, likes: Math.max(0, likes + likesDelta) };
 
-      setLocalLike({ type: "post", userId, itemId: postId, liked: !liked });
+      setLocalLike({ type: "post", userId: sessionUserId, itemId: postId, liked: !liked });
 
       setPosts((currentPosts) =>
         currentPosts.map((currentPost) =>
@@ -306,11 +345,11 @@ const Home = () => {
 
   const handleCommentLike = async (comment) => {
     const commentId = getId(comment._id);
-    const liked = hasLocalLike({ type: "comment", userId, itemId: commentId });
+    const liked = hasLocalLike({ type: "comment", userId: sessionUserId, itemId: commentId });
     const likes = Number(comment.likes || 0);
 
     if (liked && likes <= 0) {
-      setLocalLike({ type: "comment", userId, itemId: commentId, liked: false });
+      setLocalLike({ type: "comment", userId: sessionUserId, itemId: commentId, liked: false });
       return;
     }
 
@@ -323,7 +362,7 @@ const Home = () => {
       const updatedComment =
         result.comment || { ...comment, likes: Math.max(0, likes + likesDelta) };
 
-      setLocalLike({ type: "comment", userId, itemId: commentId, liked: !liked });
+      setLocalLike({ type: "comment", userId: sessionUserId, itemId: commentId, liked: !liked });
 
       setComments((currentComments) =>
         currentComments.map((currentComment) =>
@@ -471,7 +510,7 @@ const Home = () => {
       content: reply.content,
       timestamp: reply.time_stamp,
       likes: reply.likes || 0,
-      likedByCurrentUser: hasLocalLike({ type: "reply", userId, itemId: getId(reply._id) }),
+      likedByCurrentUser: hasLocalLike({ type: "reply", userId: sessionUserId, itemId: getId(reply._id) }),
       depth: reply.depth || 1,
       isServerReply: true,
     };
@@ -497,7 +536,7 @@ const Home = () => {
       id: localId,
       parentId,
       author,
-      authorId: getId(author?._id) || userId,
+      authorId: getId(author?._id) || sessionUserId,
       authorName: getDisplayName(author),
       authorInitials: getInitials(author),
       content,
@@ -550,10 +589,10 @@ const Home = () => {
   const handleReplyLike = async (reply) => {
     const replyLiked =
       reply.likedByCurrentUser ||
-      hasLocalLike({ type: "reply", userId, itemId: reply.id });
+      hasLocalLike({ type: "reply", userId: sessionUserId, itemId: reply.id });
     const likesDelta = replyLiked ? -1 : 1;
 
-    setLocalLike({ type: "reply", userId, itemId: reply.id, liked: !replyLiked });
+    setLocalLike({ type: "reply", userId: sessionUserId, itemId: reply.id, liked: !replyLiked });
 
     if (reply.isServerReply) {
       setLikingReplyId(reply.id);
@@ -565,7 +604,7 @@ const Home = () => {
           );
         }
       } catch {
-        setLocalLike({ type: "reply", userId, itemId: reply.id, liked: replyLiked });
+        setLocalLike({ type: "reply", userId: sessionUserId, itemId: reply.id, liked: replyLiked });
       } finally {
         setLikingReplyId("");
       }
@@ -586,6 +625,27 @@ const Home = () => {
       );
     }
   };
+
+  // Keep the ref current so the subscription below always calls the latest handler.
+  const latestLikeHandlers = useRef({});
+  latestLikeHandlers.current = { handleLike, handleCommentLike, handleReplyLike };
+
+  // Wire each like-button subject through exhaustMap so rapid clicks on the same
+  // item are ignored while the previous request is still in-flight.
+  useEffect(() => {
+    const subs = [
+      likePost$.current
+        .pipe(exhaustMap((post) => from(latestLikeHandlers.current.handleLike(post))))
+        .subscribe({ error: () => {} }),
+      likeComment$.current
+        .pipe(exhaustMap((comment) => from(latestLikeHandlers.current.handleCommentLike(comment))))
+        .subscribe({ error: () => {} }),
+      likeReply$.current
+        .pipe(exhaustMap((reply) => from(latestLikeHandlers.current.handleReplyLike(reply))))
+        .subscribe({ error: () => {} }),
+    ];
+    return () => subs.forEach((sub) => sub.unsubscribe());
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const renderReplyForm = (parentId, parentDepth, postId, rootCommentId) =>
     activeReplyTargetId === parentId ? (
@@ -650,7 +710,7 @@ const Home = () => {
         {allReplies.map((reply) => {
           const replyLiked =
             reply.likedByCurrentUser ||
-            hasLocalLike({ type: "reply", userId, itemId: reply.id });
+            hasLocalLike({ type: "reply", userId: sessionUserId, itemId: reply.id });
           const replyDepth = Math.min(reply.depth || parentDepth + 1, MAX_REPLY_DEPTH);
 
           return (
@@ -675,7 +735,7 @@ const Home = () => {
                   aria-label={replyLiked ? "Unlike" : "Like"}
                   className="social-comment__action"
                   disabled={likingReplyId === reply.id}
-                  onClick={() => handleReplyLike(reply)}
+                  onClick={() => likeReply$.current.next(reply)}
                   size="sm"
                   type="button"
                   variant={replyLiked ? "primary" : "outline-primary"}
@@ -713,7 +773,7 @@ const Home = () => {
     const postComments = commentsByPostId[postId] || [];
     const postCommentTotal = getPostCommentTotal(postId, postComments);
     const isCommentSectionOpen = Boolean(openCommentPostIds[postId]);
-    const postLiked = hasLocalLike({ type: "post", userId, itemId: postId });
+    const postLiked = hasLocalLike({ type: "post", userId: sessionUserId, itemId: postId });
 
     return (
       <Card className="home-post" key={postId}>
@@ -737,7 +797,7 @@ const Home = () => {
               aria-label={postLiked ? "Unlike" : "Like"}
               className={`home-post__like ${postLiked ? "home-post__like--active" : ""}`}
               disabled={likingPostId === postId}
-              onClick={() => handleLike(post)}
+              onClick={() => likePost$.current.next(post)}
               size="sm"
               type="button"
               variant={postLiked ? "primary" : "outline-primary"}
@@ -793,10 +853,10 @@ const Home = () => {
                     const commentAuthor = usersById[getId(comment.user_id)];
                     const commentLiked = hasLocalLike({
                       type: "comment",
-                      userId,
+                      userId: sessionUserId,
                       itemId: commentId,
                     });
-                    const canDeleteComment = getId(comment.user_id) === userId;
+                    const canDeleteComment = getId(comment.user_id) === sessionUserId;
                     return (
                       <li className="home-comments__item" key={commentId}>
                         <div className="home-comments__meta">
@@ -816,7 +876,7 @@ const Home = () => {
                             aria-label={commentLiked ? "Unlike" : "Like"}
                             className="social-comment__action"
                             disabled={likingCommentId === commentId}
-                            onClick={() => handleCommentLike(comment)}
+                            onClick={() => likeComment$.current.next(comment)}
                             size="sm"
                             type="button"
                             variant={commentLiked ? "primary" : "outline-primary"}
@@ -891,6 +951,24 @@ const Home = () => {
 
   return (
     <section className="home-page">
+      {toastAlert === "unauthorized" ? (
+        <AutoDismissAlert
+          variant="warning"
+          className="home-page__alert"
+          onClose={() => setToastAlert(null)}
+        >
+          You are not authorized to view that page.
+        </AutoDismissAlert>
+      ) : null}
+      {toastAlert === "userNotFound" ? (
+        <AutoDismissAlert
+          variant="danger"
+          className="home-page__alert"
+          onClose={() => setToastAlert(null)}
+        >
+          User not found.
+        </AutoDismissAlert>
+      ) : null}
       {error ? (
         <AutoDismissAlert
           variant="warning"

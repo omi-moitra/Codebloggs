@@ -22,6 +22,7 @@ import {
 import { hasLocalLike, setLocalLike } from "../services/socialInteractionService";
 import { fetchUsers } from "../redux/actions/userActions";
 import { selectUsersById } from "../redux/selectors/userSelectors";
+import { postCreated$ } from "../services/postEventBus";
 
 const getId = (value) => {
   if (!value) {
@@ -142,11 +143,11 @@ const Blogs = () => {
     };
 
     loadBlogsData();
-    window.addEventListener("codebloggs:post-created", loadBlogsData);
+    const postSub = postCreated$.subscribe(() => loadBlogsData());
 
     return () => {
       isCurrent = false;
-      window.removeEventListener("codebloggs:post-created", loadBlogsData);
+      postSub.unsubscribe();
     };
   }, [dispatch]);
 

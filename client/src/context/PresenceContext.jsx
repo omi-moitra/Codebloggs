@@ -4,10 +4,11 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 import PropTypes from "prop-types";
+import { from, interval, Subject, fromEvent } from "rxjs";
+import { filter, startWith, switchMap, takeUntil } from "rxjs/operators";
 import { getPresence } from "../services/presenceService";
 
 const PresenceContext = createContext(null);
@@ -17,8 +18,6 @@ const PresenceContext = createContext(null);
 // server's active window (90s).
 const POLL_INTERVAL_MS = 30 * 1000;
 
-// Normalize the various id shapes (string, ObjectId-ish, populated doc) to a
-// plain string, matching the getId pattern used across the pages.
 const getId = (value) => {
   if (!value) {
     return "";
@@ -31,62 +30,43 @@ const getId = (value) => {
 
 export const PresenceProvider = ({ children }) => {
   const [activeIds, setActiveIds] = useState(() => new Set());
-  // Hold the latest setter target in a ref so the polling effect can stay
-  // mounted for the provider's lifetime without re-subscribing each render.
-  const isPollingRef = useRef(false);
 
   useEffect(() => {
-    let isCurrent = true;
-    let intervalId = null;
+    const stop$ = new Subject();
 
-    const poll = async () => {
-      try {
-        const { activeUserIds } = await getPresence();
-        if (isCurrent) {
-          setActiveIds(new Set(activeUserIds));
+    // Re-start the polling stream each time the tab becomes visible, and tear
+    // it down when the tab is hidden. The outer switchMap cancels the previous
+    // inner stream automatically on each visibility change.
+    fromEvent(document, "visibilitychange")
+      .pipe(
+        startWith(null),
+        filter(() => document.visibilityState === "visible"),
+        switchMap(() =>
+          interval(POLL_INTERVAL_MS).pipe(
+            startWith(0),
+            switchMap(() =>
+              from(
+                getPresence().catch(() => null) // keep last known set on blip
+              )
+            ),
+            takeUntil(
+              fromEvent(document, "visibilitychange").pipe(
+                filter(() => document.visibilityState === "hidden")
+              )
+            )
+          )
+        ),
+        takeUntil(stop$)
+      )
+      .subscribe((result) => {
+        if (result?.activeUserIds) {
+          setActiveIds(new Set(result.activeUserIds));
         }
-      } catch {
-        // Network blip or a 401 (handled globally by apiClient). Keep the last
-        // known set rather than flickering everyone offline.
-      }
-    };
-
-    const start = () => {
-      if (isPollingRef.current) {
-        return;
-      }
-      isPollingRef.current = true;
-      poll(); // immediate first beat so dots appear without waiting a full cycle
-      intervalId = setInterval(poll, POLL_INTERVAL_MS);
-    };
-
-    const stop = () => {
-      isPollingRef.current = false;
-      if (intervalId) {
-        clearInterval(intervalId);
-        intervalId = null;
-      }
-    };
-
-    // Only poll while the tab is visible: a hidden/closed tab stops sending
-    // heartbeats, so the user naturally drops offline after the active window.
-    const handleVisibility = () => {
-      if (document.visibilityState === "visible") {
-        start();
-      } else {
-        stop();
-      }
-    };
-
-    if (document.visibilityState === "visible") {
-      start();
-    }
-    document.addEventListener("visibilitychange", handleVisibility);
+      });
 
     return () => {
-      isCurrent = false;
-      stop();
-      document.removeEventListener("visibilitychange", handleVisibility);
+      stop$.next();
+      stop$.complete();
     };
   }, []);
 

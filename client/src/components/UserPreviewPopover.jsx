@@ -49,7 +49,7 @@ const UserPreviewPopover = React.forwardRef(({ user, ...props }, ref) => {
         <Button
           className="w-100"
           onClick={() =>
-            window.open(`/users/${userId}`, "_blank", "noopener,noreferrer")
+            window.open(`/home/${userId}`, "_blank", "noopener,noreferrer")
           }
           size="sm"
           variant="primary"
