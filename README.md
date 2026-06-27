@@ -13,7 +13,7 @@
 
 ## Project Description
 
-CodeBloggs is a full-stack social blogging platform for developers. Users can register, log in, create and manage posts, leave comments and replies, follow other users, and see who is online in real time. It is built as a single-page application with a React frontend backed by a RESTful Express/MongoDB API, and is designed to be fully responsive across desktop, tablet, and mobile viewports.
+CodeBloggs is a full-stack social blogging platform for developers. Users can register, log in, create and manage posts, leave comments and replies, like content, manage profile pictures, and see who is online in real time. It is built as a single-page application with a React frontend backed by a RESTful Express/MongoDB API, and is designed to be fully responsive across desktop, tablet, and mobile viewports.
 
 ## Tech Stack
 
@@ -28,18 +28,25 @@ CodeBloggs is a full-stack social blogging platform for developers. Users can re
 
 ```
 FullStack_CodeBloggsM10/
+├── ai/                        # Module feature specs
 ├── client/                    # React SPA
+│   ├── public/                # Static browser assets
 │   ├── src/
+│   │   ├── assets/            # App images and graphics imported by React
 │   │   ├── components/        # Reusable UI components
 │   │   ├── context/           # Auth, Theme, and Presence contexts
+│   │   ├── data/              # Static app data, including locations
 │   │   ├── layout/            # MainLayout and MainContent wrappers
 │   │   ├── pages/             # Route-level page components
 │   │   ├── redux/             # Actions, reducers, and store
 │   │   ├── services/          # API call helpers (one per resource)
 │   │   └── styles/            # CSS theme files (light/dark)
-│   ├── public/                # Static assets
 │   ├── index.html
+│   ├── package.json
 │   └── vite.config.js
+├── codebloggs/                # Project image/logo source assets
+├── Concepts/                  # Module concept notes
+├── LeetCode-Challenges/       # Module challenge screenshots
 ├── server/                    # Express API
 │   ├── controllers/           # Request handlers (one per resource)
 │   ├── db/                    # MongoDB connection helper
@@ -48,8 +55,14 @@ FullStack_CodeBloggsM10/
 │   ├── routes/                # Express routers (one per resource)
 │   ├── schemas/               # Mongoose models
 │   ├── validators/            # express-validator rule sets
+│   ├── package.json
+│   ├── seed.js                # Database seed script
+│   ├── seed.data.js           # Seed data transformer
 │   └── server.js              # Entry point
+├── Working/                   # Module planning, source material, and logs
 ├── PostmanCollection.json     # Importable API test collection
+├── Research.md                # Responsive design research
+├── wireframe-analysis.md      # API and wireframe analysis notes
 └── README.md
 ```
 
@@ -83,7 +96,7 @@ npm run seed
 
 ## Environment Variables
 
-Create a `.env` file inside the `server/` directory and set the following:
+Create a `.env` file inside the `server/` directory. You can copy `server/.env.example` and replace the placeholder values.
 
 ```env
 # MongoDB connection string
@@ -92,8 +105,21 @@ MONGO_URI=your_mongodb_connection_string
 # Port the Express server listens on (defaults to 5050)
 PORT=5050
 
-# Origin(s) the CORS policy allows (comma-separated for multiple)
+# Origin the CORS policy allows
 CLIENT_ORIGIN=http://localhost:3000
+
+# Optional: comma-separated origins for multiple frontend hosts
+CLIENT_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+```
+
+Optional client-side environment variables can be set in `client/.env`:
+
+```env
+# Backend API base URL (defaults to http://localhost:5050)
+VITE_API_BASE_URL=http://localhost:5050
+
+# Vite dev server port (defaults to 3000)
+VITE_DEV_SERVER_PORT=3000
 ```
 
 ## API Documentation
@@ -140,7 +166,7 @@ DELETE /comments/:id     - Delete a comment
 
 ```
 POST   /replies          - Create a reply (auth required)
-GET    /replies          - Get replies by post
+GET    /replies          - Get all replies, or filter with ?post_id=<id>
 PUT    /replies/:id      - Update a reply
 DELETE /replies/:id      - Delete a reply (admin auth required)
 ```
@@ -176,5 +202,5 @@ CodeBloggs is fully responsive across three viewport sizes. Below the desktop br
 
 ## Authors
 
-Built by the CodeBloggs team for Fullstack Module 9.
+Built by the CodeBloggs team for Fullstack Module 10.
 
