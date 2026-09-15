@@ -57,7 +57,7 @@ FullStack_CodeBloggsM10/
 │   ├── validators/            # express-validator rule sets
 │   ├── package.json
 │   ├── seed.js                # Database seed script
-│   ├── seed.data.js           # Alternate fictional test fixtures
+│   ├── seed.data.js           # Seed data transformer
 │   └── server.js              # Entry point
 ├── Working/                   # Module planning, source material, and logs
 ├── PostmanCollection.json     # Importable API test collection
@@ -87,48 +87,12 @@ npm run dev            # starts on http://localhost:3000
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Seed a test database (optional)
-
-All bundled seed users and posts are fictional, development-only fixtures. The
-JSON fixtures contain no passwords or password hashes. The alternate fixtures in
-`server/seed.data.js` are also test-only and are not read by this command.
-
-In your ignored `server/.env`, explicitly set:
-
-```env
-NODE_ENV=development
-SEED_MONGO_URI=mongodb://127.0.0.1:27017
-SEED_DB_NAME=codebloggs_test_local
-# Fill in a locally chosen test-only password; do not commit it.
-SEED_TEST_PASSWORD=
-```
-
-Use a dedicated test MongoDB instance or credentials restricted to that test
-database. `SEED_DB_NAME` must be `codebloggs_test` or start with
-`codebloggs_test_`, followed by lowercase letters/digits separated by underscores
-(maximum 63 characters). This name explicitly selects the database, overriding
-any database path in `SEED_MONGO_URI`. The application's `MONGO_URI` is never used.
-Only `NODE_ENV=development` or `NODE_ENV=test` is allowed; unset, production, and
-other modes are rejected before connecting. These guards cannot determine whether
-an operator-supplied host is production, so use test-only connection credentials.
-
-Choose a test password of at least 12 characters and no more than 72 UTF-8 bytes.
-Each user receives a freshly salted bcrypt hash during seeding. Use the fixture
-email and your local test password to log in; neither the password nor connection
-string is printed. The application must use the same test database to access these
-accounts.
+To seed the database with sample data:
 
 ```bash
 cd server
 npm run seed
 ```
-
-Seeding inserts basic accounts and posts; it does not delete data or change
-existing accounts. Re-running against existing fixture emails can fail with a
-duplicate-key error. Failed runs may leave partial inserts; no rollback is performed.
-
-Run the seeder's safety tests with `cd server && npm test`. They use a fake database
-connection and do not contact MongoDB.
 
 ## Environment Variables
 
@@ -238,4 +202,5 @@ CodeBloggs is fully responsive across three viewport sizes. Below the desktop br
 
 ## Authors
 
-Oishieka Moitra — [Github(@omi-moitra)
+Oishieka Moitra — [Github](https://github.com/omi-moitra) [LinkedIn](https://www.linkedin.com/in/oishieka-moitra-962465433)
+
