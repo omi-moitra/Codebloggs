@@ -116,14 +116,22 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Seed the Database (optional)
+### Seed a Test Database (optional)
+
+First configure the separate test connection, explicit test database, and local
+test password described in [README.md](README.md#seed-a-test-database-optional).
+Seeding is blocked outside development/test mode and never uses the application's
+`MONGO_URI`.
 
 ```bash
 cd server
 node seed.js
 ```
 
-This populates the database with the sample users and posts from `codebloggs_seed_users_no_indian_gods.json` and `codebloggs_seed_posts_no_indian_gods.json`.
+This inserts fictional, development-only users and posts from
+`codebloggs_seed_users_no_indian_gods.json` and
+`codebloggs_seed_posts_no_indian_gods.json`. User password hashes are generated at
+runtime from the local test password. Existing accounts are not updated.
 
 ---
 
