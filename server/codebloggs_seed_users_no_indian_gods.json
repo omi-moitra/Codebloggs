@@ -9,7 +9,6 @@
       "$date": "1970-01-01T00:00:00.000Z"
     },
     "email": "zeus.olympian@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Mount Olympus",
     "occupation": "Sky and Thunder Deity",
@@ -26,7 +25,6 @@
       "$date": "1971-02-02T00:00:00.000Z"
     },
     "email": "hera.olympian@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Mount Olympus",
     "occupation": "Queen of the Gods",
@@ -43,7 +41,6 @@
       "$date": "1972-03-03T00:00:00.000Z"
     },
     "email": "poseidon.olympian@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Aegean Sea",
     "occupation": "Sea Deity",
@@ -60,7 +57,6 @@
       "$date": "1973-04-04T00:00:00.000Z"
     },
     "email": "demeter.olympian@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Eleusis",
     "occupation": "Harvest Deity",
@@ -77,7 +73,6 @@
       "$date": "1974-05-05T00:00:00.000Z"
     },
     "email": "athena.olympian@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Athens",
     "occupation": "Wisdom and Strategy Deity",
@@ -94,7 +89,6 @@
       "$date": "1975-06-06T00:00:00.000Z"
     },
     "email": "apollo.olympian@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Delphi",
     "occupation": "Music and Prophecy Deity",
@@ -111,7 +105,6 @@
       "$date": "1976-07-07T00:00:00.000Z"
     },
     "email": "artemis.olympian@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Arcadia",
     "occupation": "Wilderness and Moon Deity",
@@ -128,7 +121,6 @@
       "$date": "1977-08-08T00:00:00.000Z"
     },
     "email": "ares.olympian@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Thrace",
     "occupation": "War Deity",
@@ -145,7 +137,6 @@
       "$date": "1978-09-09T00:00:00.000Z"
     },
     "email": "aphrodite.olympian@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Cyprus",
     "occupation": "Love and Beauty Deity",
@@ -162,7 +153,6 @@
       "$date": "1979-10-10T00:00:00.000Z"
     },
     "email": "hephaestus.olympian@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Lemnos",
     "occupation": "Craft and Forge Deity",
@@ -179,7 +169,6 @@
       "$date": "1980-11-11T00:00:00.000Z"
     },
     "email": "hermes.olympian@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Mount Cyllene",
     "occupation": "Messenger Deity",
@@ -196,7 +185,6 @@
       "$date": "1981-12-12T00:00:00.000Z"
     },
     "email": "dionysus.olympian@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Thebes",
     "occupation": "Wine and Theater Deity",
@@ -213,7 +201,6 @@
       "$date": "1982-01-13T00:00:00.000Z"
     },
     "email": "clark.kent@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Metropolis",
     "occupation": "Reporter",
@@ -230,7 +217,6 @@
       "$date": "1983-02-14T00:00:00.000Z"
     },
     "email": "bruce.wayne@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Gotham City",
     "occupation": "Detective",
@@ -247,7 +233,6 @@
       "$date": "1984-03-15T00:00:00.000Z"
     },
     "email": "diana.prince@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Themyscira",
     "occupation": "Ambassador",
@@ -264,7 +249,6 @@
       "$date": "1985-04-16T00:00:00.000Z"
     },
     "email": "barry.allen@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Central City",
     "occupation": "Forensic Scientist",
@@ -281,7 +265,6 @@
       "$date": "1986-05-17T00:00:00.000Z"
     },
     "email": "arthur.curry@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Atlantis",
     "occupation": "King of Atlantis",
@@ -298,7 +281,6 @@
       "$date": "1987-06-18T00:00:00.000Z"
     },
     "email": "hal.jordan@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Coast City",
     "occupation": "Pilot",
@@ -315,7 +297,6 @@
       "$date": "1988-07-19T00:00:00.000Z"
     },
     "email": "victor.stone@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Detroit",
     "occupation": "Technologist",
@@ -332,7 +313,6 @@
       "$date": "1989-08-20T00:00:00.000Z"
     },
     "email": "billy.batson@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Fawcett City",
     "occupation": "Student Hero",
@@ -349,7 +329,6 @@
       "$date": "1990-09-21T00:00:00.000Z"
     },
     "email": "oliver.queen@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Star City",
     "occupation": "Archer",
@@ -366,7 +345,6 @@
       "$date": "1991-10-22T00:00:00.000Z"
     },
     "email": "dinah.lance@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Star City",
     "occupation": "Vocalist and Hero",
@@ -383,7 +361,6 @@
       "$date": "1992-11-23T00:00:00.000Z"
     },
     "email": "harleen.quinzel@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Gotham City",
     "occupation": "Independent Antihero",
@@ -400,7 +377,6 @@
       "$date": "1993-12-24T00:00:00.000Z"
     },
     "email": "selina.kyle@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Gotham City",
     "occupation": "Cat Burglar",
@@ -417,7 +393,6 @@
       "$date": "1994-01-25T00:00:00.000Z"
     },
     "email": "peter.parker@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Queens",
     "occupation": "Photographer",
@@ -434,7 +409,6 @@
       "$date": "1995-02-26T00:00:00.000Z"
     },
     "email": "tony.stark@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Malibu",
     "occupation": "Inventor",
@@ -451,7 +425,6 @@
       "$date": "1996-03-27T00:00:00.000Z"
     },
     "email": "steve.rogers@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Brooklyn",
     "occupation": "Soldier",
@@ -468,7 +441,6 @@
       "$date": "1997-04-01T00:00:00.000Z"
     },
     "email": "bruce.banner@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Dayton",
     "occupation": "Scientist",
@@ -485,7 +457,6 @@
       "$date": "1998-05-02T00:00:00.000Z"
     },
     "email": "tchalla.udaku@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Wakanda",
     "occupation": "King and Protector",
@@ -502,7 +473,6 @@
       "$date": "1999-06-03T00:00:00.000Z"
     },
     "email": "logan.howlett@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Alberta",
     "occupation": "Wanderer",
@@ -519,7 +489,6 @@
       "$date": "2000-07-04T00:00:00.000Z"
     },
     "email": "wade.wilson@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Vancouver",
     "occupation": "Mercenary",
@@ -536,7 +505,6 @@
       "$date": "2001-08-05T00:00:00.000Z"
     },
     "email": "stephen.strange@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "New York City",
     "occupation": "Sorcerer",
@@ -553,7 +521,6 @@
       "$date": "2002-09-06T00:00:00.000Z"
     },
     "email": "carol.danvers@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Boston",
     "occupation": "Pilot",
@@ -570,7 +537,6 @@
       "$date": "2003-10-07T00:00:00.000Z"
     },
     "email": "natasha.romanoff@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Stalingrad",
     "occupation": "Strategist",
@@ -587,7 +553,6 @@
       "$date": "2004-11-08T00:00:00.000Z"
     },
     "email": "wanda.maximoff@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Sokovia",
     "occupation": "Mystic",
@@ -604,7 +569,6 @@
       "$date": "1970-12-09T00:00:00.000Z"
     },
     "email": "matt.murdock@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Hell's Kitchen",
     "occupation": "Attorney",
@@ -621,7 +585,6 @@
       "$date": "1971-01-10T00:00:00.000Z"
     },
     "email": "odin.asgard@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Asgard",
     "occupation": "All-Father",
@@ -638,7 +601,6 @@
       "$date": "1972-02-11T00:00:00.000Z"
     },
     "email": "frigg.asgard@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Asgard",
     "occupation": "Queen and Seer",
@@ -655,7 +617,6 @@
       "$date": "1973-03-12T00:00:00.000Z"
     },
     "email": "thor.asgard@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Asgard",
     "occupation": "Thunder Deity",
@@ -672,7 +633,6 @@
       "$date": "1974-04-13T00:00:00.000Z"
     },
     "email": "freyr.vanir@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Alfheim",
     "occupation": "Prosperity Deity",
@@ -689,7 +649,6 @@
       "$date": "1975-05-14T00:00:00.000Z"
     },
     "email": "freyja.vanir@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Folkvangr",
     "occupation": "Love and Magic Deity",
@@ -706,7 +665,6 @@
       "$date": "1976-06-15T00:00:00.000Z"
     },
     "email": "loki.laufeyson@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Asgard",
     "occupation": "Trickster",
@@ -723,7 +681,6 @@
       "$date": "1977-07-16T00:00:00.000Z"
     },
     "email": "heimdall.bifrost@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Asgard",
     "occupation": "Watchman",
@@ -740,7 +697,6 @@
       "$date": "1978-08-17T00:00:00.000Z"
     },
     "email": "balder.asgard@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Asgard",
     "occupation": "Light Deity",
@@ -757,7 +713,6 @@
       "$date": "1979-09-18T00:00:00.000Z"
     },
     "email": "tyr.asgard@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Asgard",
     "occupation": "Justice Deity",
@@ -774,7 +729,6 @@
       "$date": "1980-10-19T00:00:00.000Z"
     },
     "email": "njord.vanir@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Noatun",
     "occupation": "Sea and Wind Deity",
@@ -791,7 +745,6 @@
       "$date": "1981-11-20T00:00:00.000Z"
     },
     "email": "hel.niflheim@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Helheim",
     "occupation": "Keeper of the Dead",
@@ -808,7 +761,6 @@
       "$date": "1982-12-21T00:00:00.000Z"
     },
     "email": "bragi.asgard@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Asgard",
     "occupation": "Poetry Deity",
@@ -825,7 +777,6 @@
       "$date": "1994-12-06T00:00:00.000Z"
     },
     "email": "indra.deva@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Svarga",
     "occupation": "Storm and Sky Deity",
@@ -842,7 +793,6 @@
       "$date": "1995-01-07T00:00:00.000Z"
     },
     "email": "king.arthur@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Camelot",
     "occupation": "Legendary King",
@@ -859,7 +809,6 @@
       "$date": "1996-02-08T00:00:00.000Z"
     },
     "email": "robin.hood@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Sherwood Forest",
     "occupation": "Outlaw Hero",
@@ -876,7 +825,6 @@
       "$date": "1997-03-09T00:00:00.000Z"
     },
     "email": "gilgamesh.uruk@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Uruk",
     "occupation": "Legendary King",
@@ -893,7 +841,6 @@
       "$date": "1998-04-10T00:00:00.000Z"
     },
     "email": "beowulf.geat@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Geatland",
     "occupation": "Legendary Warrior",
@@ -910,7 +857,6 @@
       "$date": "1999-05-11T00:00:00.000Z"
     },
     "email": "mulan.hua@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Ancient China",
     "occupation": "Legendary Warrior",
@@ -927,7 +873,6 @@
       "$date": "2000-06-12T00:00:00.000Z"
     },
     "email": "merlin.ambrosius@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Camelot",
     "occupation": "Wizard",
@@ -944,7 +889,6 @@
       "$date": "2001-07-13T00:00:00.000Z"
     },
     "email": "baba.yaga@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Slavic Forest",
     "occupation": "Folklore Figure",
@@ -961,7 +905,6 @@
       "$date": "2002-08-14T00:00:00.000Z"
     },
     "email": "anansi.spider@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "West African Folklore",
     "occupation": "Storyteller",
@@ -978,7 +921,6 @@
       "$date": "2003-09-15T00:00:00.000Z"
     },
     "email": "quetzalcoatl.featheredserpent@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Tollan",
     "occupation": "Feathered Serpent",
@@ -995,7 +937,6 @@
       "$date": "2004-10-16T00:00:00.000Z"
     },
     "email": "sun.wukong@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Flower Fruit Mountain",
     "occupation": "Monkey King",
@@ -1012,7 +953,6 @@
       "$date": "1970-11-17T00:00:00.000Z"
     },
     "email": "cuchulainn.ulster@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Ulster",
     "occupation": "Hero",
@@ -1029,7 +969,6 @@
       "$date": "1971-12-18T00:00:00.000Z"
     },
     "email": "siegfried.dragonslayer@codebloggs.fake",
-    "password": "$2b$10$5htSZUXY36dtF5RkSYgvbeJUAnek/DmTv5QtRrePtgPdfnSiOvRDm",
     "status": false,
     "location": "Xanten",
     "occupation": "Legendary Hero",

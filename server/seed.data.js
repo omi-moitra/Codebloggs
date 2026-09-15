@@ -1,12 +1,11 @@
-// seed.data.js — raw mock data for the CodeBloggs seeder.
-// No IDs or hashed passwords here; seed.js handles those at runtime.
+// Fictional development/test fixtures only; never use as real account data.
+// Alternate data, not imported by seed.js. Passwords are supplied locally at runtime.
 
 export const users = [
   {
     first_name: "Anakin",
     last_name: "Skywalker",
     email: "anakin.skywalker@jedi.org",
-    password: "password123",
     birthday: "1992-03-15",
     location: "Tatooine",
     occupation: "Jedi Knight",
@@ -15,7 +14,6 @@ export const users = [
     first_name: "Obi-Wan",
     last_name: "Kenobi",
     email: "obiwan.kenobi@jedi.org",
-    password: "password123",
     birthday: "1978-03-25",
     location: "Stewjon",
     occupation: "Jedi Master",
@@ -24,7 +22,6 @@ export const users = [
     first_name: "Ahsoka",
     last_name: "Tano",
     email: "ahsoka.tano@jedi.org",
-    password: "password123",
     birthday: "1996-06-12",
     location: "Shili",
     occupation: "Jedi Padawan",
@@ -33,7 +30,6 @@ export const users = [
     first_name: "Padmé",
     last_name: "Amidala",
     email: "padme.amidala@senate.gov",
-    password: "password123",
     birthday: "1988-11-22",
     location: "Naboo",
     occupation: "Senator",
@@ -42,7 +38,6 @@ export const users = [
     first_name: "Mace",
     last_name: "Windu",
     email: "mace.windu@jedi.org",
-    password: "password123",
     birthday: "1965-05-01",
     location: "Haruun Kal",
     occupation: "Jedi Master",
@@ -51,7 +46,6 @@ export const users = [
     first_name: "Rex",
     last_name: "CT-7567",
     email: "captain.rex@grand-army.gov",
-    password: "password123",
     birthday: "1994-07-04",
     location: "Kamino",
     occupation: "Clone Captain",
@@ -60,7 +54,6 @@ export const users = [
     first_name: "Asajj",
     last_name: "Ventress",
     email: "asajj.ventress@sith.net",
-    password: "password123",
     birthday: "1985-09-30",
     location: "Dathomir",
     occupation: "Dark Assassin",
@@ -69,7 +62,6 @@ export const users = [
     first_name: "Count",
     last_name: "Dooku",
     email: "count.dooku@separatists.net",
-    password: "password123",
     birthday: "1940-02-14",
     location: "Serenno",
     occupation: "Separatist Leader",
@@ -78,7 +70,6 @@ export const users = [
     first_name: "Cad",
     last_name: "Bane",
     email: "cad.bane@bounty.net",
-    password: "password123",
     birthday: "1980-08-17",
     location: "Duro",
     occupation: "Bounty Hunter",
@@ -87,7 +78,6 @@ export const users = [
     first_name: "Yoda",
     last_name: "Grandmaster",
     email: "yoda@jedi.org",
-    password: "password123",
     birthday: "1900-01-01",
     location: "Dagobah",
     occupation: "Grand Master",
